@@ -1,0 +1,4 @@
+#+title: My Master Thesis
+#+author: Luca Andriotto
+
+This is the repository gathering all the required files.
