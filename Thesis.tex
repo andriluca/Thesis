@@ -71,9 +71,11 @@
 % PACKAGES FOR REFERENCES & BIBLIOGRAPHY
 \usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref} % Adds clickable links at references
 \usepackage{cleveref}
-\usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
-\usepackage[backend=biber]{biblatex}
-\bibliographystyle{abbrvnat} % You may use a different style adapted to your field
+% \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
+\usepackage[backend=biber,
+            style=ieee]{biblatex}
+\addbibresource{Thesis_bibliography.bib} % The references information are stored in the file named "Thesis_bibliography.bib"
+% \bibliographystyle{abbrvnat} % You may use a different style adapted to your field
 
 % OTHER PACKAGES
 \usepackage{pdfpages} % To include a pdf file
@@ -499,7 +501,7 @@ and possible future developments of your work have to be inserted in this chapte
 %-------------------------------------------------------------------------
 
 \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
-\bibliography{Thesis_bibliography} % The references information are stored in the file named "Thesis_bibliography.bib"
+\printbibliography
 
 %-------------------------------------------------------------------------
 %	APPENDICES
