@@ -15,13 +15,13 @@
 %------------------------------------------------------------------------------
 
 % CONFIGURATIONS
-\usepackage{parskip} % For paragraph layout
-\usepackage{setspace} % For using single or double spacing
-\usepackage{emptypage} % To insert empty pages
-\usepackage{multicol} % To write in multiple columns (executive summary)
+\usepackage{parskip}       % For paragraph layout
+\usepackage{setspace}      % For using single or double spacing
+\usepackage{emptypage}     % To insert empty pages
+\usepackage{multicol}      % To write in multiple columns (executive summary)
 \setlength\columnsep{15pt} % Column separation in executive summary
-\setlength\parindent{0pt} % Indentation
-\raggedbottom  
+\setlength\parindent{0pt}  % Indentation
+\raggedbottom
 
 % PACKAGES FOR TITLES
 \usepackage{titlesec}
@@ -34,19 +34,19 @@
 % PACKAGES FOR LANGUAGE AND FONT
 \usepackage[english]{babel} % The document is in English  
 \usepackage[utf8]{inputenc} % UTF8 encoding
-\usepackage[T1]{fontenc} % Font encoding
+\usepackage[T1]{fontenc}    % Font encoding
 \usepackage[11pt]{moresize} % Big fonts
 
 % PACKAGES FOR IMAGES
 \usepackage{graphicx}
-\usepackage{transparent} % Enables transparent images
-\usepackage{eso-pic} % For the background picture on the title page
-\usepackage{subfig} % Numbered and caption subfigures using \subfloat.
-\usepackage{tikz} % A package for high-quality hand-made figures.
+\usepackage{transparent}            % Enables transparent images
+\usepackage{eso-pic}                % For the background picture on the title page
+\usepackage{subfig}                 % Numbered and caption subfigures using \subfloat.
+\usepackage{tikz}                   % A package for high-quality hand-made figures.
 \usetikzlibrary{}
-\graphicspath{{./Images/}} % Directory of the images
-\usepackage{caption} % Coloured captions
-\usepackage{xcolor} % Coloured captions
+\graphicspath{{./Images/}}          % Directory of the images
+\usepackage{caption}                % Coloured captions
+\usepackage{xcolor}                 % Coloured captions
 \usepackage{amsthm,thmtools,xcolor} % Coloured "Theorem"
 \usepackage{float}
 
@@ -57,7 +57,7 @@
 \usepackage{amsfonts}
 \usepackage{bm}
 \usepackage[overload]{empheq} % For braced-style systems of equations.
-\usepackage{fix-cm} % To override original LaTeX restrictions on sizes
+\usepackage{fix-cm}           % To override original LaTeX restrictions on sizes
 
 % PACKAGES FOR TABLES
 \usepackage{tabularx}
@@ -69,7 +69,14 @@
 \usepackage{algorithmic}
 
 % PACKAGES FOR REFERENCES & BIBLIOGRAPHY
-\usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref} % Adds clickable links at references
+\usepackage[colorlinks=true,
+  linkcolor=black,
+  anchorcolor=black,
+  citecolor=black,
+  filecolor=black,
+  menucolor=black,
+  runcolor=black,
+  urlcolor=black]{hyperref} % Adds clickable links at references
 \usepackage{cleveref}
 % \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
 \usepackage[backend=biber,
@@ -80,7 +87,7 @@
 % OTHER PACKAGES
 \usepackage{pdfpages} % To include a pdf file
 \usepackage{afterpage}
-\usepackage{lipsum} % DUMMY PACKAGE
+\usepackage{lipsum}   % DUMMY PACKAGE
 \usepackage{fancyhdr} % For the headers
 \fancyhf{}
 
@@ -94,7 +101,7 @@
 % EXAMPLES OF NEW COMMANDS
 \newcommand{\bea}{\begin{eqnarray}} % Shortcut for equation arrays
 \newcommand{\eea}{\end{eqnarray}}
-\newcommand{\e}[1]{\times 10^{#1}}  % Powers of 10 notation
+\newcommand{\e}[1]{\times 10^{#1}}   % Powers of 10 notation
 
 %----------------------------------------------------------------------------
 %	ADD YOUR PACKAGES (be careful of package interaction)
@@ -111,10 +118,10 @@
 \begin{document}
 
 \fancypagestyle{plain}{%
-\fancyhf{} % Clear all header and footer fields
-\fancyhead[RO,RE]{\thepage} %RO=right odd, RE=right even
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}}
+  \fancyhf{} % Clear all header and footer fields
+  \fancyhead[RO,RE]{\thepage} %RO=right odd, RE=right even
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}}
 
 %----------------------------------------------------------------------------
 %	TITLE PAGE
@@ -124,13 +131,13 @@
 \frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the preamble pages
 
 \puttitle{
-	title=Title,                                          % Title of the thesis
-	name=Luca Andriotto,                                  % Author Name and Surname
-	course=Biomedical Engineering - Ingegneria Biomedica, % Study Programme (in Italian)
-	ID  = 928454,                                         % Student ID number (numero di matricola)
-	advisor= Prof. Guido Baroni,                          % Supervisor name
-	% coadvisor={Name Surname, Name Surname},             % Co-Supervisor name, remove this line (and look for "coadvisors" in `polimi3i_thesis.cls`) if there is none
-	academicyear={2023-24},                               % Academic Year
+  title=Title,                                          % Title of the thesis
+  name=Luca Andriotto,                                  % Author Name and Surname
+  course=Biomedical Engineering - Ingegneria Biomedica, % Study Programme (in Italian)
+  ID  = 928454,                                         % Student ID number (numero di matricola)
+  advisor= Prof. Guido Baroni,                          % Supervisor name
+  % coadvisor={Name Surname, Name Surname},             % Co-Supervisor name, remove this line (and look for "coadvisors" in `polimi3i_thesis.cls`) if there is none
+  academicyear={2023-24},                               % Academic Year
 } % These info will be put into your Title page 
 
 %----------------------------------------------------------------------------
@@ -270,13 +277,13 @@ This section gives some examples of writing mathematical equations in your thesi
 
 Maxwell's equations read:
 \begin{subequations}
-    \label{eq:maxwell}
-    \begin{align}[left=\empheqlbrace]
+  \label{eq:maxwell}
+  \begin{align}[left=\empheqlbrace]
     \nabla\cdot \bm{D} & = \rho, \label{eq:maxwell1} \\
     \nabla \times \bm{E} +  \frac{\partial \bm{B}}{\partial t} & = \bm{0}, \label{eq:maxwell2} \\
     \nabla\cdot \bm{B} & = 0, \label{eq:maxwell3} \\
     \nabla \times \bm{H} - \frac{\partial \bm{D}}{\partial t} &= \bm{J}. \label{eq:maxwell4}
-    \end{align}
+  \end{align}
 \end{subequations}
 
 Equation~\eqref{eq:maxwell} is automatically labeled by \texttt{cleveref},
@@ -286,24 +293,24 @@ Remember that Equations have to be numbered only if they are referenced in the t
 
 Equations~\eqref{eq:maxwell_multilabels1}, \eqref{eq:maxwell_multilabels2}, \eqref{eq:maxwell_multilabels3}, and \eqref{eq:maxwell_multilabels4} show again Maxwell's equations without brace:
 \begin{align}
-    \nabla\cdot \bm{D} & = \rho, \label{eq:maxwell_multilabels1} \\
-    \nabla \times \bm{E} +  \frac{\partial \bm{B}}{\partial t} &= \bm{0}, \label{eq:maxwell_multilabels2} \\
-    \nabla\cdot \bm{B} & = 0, \label{eq:maxwell_multilabels3} \\
-    \nabla \times \bm{H} - \frac{\partial \bm{D}}{\partial t} &= \bm{J} \label{eq:maxwell_multilabels4}.
+  \nabla\cdot \bm{D} & = \rho, \label{eq:maxwell_multilabels1} \\
+  \nabla \times \bm{E} +  \frac{\partial \bm{B}}{\partial t} &= \bm{0}, \label{eq:maxwell_multilabels2} \\
+  \nabla\cdot \bm{B} & = 0, \label{eq:maxwell_multilabels3} \\
+  \nabla \times \bm{H} - \frac{\partial \bm{D}}{\partial t} &= \bm{J} \label{eq:maxwell_multilabels4}.
 \end{align}
 
 Equation~\eqref{eq:maxwell_singlelabel} is the same as before,
 but with just one label:
 \begin{equation}
-    \label{eq:maxwell_singlelabel}
-    \left\{
-    \begin{aligned}
+  \label{eq:maxwell_singlelabel}
+  \left\{
+  \begin{aligned}
     \nabla\cdot \bm{D} & = \rho, \\
     \nabla \times \bm{E} +  \frac{\partial \bm{B}}{\partial t} &= \bm{0},\\
     \nabla\cdot \bm{B} & = 0, \\
     \nabla \times \bm{H} - \frac{\partial \bm{D}}{\partial t} &= \bm{J}.
-    \end{aligned}
-    \right.
+  \end{aligned}
+  \right.
 \end{equation}
 
 \section{Figures, Tables and Algorithms}
@@ -320,26 +327,26 @@ or just include them as usual with the command
 Here xxx is the correct format, e.g. \verb|.png|, \verb|.jpg|, \verb|.eps|, \dots.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{logo_polimi_scritta.eps}
-    \caption{Caption of the Figure to appear in the List of Figures.}
-    \label{fig:quadtree}
+  \centering
+  \includegraphics[width=0.3\textwidth]{logo_polimi_scritta.eps}
+  \caption{Caption of the Figure to appear in the List of Figures.}
+  \label{fig:quadtree}
 \end{figure}
 
 Thanks to the \texttt{\textbackslash subfloat} command, a single figure, such as Figure~\ref{fig:quadtree},
 can contain multiple sub-figures with their own caption and label, e.g. \color{black} Figure~\ref{fig:polimi_logo1} and Figure~\ref{fig:polimi_logo2}. 
 
 \begin{figure}[H]
-    \centering
-    \subfloat[One PoliMi logo.\label{fig:polimi_logo1}]{
-        \includegraphics[scale=0.5]{Images/logo_polimi_scritta.eps}
-    }
-    \quad
-    \subfloat[Another one PoliMi logo.\label{fig:polimi_logo2}]{
-        \includegraphics[scale=0.5]{Images/logo_polimi_scritta2.eps}
-    }
-    \caption[Shorter caption]{This is a very long caption you don't want to appear in the List of Figures.}
-    \label{fig:quadtree2}
+  \centering
+  \subfloat[One PoliMi logo.\label{fig:polimi_logo1}]{
+    \includegraphics[scale=0.5]{Images/logo_polimi_scritta.eps}
+  }
+  \quad
+  \subfloat[Another one PoliMi logo.\label{fig:polimi_logo2}]{
+    \includegraphics[scale=0.5]{Images/logo_polimi_scritta2.eps}
+  }
+  \caption[Shorter caption]{This is a very long caption you don't want to appear in the List of Figures.}
+  \label{fig:quadtree2}
 \end{figure}
 
 
@@ -348,21 +355,21 @@ can contain multiple sub-figures with their own caption and label, e.g. \color{b
 
 Within the environments \texttt{table} and  \texttt{tabular} you can create very fancy tables as the one shown in Table~\ref{table:example}.
 \begin{table}[H]
-    \caption*{\textbf{Title of Table (optional)}}
-    \centering 
-    \begin{tabular}{|p{3em} c c c |}
+  \caption*{\textbf{Title of Table (optional)}}
+  \centering
+  \begin{tabular}{|p{3em} c c c |}
     \hline
     \rowcolor{bluepoli!40} % comment this line to remove the color
-     & \textbf{column 1} & \textbf{column 2} & \textbf{column 3} \T\B \\
+    & \textbf{column 1} & \textbf{column 2} & \textbf{column 3} \T\B \\
     \hline \hline
     \textbf{row 1} & 1 & 2 & 3 \T\B \\
     \textbf{row 2} & $\alpha$ & $\beta$ & $\gamma$ \T\B\\
     \textbf{row 3} & alpha & beta & gamma \B\\
     \hline
-    \end{tabular}
-    \\[10pt]
-    \caption{Caption of the Table to appear in the List of Tables.}
-    \label{table:example}
+  \end{tabular}
+  \\[10pt]
+  \caption{Caption of the Table to appear in the List of Tables.}
+  \label{table:example}
 \end{table}
 
 You can also consider to highlight selected columns or rows in order to make tables more readable.
@@ -370,28 +377,28 @@ Moreover, with the use of \texttt{table*} and the option \texttt{bp} it is possi
 
 \begin{table}[H]
 \centering 
-    \begin{tabular}{|p{3em} | c | c | c | c | c | c|}
-    \hline
-%    \rowcolor{bluepoli!40}
-     & \textbf{column1} & \textbf{column2} & \textbf{column3} & \textbf{column4} & \textbf{column5} & \textbf{column6} \T\B \\
-    \hline \hline
-    \textbf{row1} & 1 & 2 & 3 & 4 & 5 & 6 \T\B\\
-    \textbf{row2} & a & b & c & d & e & f \T\B\\
-    \textbf{row3} & $\alpha$ & $\beta$ & $\gamma$ & $\delta$ & $\phi$ & $\omega$ \T\B\\
-    \textbf{row4} & alpha & beta & gamma & delta & phi & omega \B\\
-    \hline
-    \end{tabular}
-    \\[10pt]
-    \caption{Highlighting the columns}
-    \label{table:exampleC}
+\begin{tabular}{|p{3em} | c | c | c | c | c | c|}
+  \hline
+  %    \rowcolor{bluepoli!40}
+  & \textbf{column1} & \textbf{column2} & \textbf{column3} & \textbf{column4} & \textbf{column5} & \textbf{column6} \T\B \\
+  \hline \hline
+  \textbf{row1} & 1 & 2 & 3 & 4 & 5 & 6 \T\B\\
+  \textbf{row2} & a & b & c & d & e & f \T\B\\
+  \textbf{row3} & $\alpha$ & $\beta$ & $\gamma$ & $\delta$ & $\phi$ & $\omega$ \T\B\\
+  \textbf{row4} & alpha & beta & gamma & delta & phi & omega \B\\
+  \hline
+\end{tabular}
+\\[10pt]
+\caption{Highlighting the columns}
+\label{table:exampleC}
 \end{table}
 
 \begin{table}[H]
-\centering 
-    \begin{tabular}{|p{3em} c c c c c c|}
+  \centering 
+  \begin{tabular}{|p{3em} c c c c c c|}
     \hline
-%    \rowcolor{bluepoli!40}
-     & \textbf{column1} & \textbf{column2} & \textbf{column3} & \textbf{column4} & \textbf{column5} & \textbf{column6} \T\B \\
+    %    \rowcolor{bluepoli!40}
+    & \textbf{column1} & \textbf{column2} & \textbf{column3} & \textbf{column4} & \textbf{column5} & \textbf{column6} \T\B \\
     \hline \hline
     \textbf{row1} & 1 & 2 & 3 & 4 & 5 & 6 \T\B\\
     \hline
@@ -401,10 +408,10 @@ Moreover, with the use of \texttt{table*} and the option \texttt{bp} it is possi
     \hline
     \textbf{row4} & alpha & beta & gamma & delta & phi & omega \B\\
     \hline
-    \end{tabular}
-    \\[10pt]
-    \caption{Highlighting the rows}
-    \label{table:exampleR}
+  \end{tabular}
+  \\[10pt]
+  \caption{Highlighting the rows}
+  \label{table:exampleR}
 \end{table}
 
 \subsection{Algorithms}
@@ -413,11 +420,11 @@ Moreover, with the use of \texttt{table*} and the option \texttt{bp} it is possi
 Pseudo-algorithms can be written in \LaTeX{} with the \texttt{algorithm} and \texttt{algorithmic} packages.
 An example is shown in Algorithm~\ref{alg:var}.
 \begin{algorithm}[H]
-    \label{alg:example}
-    \caption{Name of the Algorithm}
-    \label{alg:var}
-    \label{protocol1}
-    \begin{algorithmic}[1]
+  \label{alg:example}
+  \caption{Name of the Algorithm}
+  \label{alg:var}
+  \label{protocol1}
+  \begin{algorithmic}[1]
     \STATE Initial instructions
     \FOR{$for-condition$}
     \STATE{Some instructions}
@@ -429,7 +436,7 @@ An example is shown in Algorithm~\ref{alg:var}.
     \STATE{Some further instructions}
     \ENDWHILE
     \STATE Final instructions
-    \end{algorithmic}
+  \end{algorithmic}
 \end{algorithm} 
 
 \vspace{5mm}
@@ -439,27 +446,27 @@ An example is shown in Algorithm~\ref{alg:var}.
 \subsection{Theorems}
 Theorems have to be formatted as:
 \begin{theorem}
-\label{a_theorem}
-Write here your theorem. 
+  \label{a_theorem}
+  Write here your theorem.
 \end{theorem}
 \textit{Proof.} If useful you can report here the proof.
 
 \subsection{Propositions}
 Propositions have to be formatted as:
 \begin{proposition}
-Write here your proposition.
+  Write here your proposition.
 \end{proposition}
 
 \subsection{Lists}
 How to  insert itemized lists:
 \begin{itemize}
-    \item first item;
-    \item second item.
+\item first item;
+\item second item.
 \end{itemize}
 How to insert numbered lists:
 \begin{enumerate}
-    \item first item;
-    \item second item.
+\item first item;
+\item second item.
 \end{enumerate}
 
 \section{Use of copyrighted material}
@@ -529,12 +536,12 @@ It may be necessary to include another appendix to better organize the presentat
 % Write out the List of Symbols in this page
 \chapter*{List of Symbols} % You have to include a chapter for your list of symbols (
 \begin{table}[H]
-    \centering
-    \begin{tabular}{lll}
-        \textbf{Variable} & \textbf{Description} & \textbf{SI unit} \\\hline\\[-9px]
-        $\bm{u}$ & solid displacement & m \\[2px]
-        $\bm{u}_f$ & fluid displacement & m \\[2px]
-    \end{tabular}
+  \centering
+  \begin{tabular}{lll}
+    \textbf{Variable} & \textbf{Description} & \textbf{SI unit} \\\hline\\[-9px]
+    $\bm{u}$ & solid displacement & m \\[2px]
+    $\bm{u}_f$ & fluid displacement & m \\[2px]
+  \end{tabular}
 \end{table}
 
 % ACKNOWLEDGEMENTS
