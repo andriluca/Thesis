@@ -1,0 +1,9 @@
+// VerilogA for BIO, alveolo_veriloga, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module alveolo_veriloga;
+
+
+endmodule

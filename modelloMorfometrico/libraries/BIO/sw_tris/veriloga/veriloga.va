@@ -1,0 +1,44 @@
+// VerilogA for BIO, sw_tris, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module sw_tris(vina, vinb, vout, vctrln, vctrlp);
+inout vina;
+electrical vina;
+inout vinb;
+electrical vinb;
+inout vout;
+electrical vout;
+input vctrln;
+electrical vctrln;
+input vctrlp;
+electrical vctrlp;
+
+electrical internal;
+
+parameter real vth = 0.5 ;
+
+ integer sw_state;
+	
+   analog begin
+
+	  I(vinb, internal) <+ V(vinb, internal)/1e-3;
+
+      sw_state = (V(vctrlp,vctrln) > vth) ? 1: 0;
+
+      @ (cross(V(vctrlp, vctrln) - vth, 1, 1.0, vctrlp.potential.abstol) )
+      	 sw_state = 1;
+      @ (cross(V(vctrlp, vctrln) - vth, -1, 1.0, vctrlp.potential.abstol) )
+      	 sw_state = 0;
+
+      if (sw_state == 0)begin
+      	 V(vina,vout) <+ 0.0 ;
+      end
+      else begin
+		 V(internal,vout) <+ 0.0;
+      end
+
+   end
+
+endmodule

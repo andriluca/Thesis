@@ -1,0 +1,17 @@
+// VerilogA for BIO, diodo_polmone, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module diodo_polmone(a,c);
+inout a,c;
+
+electrical a,c;
+
+analog begin
+
+I(a,c) <+ (1e-3)*(exp(V(a,c)/10e-3));
+
+end
+
+endmodule

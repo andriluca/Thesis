@@ -1,0 +1,51 @@
+// VerilogA for BIO, ind_switch, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module ind_voltdep(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real Ra = 0;
+parameter real La = 0;
+parameter real Rb = 0;
+parameter real Lb = 0;
+
+integer sw_state;
+
+real Lind = 0;
+real Rind = 0;
+real trimpos = 1;
+
+
+//	  Lind = (1- V(vctrlp, vctrln))*Lb + La;
+//      Rind = (1- V(vctrlp, vctrln))*Rb + Ra; 
+
+   analog begin
+//	  if (V(vctrlp, vctrln) > (1 - vctrlp.potential.abstol))
+	  if (V(vctrlp, vctrln) > 1)
+		  trimpos = 0;
+		  $discontinuity(1);
+//	  else if (V(vctrlp, vctrln) < vctrlp.potential.abstol)
+	  else if (V(vctrlp, vctrln) < 0)
+		  trimpos = 1;
+		  $discontinuity(1);
+      else
+		  trimpos = 1 - V(vctrlp, vctrln);
+//$strobe(trimpos);
+	  Lind = trimpos*Lb + La;
+      Rind = trimpos*Rb + Ra; 
+      V(vp, vn) <+ Lind*ddt(V(vp, vn)) + Rind*I(vp,vn);
+
+//	 V(intern, vn) <+ (1 - V(vctrlp, vctrln))*Lb*ddt(I(intern, vn)) + I(intern,vn)*(1 - V(vctrlp, vctrln))*Rb);
+  
+end
+endmodule
+

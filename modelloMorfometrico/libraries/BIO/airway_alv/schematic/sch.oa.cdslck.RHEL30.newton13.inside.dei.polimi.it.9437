@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      Enrico
+HostName                       newton13.inside.dei.polimi.it
+ProcessIdentifier              9437
+ProcessCreationTime_UTC        1580714790
+ProcessCreationTime_Readable   Mon Feb  3 08:26:30 2020 CET
+AppIdentifier                  OA File System Design Manager
+OSType                         unix
+ReasonForPlacingEditLock       OpenAccess edit lock
+FilePathUsedToEditLock         /home/Enrico/Unicad/BIO/airway_alv/schematic/sch.oa.cdslck.dirlck
+TimeEditLocked                 Mon Feb  3 10:11:53 2020 CET

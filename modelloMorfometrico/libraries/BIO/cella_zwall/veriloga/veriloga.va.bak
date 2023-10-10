@@ -1,0 +1,9 @@
+// VerilogA for BIO, cella_zwall, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module cella_zwall;
+
+
+endmodule

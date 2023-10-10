@@ -1,0 +1,30 @@
+// VerilogA for BIO, ind_switch, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module ind_voltdepbck(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real Ra = 0;
+parameter real La = 0;
+parameter real Rb = 0;
+parameter real Lb = 0;
+
+integer sw_state;
+
+   analog begin
+     
+      V(vp, vn) <+ ((La + (1 - V(vctrlp, vctrln))*Lb)*ddt(I(vp, vn)) + I(vp,vn)*(Ra + (1 - V(vctrlp, vctrln))*Rb));
+
+
+end
+endmodule
+

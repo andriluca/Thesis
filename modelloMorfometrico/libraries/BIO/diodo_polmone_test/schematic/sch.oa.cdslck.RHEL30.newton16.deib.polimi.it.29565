@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      Enrico
+HostName                       newton16.deib.polimi.it
+ProcessIdentifier              29565
+ProcessCreationTime_UTC        1656943714
+ProcessCreationTime_Readable   Mon Jul  4 16:08:34 2022 CEST
+AppIdentifier                  OA File System Design Manager
+OSType                         unix
+ReasonForPlacingEditLock       OpenAccess edit lock
+FilePathUsedToEditLock         /homes/newton13/Enrico/Unicad/BIO/diodo_polmone_test/schematic/sch.oa.cdslck
+TimeEditLocked                 Thu Jul 14 16:21:03 2022 CEST

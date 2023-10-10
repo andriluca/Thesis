@@ -1,0 +1,38 @@
+// VerilogA for BIO, cap_voltdep, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module cap_switched(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real Cmax = 0;
+
+real Cind = 0;
+real trimpos = 1;
+
+   analog begin
+//	  if (V(vctrlp, vctrln) > (1 - vctrlp.potential.abstol))
+	  if (V(vctrlp, vctrln) > 1)
+		  trimpos = 1;
+//	  else if (V(vctrlp, vctrln) < vctrlp.potential.abstol)
+	  else if (V(vctrlp, vctrln) < 0)
+		  trimpos = 0;
+      else
+		  trimpos = V(vctrlp, vctrln);
+
+	  Cind = 1e-12 + (Cmax - 1e-12)*trimpos;
+     
+      I(vp, vn) <+ ddt(Cind*V(vp, vn));
+
+
+end
+endmodule
+

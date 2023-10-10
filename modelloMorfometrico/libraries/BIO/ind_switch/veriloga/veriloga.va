@@ -1,0 +1,44 @@
+// VerilogA for BIO, ind_switch, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module ind_switch(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real lhigh = 0;
+parameter real llow = 0;
+parameter real rhigh = 0;
+parameter real rlow = 0;
+parameter real vth = 0.5;
+
+real leff = 1;
+real reff = 1;
+
+integer sw_state;
+
+   analog begin
+      sw_state = (V(vctrlp,vctrln) < vth) ? 1: 0;
+
+      @ (cross(V(vctrlp, vctrln) - vth, 1, 1.0, vctrlp.potential.abstol) )
+      	 sw_state = 1;
+      @ (cross(V(vctrlp, vctrln) - vth, -1, 1.0, vctrlp.potential.abstol) )
+      	 sw_state = 0;
+	leff = llow + sw_state*lhigh;
+	reff = rlow * sw_state*rhigh;
+
+      V(vp, vn) <+ leff*ddt(I(vp, vn)) + reff*I(vp,vn);
+//		I(vp,vn) <+    
+
+
+
+end
+endmodule
+

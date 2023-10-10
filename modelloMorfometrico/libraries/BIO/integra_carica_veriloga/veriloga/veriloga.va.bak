@@ -1,0 +1,39 @@
+// VerilogA for BIO, integratore_limited, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module integra_carica_veriloga(enable, IN, OUT, Vcharge);
+input enable;
+electrical enable;
+inout IN, OUT;
+electrical IN, OUT;
+
+output Vcharge;
+electrical Vcharge;
+
+ground gnd;
+
+
+parameter Qnorm=10e-3;
+
+integer integration_en = 0;
+real charge = 0;
+
+
+analog begin
+	
+	if (V(enable)> 0.5)
+		integration_en = 1;
+	else
+		begin
+		integration_en = 0;
+		end
+
+	V(Vcharge, gnd) <+ idt(integration_en*I(IN, OUT))/Qnorm;
+
+	V(IN, OUT) <+ 0;
+
+end
+
+endmodule

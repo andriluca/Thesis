@@ -1,0 +1,100 @@
+// VerilogA for BIO, alveolo_veriloga, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module alveolo_completo_lugventidue(enable, IN, OUT, triggerOUT, Vcharge);
+input enable;
+electrical enable;
+inout IN, OUT;
+electrical IN, OUT;
+
+output triggerOUT;
+electrical triggerOUT;
+
+input Vcharge;
+electrical Vcharge;
+
+electrical nodeA, nodeB;
+
+ground gnd;
+
+parameter La = 1e-6, Lb=10e-6, Ra=1e-3, Rb=10e-3;
+
+parameter Chargeth = 10e-6;
+parameter Ccap = 1e-6;
+
+parameter Vin_th = 1, Vgravity = 0;
+parameter Lti = 1e-3, Rti = 1e-3, Cti = 1e-3, Rs = 1, Cs = 1e-6;
+
+
+integer integration_en = 0;
+
+real Lvalue = 0, Rvalue = 0, Cvalue = 0, Rvalb = 0;
+real threshold = 1;
+
+real Vinteg = 0;
+
+real charge = 0;
+
+real chargeb = 0;
+
+real aux = 0;
+
+real trigout = 0;
+
+real temp = 1;
+
+real Ctival = Cti, Csval = Cs, mult = 1, sw_state = 1;
+
+real Vin_th2 = 0;
+
+
+analog begin
+
+	@(cross(V(enable, gnd) - 0.5, +1)) begin
+		integration_en = 1;
+end
+
+Vinteg = idt(integration_en*I(nodeA, OUT));
+
+charge =  pow((pow(chargeb,4)+1), 0.25);
+//chargeb = min(1, Vinteg/(2.5399e-4));
+chargeb = min(1,max(0,((2.5399e-4 + 1.27e-4)/(2.5399e-4))*(Vinteg - 1.27e-4)/(2.5399e-4)));
+aux = pow((pow(chargeb, 4) + pow(0.004, 4)), 0.25);
+
+//aux = pow((pow(0.99*chargeb + 0.01*(V(Vcharge, gnd)-chargeb), 4)+ pow(4e-3,4)), 0.25); //modifica 10/06/22
+temp = 1;  //modifica del 21 luglio
+
+@(cross(chargeb - threshold, +1)) begin //fine dell'integrazione della carica
+trigout = 1; 
+sw_state = 0;
+end
+
+V(triggerOUT, gnd) <+ transition (trigout, 0, 10n, 10n);
+
+
+Rvalb =(Ra/aux);
+
+Lvalue = La+Lb*max(0,(1-charge));
+Rvalue = (Rb/aux)*max(0,(1-charge));
+
+Ctival = Cti/(temp); // va da Cti a Cti/15 quando ho raggiunto chargeb/2
+Csval = Cs/(temp);// come sopra
+Cvalue = max(1e-15, Ccap*chargeb);
+
+Vin_th2 = 0.04/(pow((3*max(Vinteg/100, 1e-8))/(12.56), 1/3));
+
+//V(IN, nodeA) <+ Vin_th;
+V(IN, nodeA) <+ V(enable, gnd)*transition(Vin_th*(max(0, 1-chargeb)), 0, 10u, 10u); // + Vgravity;
+//V(IN, nodeA) <+ V(enable, gnd)*transition(Vin_th, 0, 10u, 10u); // modifica 2104
+V (nodeA, OUT) <+ Lvalue*ddt(I(nodeA, OUT)) +(Rvalb + Rvalue)*I(nodeA, OUT) +  Vin_th2*transition (trigout, 0, 10n, 10n);
+I(OUT, gnd) <+ Cvalue*ddt(V(OUT, gnd));
+V(OUT, nodeB) <+ Lti*ddt(I(OUT, nodeB)) + Rti*I(OUT, nodeB)+ idt(I(OUT, nodeB))/(transition(Ctival*mult, 0, 10u, 10u));
+I(nodeB, gnd) <+ V(nodeB, gnd)/Rs + transition(Csval*mult, 0, 10u, 10u)*ddt(V(nodeB, gnd));
+
+
+
+end
+
+endmodule

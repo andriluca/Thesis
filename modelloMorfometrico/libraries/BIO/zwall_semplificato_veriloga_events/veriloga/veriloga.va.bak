@@ -1,0 +1,99 @@
+// VerilogA for BIO, cella_zwall, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module zwall_semplificato_veriloga_events(enable, IN, OUT, triggerOUT);
+
+input enable;
+electrical enable;
+inout IN, OUT;
+electrical IN, OUT, through;
+electrical integration;
+output triggerOUT;
+electrical triggerOUT;
+
+electrical nodeA, nodeC; //, nodeB;
+
+ground gnd;
+
+
+parameter La = 1e-6, Lb=10e-6, Ra=1e-3, Rb=10e-3, Rws = 1, Lws = 1e-3, Cws = 1e-6;
+
+parameter Chargeth = 10e-6;
+parameter Ccap = 1e-6;
+
+parameter Vin_th = 1, Vgravity=0;
+
+
+integer integration_en = 0, sw_state=1;
+//real delta = 0;
+real Lvalue = 0, Rvalue = 0, Cvalue = 0;
+real threshold = 1;
+real charge = 0;
+
+real trigout = 0;
+//real trig = 0;
+
+//real restricted = 0;
+
+//real Vthreshold = 1;
+
+real thresholdb = 0.5;
+
+analog begin
+	
+	
+	@(cross(V(enable, gnd)-0.5, +1)) begin
+			integration_en = 1;
+		end
+
+//	V(integration, gnd) <+ idt(integration_en*I(nodeA, through))/Chargeth;
+	V(integration, gnd) <+ idt(integration_en*I(through, OUT))/Chargeth;
+	charge = min(V(integration, gnd),1);
+
+	@(cross(charge-threshold, +1)) begin
+		sw_state = 0;
+		trigout = 1;
+	end
+
+	V(triggerOUT, gnd) <+ transition(trigout, 0, 10n, 10n);
+
+
+	if (sw_state == 1)
+		begin
+		Lvalue = La+Lb*max(0,(1-charge));
+		Rvalue = Ra+Rb*max(0,(1-charge));
+        Cvalue = max(1e-12, Ccap*charge);
+		end
+	else
+		begin
+		Lvalue = La;
+		Rvalue = Ra;
+		Cvalue = Ccap;
+		end
+
+
+		V(IN, nodeA) <+ V(enable, gnd)*sw_state*Vin_th + Vgravity; // *restricted
+		V (nodeA, through) <+  Lvalue*ddt(I(nodeA, through)) +(Rvalue)*I(nodeA, through);
+//		I (nodeA, gnd) <+ Ccap*0.01 * ddt(V(nodeA, gnd));
+
+//		V (through, nodeB) <+ Rwc*I(through, nodeB) + Lwc*ddt(I(through, nodeB));
+//		I (nodeB, gnd) <+ Cwc*ddt(V(nodeB, gnd));
+
+//		V (through, nodeC) <+ Rws*I(through, nodeC) + Lws*ddt(I(through, nodeC));
+//		I (nodeC, gnd) <+ Cws*ddt(V(nodeC, gnd));
+
+//		I (through, nodeB) <+ Cwc*ddt(V(through, nodeB));
+//		V (nodeB, gnd) <+ Rwc*I(nodeB, gnd) + Lwc*ddt(I(nodeB, gnd));
+
+		I (through, nodeC) <+ Cws*ddt(V(through, nodeC));
+		V (nodeC, gnd) <+ Rws*I(nodeC, gnd) + Lws*ddt(I(nodeC, gnd));
+
+			V(through, OUT) <+ Rvalue*I(through, OUT) + Lvalue*ddt(I(through, OUT));
+			I(through, gnd) <+ ddt(Cvalue*V(through, gnd));
+
+
+end
+
+endmodule

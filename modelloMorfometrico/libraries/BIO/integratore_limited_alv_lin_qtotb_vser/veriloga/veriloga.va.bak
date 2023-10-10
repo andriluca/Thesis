@@ -1,0 +1,89 @@
+// VerilogA for BIO, integratore_limited, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module integratore_limited_alv_lin_qtotb_vser(enable, IN, through, triggerOUT, Vcharge);
+input enable;
+electrical enable;
+inout IN, through;
+electrical IN, through;
+electrical integration;
+output triggerOUT;
+electrical triggerOUT;
+
+input Vcharge;
+electrical Vcharge;
+
+electrical nodeA;
+
+ground gnd;
+
+
+parameter La = 1e-6, Lb=10e-6, Ra=1e-3, Rb=10e-3;
+
+parameter Chargeth = 10e-6;
+parameter Ccap = 1e-6;
+
+parameter Vin_th = 1;
+
+
+integer integration_en = 0, sw_state=1;
+real delta = 0;
+real Lvalue = 0, Rvalue = 0, Cvalue = 0, Rvalb = 0;
+real threshold = 1;
+real charge = 0;
+real aux = 0;
+
+analog begin
+	
+	if (V(enable)> 0.5)
+		integration_en = 1;
+	else
+		begin
+		integration_en = 0;
+		end
+
+	V(integration, gnd) <+ idt(integration_en*I(IN, through))/Chargeth;
+	charge = V(integration, gnd);
+
+	if (charge>=threshold)
+		begin
+		threshold = 0.5;		
+		sw_state = 0;
+		V(triggerOUT, gnd) <+ 1;
+		end
+	else
+		begin
+		threshold = 1;
+		sw_state = 1;
+		V(triggerOUT, gnd) <+ 0;
+		end
+
+		aux = max(V(Vcharge, gnd), 1e-4);
+		Rvalb = (Ra/aux);
+
+	if (sw_state == 1)
+		begin
+		Lvalue = La+Lb*max(0,(1-charge));
+		Rvalue = Rb*max(0,(1-charge));
+        Cvalue = max(1e-12, Ccap*charge);
+		end
+	else
+		begin
+		Lvalue = La;
+		Rvalue = Ra;
+		Cvalue = Ccap;
+		end
+
+			V(IN, nodeA) <+ V(enable, gnd)*Vin_th; // *restricted
+			I (nodeA, gnd) <+ Ccap*0.01 * ddt(V(nodeA, gnd));
+
+			V(nodeA, through) <+ Lvalue*ddt(I(nodeA, through)) + (Rvalb + Rvalue)*I(nodeA, through);
+			// shunt capacitor disabled
+			I(through, gnd) <+ ddt(Cvalue*V(through, gnd));
+
+
+end
+
+endmodule

@@ -1,0 +1,9 @@
+// VerilogA for BIO, vc_switched, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module vc_switched;
+
+
+endmodule

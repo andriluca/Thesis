@@ -1,0 +1,30 @@
+// VerilogA for BIO, cap_voltdep, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module cap_voltdep_idk(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real Cg = 0;
+
+electrical vaux, vneg;
+
+capacitor #(.c(Cg)) C1 (vaux, vneg);
+vcvs #(.gain(1)) E0 (vaux, vneg, vp, vn);
+
+   analog begin
+     
+      I(vp, vn) <+ I(vaux, vneg)*V(vctrlp, vctrln);
+
+
+end
+endmodule
+

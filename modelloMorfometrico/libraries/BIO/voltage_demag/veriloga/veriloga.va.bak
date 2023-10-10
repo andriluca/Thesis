@@ -1,0 +1,18 @@
+// VerilogA for BIO, voltage_demag, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module voltage_demag (intrue, neg, parted, vctrl);
+electrical intrue, neg, parted, vctrl;
+inout intrue, neg, parted;
+input vctrl;
+
+analog begin
+
+	V(intrue, parted) <+ V(intrue, neg)*V(vctrl, neg);
+
+end
+
+
+endmodule

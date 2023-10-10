@@ -1,0 +1,109 @@
+// VerilogA for BIO, integratore_limited, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module integratore_limited_lin_qtot2_vser(enable, IN, through, OUT, triggerOUT, Vcharge);
+input enable;
+electrical enable;
+inout IN, OUT, through;
+electrical IN, OUT, through;
+electrical integration;
+output triggerOUT;
+electrical triggerOUT;
+
+input Vcharge;
+electrical Vcharge;
+
+electrical nodeA;
+
+ground gnd;
+
+
+parameter La = 1e-6, Lb=10e-6, Ra=1e-3, Rb=10e-3, Rc=10e-3;
+
+parameter Chargeth = 10e-6;
+parameter Ccap = 1e-6;
+
+parameter Vin_th = 1;
+
+
+integer integration_en = 0, sw_state=1;
+real delta = 0;
+real Lvalue = 0, Rvalue = 0, Cvalue = 0, Rvalb = 0;
+real threshold = 1;
+real charge = 0;
+
+real aux = 0;
+real trig = 0;
+
+real restricted = 0;
+
+real Vthreshold = 1;
+
+analog begin
+	
+	if (V(enable)> 0.5)
+		integration_en = 1;
+	else
+		begin
+		integration_en = 0;
+		end
+
+	V(integration, gnd) <+ idt(integration_en*I(nodeA, through))/Chargeth;
+	charge = V(integration, gnd);
+
+
+	if (charge>=threshold)
+		begin		
+		threshold = 0.5;
+		sw_state = 0;
+		V(triggerOUT, gnd) <+ 1;
+		end
+	else
+		begin
+		threshold = 1;
+		sw_state = 1;
+		V(triggerOUT, gnd) <+ 0;
+		end
+
+
+		aux = max(V(Vcharge, gnd), 1e-6);
+		Rvalb = min(100*Rc, (Ra/aux));
+
+	if (sw_state == 1)
+		begin
+		Lvalue = La+Lb*max(0,(1-charge));
+		Rvalue = Rb*max(0,(1-charge));
+        Cvalue = max(1e-12, Ccap*charge);
+		end
+	else
+		begin
+		Lvalue = La;
+		Rvalue = 0;
+		Cvalue = Ccap;
+		end
+
+//fix test 1
+//			if (V(IN, gnd)>=Vin_th)
+//			restricted = 1;
+//			else
+//			restricted = 0;
+//end fix test 1
+//			if (V(IN, gnd) >= Vin_th)
+//				V(IN, nodeA) <+ V(enable, gnd)*sw_state;
+//			else
+//				I(IN, nodeA) <+ 0;
+
+												   //fix test 1
+			V(IN, nodeA) <+ V(enable, gnd)*sw_state*Vin_th; // *restricted
+//			I(IN, nodeA) <+ max( 0, ( ( (V(IN, nodeA) - slew (Vin_th*sw_state, 1e4, -1e4) ) / (Rvalb + Rvalue))*slew(V(enable, gnd), 1e4, -1e4) ) );
+			V (nodeA, through) <+  Lvalue*ddt(I(nodeA, through)) +(Rvalb + Rvalue)*I(nodeA, through);
+			I (nodeA, gnd) <+ Ccap*0.01 * ddt(V(nodeA, gnd));			
+			V(through, OUT) <+ (Rvalb + Rvalue)*I(through, OUT) + Lvalue*ddt(I(through, OUT));
+			I(through, gnd) <+ ddt(Cvalue*V(through, gnd));
+
+
+end
+
+endmodule

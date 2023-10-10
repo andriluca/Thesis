@@ -1,0 +1,30 @@
+// VerilogA for BIO, cap_voltdep, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module cap_voltdepbck(vctrln, vctrlp, vn, vp);
+inout vctrln;
+electrical vctrln;
+inout vctrlp;
+electrical vctrlp;
+inout vn;
+electrical vn;
+inout vp;
+electrical vp;
+
+parameter real Cg = 0;
+
+parameter real Csmall = 1e-12;
+parameter real Cbig = Cg - Csmall;
+
+parameter real k_transfer = V(vctrlp, vctrln);
+
+   analog begin
+     
+      I(vp, vn) <+ Cbig *V(vctrlp, vctrln) * ddt(V(vp, vn)) + Csmall*ddt(V(vp, vn));
+
+
+end
+endmodule
+
