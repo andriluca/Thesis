@@ -130,8 +130,8 @@
 			\\
 			Advisor: {\advisor}
 			\\
-%			Co-advisors: {\coadvisor}
-%			\\
+			Co-advisors: {\coadvisor}
+                        \\
 			Academic Year: {\academicyear}
 			}
 			\end{minipage}

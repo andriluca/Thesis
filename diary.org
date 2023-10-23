@@ -1,0 +1,379 @@
+#+title: Diario dei Log del progetto
+#+author: Luca Andriotto
+
+Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
+
+* 11.10.23
+- [X] La funzione =squarewave= è buggata e non può essere utilizzata come input del sistema in Julia. Posso riscriverla semplicemente
+- Il numero di threads utilizzabile è settabile all'avvio della REPL (-t auto).
+- La repl, da Emacs, non produce correttamente i grafici quindi è sempre meglio avere un terminale sotto mano
+- =test3.jl= fa il suo dovere
+
+* 12.10.23
+- ~test3.jl~ non permette di estrarre i flussi (aka le correnti) dalle soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La soluzione sarà riportata in ~test4.jl~.
+
+* 16.10.23
+- La modularità del circuito è realizzata mediante dei modelli appositi, chiamati `Block`s:
+
+#+begin_src julia
+  @mtkmodel Block begin
+      @components begin
+          in = Pin()
+          out = Pin()
+          resistor = Resistor(R = 1.0)
+          capacitor = Capacitor(C = 1.0)
+          ground = Ground()
+      end
+      @equations begin
+          connect(in, resistor.p)
+          connect(resistor.n, capacitor.p)
+          connect(out, capacitor.p)
+          connect(capacitor.n, ground.g)
+      end
+  end
+#+end_src
+
+Questi blocchi hanno un punto d'ingresso ed uno di uscita, comodi per effettuare dei collegamenti più complessi con blocchi in cascata.
+
+Il sistema quindi altro non è se non una composizione di blocchi:
+
+#+begin_src julia
+  @mtkmodel System begin
+      @components begin
+          block1 = Block(resistor.R = 2.0)
+          block2 = Block(resistor.R = 2.0)
+          constant = Constant(k = 1.0)
+          source = Voltage()
+          ground = Ground()
+      end
+      @equations begin
+          connect(constant.output, source.V)
+          connect(source.p, block1.in)
+          connect(block1.out, block2.in)
+          connect(source.n, ground.g)
+      end
+  end
+#+end_src
+
+Il codice completo è in ~test5.jl~.
+
+- Vi sono altri due problemi ora:
+  - [X] Generare diversi blocchi (airway e alveolo) con diverse strutture.
+  - [ ] Rendere la resistenza `Rtube` variabile e dipendente dall'integrale della corrente.
+
+- Nel file ~Albero.cir~, l'ultima riga rappresenta la trachea.  enable, IN sono due ingressi, NodeAA e TrigAB sono due uscite (stando a quello che dice Chiara).
+
+* 17.10.23
+- Per entrambi gli schematici si vedano i fogli stampati.  Queste sono le versioni senza resistenza variabile.
+
+#+begin_src julia
+  @mtkmodel Airway begin
+      @components begin
+          in       = Pin()
+          out      = Pin()
+          r_tube   = Resistor(R = 1.0)
+          i_tube   = Inductor(L = 1.0)
+          c_g      = Capacitor(C = 1.0)
+          r_sw     = Resistor(R = 1.0)
+          i_sw     = Inductor(L = 1.0)
+          c_sw     = Capacitor(C = 1.0)
+          r_tube_1 = Resistor(R = 1.0)
+          i_tube_1 = Inductor(L = 1.0)
+          ground   = Ground()
+      end
+      @equations begin
+          connect(in, r_tube.p)
+          connect(r_tube.n, i_tube.p)
+          connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
+          connect(i_sw.n, r_sw.p)
+          connect(r_sw.n, c_sw.p)
+          connect(r_tube_1.n, i_tube_1.p)
+          connect(out, i_tube_1.n)
+          connect(c_g.n, c_sw.n, ground.g)
+      end
+  end
+#+end_src
+
+#+begin_src julia
+  @mtkmodel Alveolo begin
+      @components begin
+          in     = Pin()
+          out    = Pin()
+          r_tube = Resistor(R = 1.0)
+          i_tube = Inductor(L = 1.0)
+          c_ga   = Capacitor(C = 1.0)
+          i_t    = Inductor(L = 1.0)
+          r_t    = Resistor(R = 1.0)
+          c_t    = Capacitor(C = 1.0)
+          r_s    = Resistor(R = 1.0)
+          c_s    = Resistor(R = 1.0)
+          ground   = Ground()
+      end
+      @equations begin
+          connect(in, r_tube.p)
+          connect(r_tube.n, i_tube.p)
+          connect(i_tube.n, c_ga.p, i_t.p, out)
+          connect(i_t.n, r_t.p)
+          connect(r_t.n, c_t.p)
+          connect(c_t.n, c_s.p, r_s.p)
+          connect(c_ga.n, c_s.n, r_s.n, ground.g)
+      end
+  end
+#+end_src
+
+- [X] Lavorare sull'importazione di file CSV in cui ciascuna colonna corrisponde ad un array di variabili dello stesso tipo (tutte resistenze...).
+
+* 18.10.23
+
+Tramite questo codice posso importare un CSV come DataFrame.
+#+begin_src julia
+  # Read a DataFrame from CSV file
+  df = CSV.read("data.csv", DataFrame)
+  r = df.x1
+#+end_src
+
+- [ ] Consulta il materiale fornito da Chiara per messaggio
+
+* 20.10.23
+
+Devo utilizzare IA{D, E, F, G, H, I}, IB{L, A, B} di `Albero.cir`
+
+
+#+begin_example
+IBB ( TrigBLB NodeBLA NodeBBA TrigBBB Vcharge ) alveolo_completo_luglio La= 5.896531e-03 Lb= 5.236159e+00 Ra= 2.282920e+02 Rb= 1.114955e+04 Chargeth= 5.185713e-07 Ccap= 2.463766e-07 Vin_th= 7.098371e+00 Vgravity= 0 Lti= 5.795540e-04 Rti= 1200 Cti= 2.400000e-05 Rs= 80000 Cs= 2.100000e-05
+IBA ( TrigBLB NodeBLA NodeBAA TrigBAB Vcharge ) alveolo_completo_luglio La= 5.687354e-03 Lb= 5.050408e+00 Ra= 2.017423e+02 Rb= 9.852891e+03 Chargeth= 5.958497e-07 Ccap= 2.464514e-07 Vin_th= 6.794462e+00 Vgravity= 0 Lti= 5.795540e-04 Rti= 1200 Cti= 2.400000e-05 Rs= 80000 Cs= 2.100000e-05
+IBL ( TrigAHB NodeAHA NodeBLA TrigBLB ) zwall_semplificato_veriloga La= 1.290849e-03 Lb= 1.159971e+00 Ra= 3.097440e+01 Rb= 1.512758e+03 Rws= 1.461035e+07 Lws= 9.016810e-01 Cws= 1.003855e-10 Chargeth= 5.910861e-07 Ccap= 5.722034e-10 Vin_th= 5.588244e+00 Vgravity= 0
+IAH ( TrigAFB NodeAFA NodeAHA TrigAHB ) zwall_semplificato_veriloga La= 1.653093e-03 Lb= 1.485488e+00 Ra= 3.554331e+01 Rb= 1.735899e+03 Rws= 8.703449e+06 Lws= 5.994469e-01 Cws= 1.685156e-10 Chargeth= 9.427715e-07 Ccap= 9.126539e-10 Vin_th= 5.289833e+00 Vgravity= 0
+IAF ( TrigADB NodeADA NodeAFA TrigAFB ) zwall_semplificato_veriloga La= 1.166141e-03 Lb= 1.047907e+00 Ra= 2.231464e+01 Rb= 1.089824e+03 Rws= 9.257208e+06 Lws= 7.164089e-01 Cws= 1.584351e-10 Chargeth= 8.396596e-07 Ccap= 8.128360e-10 Vin_th= 4.990351e+00 Vgravity= 0
+IAD ( TrigACB NodeACA NodeADA TrigADB ) zwall_semplificato_veriloga La= 1.852803e-03 Lb= 1.664949e+00 Ra= 3.100029e+01 Rb= 1.514023e+03 Rws= 4.186147e+06 Lws= 3.705082e-01 Cws= 3.503620e-10 Chargeth= 1.744963e-06 Ccap= 1.689219e-09 Vin_th= 4.666378e+00 Vgravity= 0
+
+[...]
+
+IAE ( TrigADB NodeADA NodeAEA TrigAEB Vcharge ) alveolo_completo_luglio La= 6.440085e-03 Lb= 5.718839e+00 Ra= 3.109214e+02 Rb= 1.518509e+04 Chargeth= 3.642283e-07 Ccap= 2.462271e-07 Vin_th= 7.926677e+00 Vgravity= 0 Lti= 5.795540e-04 Rti= 1200 Cti= 2.400000e-05 Rs= 80000 Cs= 2.100000e-05
+IAG ( TrigAFB NodeAFA NodeAGA TrigAGB Vcharge ) alveolo_completo_luglio La= 6.908560e-03 Lb= 6.134848e+00 Ra= 4.012746e+02 Rb= 1.959785e+04 Chargeth= 2.699475e-07 Ccap= 2.461359e-07 Vin_th= 8.694383e+00 Vgravity= 0 Lti= 5.795540e-04 Rti= 1200 Cti= 2.400000e-05 Rs= 80000 Cs= 2.100000e-05
+IAI ( TrigAHB NodeAHA NodeAIA TrigAIB Vcharge ) alveolo_completo_luglio La= 7.229610e-03 Lb= 6.419942e+00 Ra= 4.759710e+02 Rb= 2.324594e+04 Chargeth= 2.198790e-07 Ccap= 2.460874e-07 Vin_th= 9.256451e+00 Vgravity= 0 Lti= 5.795540e-04 Rti= 1200 Cti= 2.400000e-05 Rs= 80000 Cs= 2.100000e-05
+#+end_example
+
+** IAD ( TrigACB NodeACA NodeADA TrigADB ) zwall_semplificato_veriloga 
+
+La= 1.852803e-03
+Lb= 1.664949e+00
+Ra= 3.100029e+01
+Rb= 1.514023e+03
+Rws= 4.186147e+06
+Lws= 3.705082e-01
+Cws= 3.503620e-10
+Chargeth= 1.744963e-06
+Ccap= 1.689219e-09
+Vin_th= 4.666378e+00
+Vgravity= 0
+
+** IAE ( TrigADB NodeADA NodeAEA TrigAEB Vcharge ) alveolo_completo_luglio
+
+La= 6.440085e-03
+Lb= 5.718839e+00 
+Ra= 3.109214e+02 
+Rb= 1.518509e+04 
+Chargeth= 3.642283e-07 
+Ccap= 2.462271e-07 
+Vin_th= 7.926677e+00 
+Vgravity= 0 
+Lti= 5.795540e-04 
+Rti= 1200 
+Cti= 2.400000e-05 
+Rs= 80000 
+Cs= 2.100000e-05
+
+** IAF ( TrigADB NodeADA NodeAFA TrigAFB ) zwall_semplificato_veriloga
+
+La= 1.166141e-03
+Lb= 1.047907e+00
+Ra= 2.231464e+01
+Rb= 1.089824e+03
+Rws= 9.257208e+06
+Lws= 7.164089e-01
+Cws= 1.584351e-10
+Chargeth= 8.396596e-07
+Ccap= 8.128360e-10
+Vin_th= 4.990351e+00
+Vgravity= 0
+
+** IAG ( TrigAFB NodeAFA NodeAGA TrigAGB Vcharge ) alveolo_completo_luglio
+
+La= 6.908560e-03
+Lb= 6.134848e+00
+Ra= 4.012746e+02
+Rb= 1.959785e+04
+Chargeth= 2.699475e-07
+Ccap= 2.461359e-07
+Vin_th= 8.694383e+00
+Vgravity= 0 
+Lti= 5.795540e-04
+Rti= 1200
+Cti= 2.400000e-05
+Rs= 80000
+Cs= 2.100000e-05
+
+** IAH ( TrigAFB NodeAFA NodeAHA TrigAHB ) zwall_semplificato_veriloga
+
+La= 1.653093e-03
+Lb= 1.485488e+00
+Ra= 3.554331e+01
+Rb= 1.735899e+03
+Rws= 8.703449e+06
+Lws= 5.994469e-01
+Cws= 1.685156e-10
+Chargeth= 9.427715e-07
+Ccap= 9.126539e-10
+Vin_th= 5.289833e+00
+Vgravity= 0
+
+** IAI ( TrigAHB NodeAHA NodeAIA TrigAIB Vcharge ) alveolo_completo_luglio
+
+La= 7.229610e-03
+Lb= 6.419942e+00
+Ra= 4.759710e+02
+Rb= 2.324594e+04
+Chargeth= 2.198790e-07
+Ccap= 2.460874e-07
+Vin_th= 9.256451e+00
+Vgravity= 0
+Lti= 5.795540e-04
+Rti= 1200 
+Cti= 2.400000e-05
+Rs= 80000
+Cs= 2.100000e-05
+
+** IBL ( TrigAHB NodeAHA NodeBLA TrigBLB ) zwall_semplificato_veriloga 
+La= 1.290849e-03 
+Lb= 1.159971e+00 
+Ra= 3.097440e+01 
+Rb= 1.512758e+03 
+Rws= 1.461035e+07 
+Lws= 9.016810e-01 
+Cws= 1.003855e-10 
+Chargeth= 5.910861e-07 
+Ccap= 5.722034e-10 
+Vin_th= 5.588244e+00 
+Vgravity= 0
+
+** IBB ( TrigBLB NodeBLA NodeBBA TrigBBB Vcharge ) alveolo_completo_luglio
+La= 5.896531e-03
+Lb= 5.236159e+00
+Ra= 2.282920e+02
+Rb= 1.114955e+04
+Chargeth= 5.185713e-07
+Ccap= 2.463766e-07
+Vin_th= 7.098371e+00
+Vgravity= 0
+Lti= 5.795540e-04
+Rti= 1200
+Cti= 2.400000e-05
+Rs= 80000
+Cs= 2.100000e-05
+
+** IBA ( TrigBLB NodeBLA NodeBAA TrigBAB Vcharge ) alveolo_completo_luglio 
+La= 5.687354e-03 
+Lb= 5.050408e+00 
+Ra= 2.017423e+02 
+Rb= 9.852891e+03 
+Chargeth= 5.958497e-07 
+Ccap= 2.464514e-07 
+Vin_th= 6.794462e+00 
+Vgravity= 0 
+Lti= 5.795540e-04 
+Rti= 1200 
+Cti= 2.400000e-05 
+Rs= 80000 
+Cs= 2.100000e-05
+
+
+Questi sono tutti i dati che ho trovato ma non so interpretare i nomi dei componenti nel file `Albero.cir` con i corrispettivi nel modello.
+
+Penso sia necessario elencare i parametri e le variabili in gioco (dal documento cartaceo fornito da Chiara).
+
+** Parametri
+
+*** Non-terminal units (Airway)
+
+| Parametro                     | Simbolo |   Valore | Unità             |
+|-------------------------------+---------+----------+-------------------|
+| Air density                   | \rho_a  | 1.132e-2 | cmH2O * s^2 / m^2 |
+| Air viscosity                 | \mu_a   | 1.739e-7 | cmH2O * s         |
+| Atmospheric pressure          | P_{at}  |     1033 | cmH2O             |
+| Fetal fluid density           | \rho_l  |  1.006e1 | cmH2O * s^2 / m^2 |
+| Fetal fluid viscosity         | \mu_l   | 8.667e-6 | cmH2O * s         |
+| Radius at FRC                 | r_{FRC} |          | cm                |
+| Surface tension               | \gamma  |      .04 | cm * cmH2O        |
+| Young modulus of soft tissues | Y_s     |      600 | [N / m^2]         |
+| (?) Density                   | \rho_s  |      .88 | [g / mL?]         |
+| (?) Viscosity                 | \mu_s   |     1.06 | g / mL            |
+
+Il valore di viscosità non mi convince (nemmeno nell'unità di misura).
+
+*** Terminal units (Alveoli)
+
+| Parametro                  | Simbolo |        Valore | Unità         |
+|----------------------------+---------+---------------+---------------|
+| Air density                | \rho_a  |      1.132e-2 | cmH2O*s^2/m^2 |
+| Air viscosity              | \mu_a   |      1.739e-7 | cmH2O*s       |
+| Atmospheric pressure       | P_{at}  |          1033 | cmH2O         |
+| Fetal fluid density        | \rhi_l  |       1.006e1 | cmH2O*s^2/m^2 |
+| Fetal fluid viscosity      | \mu_l   |      8.667e-6 | cmH2O*s       |
+| Radius at FRC              | r_{FRC} |               | cm            |
+| Surface tension            | \gamma  |           .04 | cm*cmH2O      |
+| Young modulus soft tissues | Y_s     |           600 |               |
+| (?)                        | C_s     |      7e-8 * 3 |               |
+| (?)                        | C_t     |      8e-8 * 3 |               |
+| (?)                        | I_t     | .00069/300*NA |               |
+| (?)                        | R_s     |           8e6 |               |
+| (?)                        | R_t     |          12e4 |               |
+| (?) Density                | \rho_s  |           .88 |               |
+| (?) Viscosity              | \mu_s   |          1.06 | g/mL          |
+
+** Variabili
+
+*** Non-terminal units
+
+| Variabili                                     | Simbolo  | Range              | Unità           | Formula                                                                                   |
+|-----------------------------------------------+----------+--------------------+-----------------+-------------------------------------------------------------------------------------------|
+| Capillary pressure due to air-fluid interface | V_{th}   | .2 - 9.1           | cmH2O           | \dfrac{\gamma}{r_{FRC}} in air, 0 otherwise.                                              |
+| Airway Resistance                             | R_{tube} |                    | cmH2O * s / L   | R_a + (R_l - R_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
+| Resistance (air-filled)                       | R_{a}    | .64 - 4.50e4       | cmH2O * s / L   | \dfrac{8\mu_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                         |
+| Resistance (liquid-filled)                    | R_{l}    | 32 - 2.24e6        | cmH2O * s / L   | \dfrac{8\mu_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                         |
+| Volume at FRC                                 | V_{FRC}  |                    | L               | \pi\cdot {r_{FRC}}^2 \cdot l_{FRC}                                                        |
+| Flow*                                         | \dot{V}  |                    | [L / s]         |                                                                                           |
+| Airway inertance                              | I_{tube} |                    | cmH2O * s^2 / L | I_a + (I_l - I_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
+| Inertance (air-filled)                        | I_{a}    | .95e-2 - .91       | cmH2O * s^2 / L | \dfrac{8\rho_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                        |
+| Inertance (liquid-filled)                     | I_{l}    | 8.58 - 816.22      | cmH2O * s^2 / L | \dfrac{8\rho_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                        |
+| Shunt airway compliance due to gas            | C_g      |                    | L / cmH2O       | C_{FRC}\cdot (\dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}}) in air, 0 otherwise. |
+| Airway compliance at FRC                      | C_{FRC}  | 2.27e-13 - 4.32e-7 | L / cmH2O       | \dfrac{\pi\cdot {r_{FRC}}^2 \cdot l_{FRC}}{P_{at}}                                        |
+| Airway tissue shunt impedance                 | Z_w      |                    | cmH2O * s / L   |                                                                                           |
+| Resistance of the soft tissues**              | R_{sw}   |                    | cmH2O * s / L   |                                                                                           |
+| Inertance of the soft tissues**               | I_{sw}   |                    | cmH2O * s^2 / L |                                                                                           |
+| Compliance of the soft tissues**              | C_{sw}   |                    | L / cmH2O       |                                                                                           |
+| Resistance of airway soft tissues**           | R_{ws}   | 1.14e1 - 2.27e7    | cmH2O * s / L   |                                                                                           |
+| Inertance of airway soft tissues**            | I_{ws}   | 5.77e-4 - 1.13e-1  | cmH2O * s^2 / L |                                                                                           |
+| Compliance of airway soft tissues**           | C_{ws}   | 5.64e-11 - 1.28e-4 | L / cmH2O       |                                                                                           |
+
+
+*: Quando facciamo l'integrale nel tempo, gli estremi temporali significano il tempo in cui l'interfaccia aria-liquido entra nella airway e il tempo in cui essa esce.
+**: Sono la stessa cosa?? Assumo la loro uguaglianza nel mio ragionamento.
+
+*** Terminal units
+
+| Variabili                                                        | Simbolo  | Range      | Unità           | Formula |
+|------------------------------------------------------------------+----------+------------+-----------------+---------|
+| Capillary pressure due to air-fluid interface of the acinar unit | v_{thA}  | 1.2 - 10.3 | cmH2O           |         |
+| Airway Resistance                                                | R_{tube} |            | cmH2O * s / L   |         |
+| Airway Inertance                                                 | I_{tube} |            | cmH2O * s^2 / L |         |
+| Shunt terminal unit compliance due to gas                        | C_gA     |            | L / cmH2O       |         |
+| Acinar tissue impedance                                          | Z_tissue |            | cmH2O * s / L   |         |
+| Newtonian tissue resistance                                      | R_t      |            | cmH2O * s / L   |         |
+| Tissue inertance                                                 | I_t      |            | cmH2O * s^2 / L |         |
+| Static tissue compliance                                         | C_t      |            | L / cmH2O       |         |
+| Tissue compliance related to stress relaxation                   | C_s      |            | L / cmH2O       |         |
+
+** TODO Domande da fare
+1. La resistenza `R_{tube}` ha diverse formule per i due modelli distinti (ossia per airway e alveolo)?
+2. Nel parametro `I_t` il valore NA è il numero di Avogadro?
