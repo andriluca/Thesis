@@ -1,0 +1,56 @@
+#!/bin/sh
+
+input=$1
+convdir="$HOME/Thesis/src/input/"
+
+[[ ! -d $convdir ]] && mkdir $convdir
+
+# Controllo inserimento del file di input.
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <name_of_airway_tree.cir>"
+    exit 1
+fi
+
+# Parsing delle connessioni
+tr -d '\r' < $input     \
+| cut -d'=' -f1         \
+| sed 's/ La//g;
+    s/[[:punct:]]//g;
+    s/ /.in,/;
+    s/Trig/I/g;'        \
+| cut -d ' ' -f1-2      \
+| sed 's/^/connect(/;
+    s/.$/.out)/;'       \
+| head -n -1            \
+| tail -n +2> "$convdir/Connections.jl"
+
+# Parsing dei moduli
+tr -d '\r' < $input     \
+| sed 's/(.*)/ = /g;
+    s/zwall[_a-z]* /Airway(\n/g;
+    s/alveolo[_a-z]* /Alveolus(\n/g;
+    s/[[:space:]][A-Za-z]*= 0//g;
+    s/[[:space:]]La=/\n\tLa       =/g;
+    s/[[:space:]]Lb=/,\n\tLb       =/g;
+    s/[[:space:]]Ra=/,\n\tRa       =/g;
+    s/[[:space:]]Rb=/,\n\tRb       =/g;
+    s/[[:space:]]Rws=/,\n\tR_sw     =/g;
+    s/[[:space:]]Lws=/,\n\tI_sw     =/g;
+    s/[[:space:]]Cws=/,\n\tC_sw     =/g;
+    s/[[:space:]]Chargeth=/,\n\tV_FRC    =/g;
+    s/[[:space:]]Ccap=/,\n\tC_g      =/g;
+    s/[[:space:]]Vin_th=/,\n\t# Vin_th   =/g;
+    s/[[:space:]]Lti=/,\n\tI_t      =/g;
+    s/[[:space:]]Rti=/,\n\tR_t      =/g;
+    s/[[:space:]]Cti=/,\n\tC_t      =/g;
+    s/[[:space:]]Rs=/,\n\tR_s      =/g;
+    s/[[:space:]]Cs=/,\n\tC_s      =/g;
+    /Vin_th/a)'         \
+| tail -n +2 > "$convdir/Albero.jl"
+
+# Creazione del Modello di Sistema
+echo -e "@mtkmodel System begin\n@components begin\n# Sorgenti del segnale e ground.\ngen    = Square(smooth = 1e-3)\nsource = Voltage()\nground = Ground()" > "$convdir/System.jl"
+cat "$convdir/Albero.jl"          >> "$convdir/System.jl"
+echo -e "end\n@equations begin\nconnect(gen.output, source.V)\nconnect(source.p, IA.in)\nconnect(source.n, ground.g)" >> "$convdir/System.jl"
+cat "$convdir/Connections.jl"     >> "$convdir/System.jl"
+echo -e "end\nend\n"              >> "$convdir/System.jl"
