@@ -13,7 +13,7 @@ Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
 * 12.10.23
 - ~test3.jl~ non permette di estrarre i flussi (aka le correnti) dalle soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La soluzione sarà riportata in ~test4.jl~.
 
-* 16.10.23
+* 16.10.23                                               :Modello:Componenti:
 - La modularità del circuito è realizzata mediante dei modelli appositi, chiamati `Block`s:
 
 #+begin_src julia
@@ -64,7 +64,7 @@ Il codice completo è in ~test5.jl~.
 
 - Nel file ~Albero.cir~, l'ultima riga rappresenta la trachea.  enable, IN sono due ingressi, NodeAA e TrigAB sono due uscite (stando a quello che dice Chiara).
 
-* 17.10.23
+* 17.10.23                                               :Modello:Componenti:
 - Per entrambi gli schematici si vedano i fogli stampati.  Queste sono le versioni senza resistenza variabile.
 
 #+begin_src julia
@@ -124,7 +124,7 @@ Il codice completo è in ~test5.jl~.
 
 - [X] Lavorare sull'importazione di file CSV in cui ciascuna colonna corrisponde ad un array di variabili dello stesso tipo (tutte resistenze...).
 
-* 18.10.23
+* 18.10.23                                                            :Input:
 
 Tramite questo codice posso importare un CSV come DataFrame.
 #+begin_src julia
@@ -133,9 +133,9 @@ Tramite questo codice posso importare un CSV come DataFrame.
   r = df.x1
 #+end_src
 
-- [ ] Consulta il materiale fornito da Chiara per messaggio
+- [X] Consulta il materiale fornito da Chiara per messaggio
 
-* 20.10.23
+* 20.10.23                              :Modello:Verilog:Parametri:Variabili:
 
 Devo utilizzare IA{D, E, F, G, H, I}, IB{L, A, B} di `Albero.cir`
 
@@ -382,7 +382,7 @@ Il valore di viscosità non mi convince (nemmeno nell'unità di misura).
 1. La resistenza `R_{tube}` ha diverse formule per i due modelli distinti (ossia per airway e alveolo)? yes
 2. Nel parametro `I_t` il valore NA è il numero di Avogadro? boh
 
-* 23.10.23
+* 23.10.23                                                          :Verilog:
 - Continuo il lavoro del 20.10 per sistemare le variabili ed i parametri del modello per capire di più.
 - Rivedo il file in Verilog per comprendere le formule implementate.
 
@@ -625,7 +625,7 @@ Noto che ci sono i parametri "simili" a quelli del file `Albero.cir` (i.e. stess
   endmodule
 #+end_src
 
-* 24.10.23
+* 24.10.23                                   :Modello:Parametri:Bibliografia:
 Riprendo le domande che avevo ieri.
 - `inout`: tipo una porta readable.
 
@@ -675,7 +675,7 @@ termini di simboli utilizzati nel file `Albero.cir`.
 | Rs       | Vedi grafico                                                        |
 | Cs       | Vedi grafico                                                        |
 
-* 25.10.23
+* 25.10.23                                               :Modello:Componenti:
 ** DONE Esiste un componente "Diodo" in Julia                   :Componenti:
 Non sembrerebbe esistere un componente "Diodo" nella libreria standard
 di `ModelingToolkit`.
@@ -731,7 +731,7 @@ Quindi converte una forma d'onda costante a tratti (immagino una
 "spezzata") in una forma d'onda con transizioni controllate.
 ** A cosa servono tutte le flag del Verilog?                       :Verilog:
 Non penso sia per ora necessario
-* 27.10.23
+* 27.10.23                                          :Componenti:Bibliografia:
 Ho guardato due video del canale di Julia:
 - [[https://www.youtube.com/watch?v=q8SzFTtgA60][Cedar: un simulatore di circuito analogico accelerato]]
 - [[https://www.youtube.com/watch?v=ZYkojUozeC4][Causal vs. Acausal Modeling]]: spiega la differenza tra i due stili di modeling e quanto sia più facile scalare il problema, in termini di componenti, in un modello acausale.  Da ciò deduco che l'approccio migliore per creare il modello sia quello acausale perché anche più efficiente in termine di risoluzione delle equazioni differenziali.
@@ -765,7 +765,7 @@ Ho guardato due video del canale di Julia:
 Esiste una libreria di componenti elettrici/elettronici basata su
 `ModelingToolkit.jl` diversa da quella standard? A quanto pare no.
 
-* 28.10.23
+* 28.10.23                                                       :Componenti:
 Ho pensato di trasformare l'equazione contenente l'integrale in un
 equazione differenziale che poi verrà introdotta all'interno di una
 legge di Ohm leggermente modificata.
@@ -843,7 +843,7 @@ Mostro un semplice circuito con generatore di onda quadra (e nel caso costante) 
 variabile a Chiara per capire se la forma d'onda può essere quella
 corretta oppure no. (vedi `test7.jl`)
 
-* 29.10.23
+* 29.10.23                                                       :Componenti:
 Noto che si verifica un problema: quando la resistenza variabile
 raggiunge il valore minimo, questa indipendentemente dalla tensione
 fornita non cambia.  Provo a modificare il codice modificando la legge
@@ -882,7 +882,7 @@ L'opzione `reltol` va inserita nella funzione `solve()`. Leggi la sezione "Contr
 [...] However, a good rule of thumb is that the total solution accuracy is 1-2 digits less than the relative tolerances. [...]
 #+end_example
 
-** TODO Implementare induttore variabile
+** DONE Implementare induttore variabile
 Ottenuto a partire dal codice di `CIDResistor`.  Da testare
 
 #+begin_src julia
@@ -913,7 +913,7 @@ Ottenuto a partire dal codice di `CIDResistor`.  Da testare
   end
 #+end_src
 
-* 30.10.23
+* 30.10.23                                                       :Componenti:
 In realtà non sono ancora totalmente convinto dalle soluzioni che ho
 trovato in questi giorni e che riguardano la resistenza variabile.
 Questo perché l'equazione caratteristica non è mai comparsa.  Voglio
@@ -993,7 +993,7 @@ Un altro problema che ho è quello di non sapere quanto valga
 l'ampiezza dell'onda quadra che si vuole utilizzare nelle simulazioni,
 per cui mando più grafici.
 
-* 31.10.23
+* 31.10.23                                                          :Modello:
 Chiara ha risposto dicendo che il componente si comporta come
 dovrebbe, quindi inizio ad abbozzare il modello della sottorete.
 
@@ -1194,9 +1194,9 @@ sistema per rendere il tutto maggiormente modificabile. (si veda
 `test9.jl`).
 
 ** DONE Capire come graficare meglio i risultati
-** TODO Implementare il modello con componenti variabili.
+** DONE Implementare il modello con componenti variabili.          :Modello:
 
-* 01.11.23
+* 01.11.23                                                       :Componenti:
 Implemento il diodo in Julia rimanipolando del codice trovato online il 27.10.
 
 #+begin_src julia
@@ -1270,18 +1270,18 @@ Le resistenze devono essere uguali, quindi variabile.
 
 ** DONE Implementare il modello con componenti variabili
 
-** Colloquio con Chiara
+** Colloquio con Chiara                                       :Suggerimenti:
 L'integrale nella via aerea "media" (quindi via respiratoria ed
 alveolo) non deve essere effettuato dall'inizio della simulazione ma
 da quando arriva l'aria all'interno della via aerea.  Ho bisogno di
 trovare un modo per passare una variabile da un modulo all'altro
 (passerei l'integrale della corrente nel precedente modulo?).
 
-** TODO Vedi come posso passare una variabile da un modulo all'altro
+** DONE Vedi come posso passare una variabile da un modulo all'altro :Componenti:
 
-** TODO Modificare l'onda quadra così che abbia 40ns di rise e 400ns di HIGH.
+** DONE Modificare l'onda quadra così che abbia 40ns di rise e 400ns di HIGH.
 
-* 03.11.23
+* 03.11.23                                                 :Input:Componenti:
 Inizierei considerando il problema più semplice: l'onda quadra.  Leggo
 la sua implementazione per capire da quali parametri dipende.
 
@@ -1341,7 +1341,7 @@ effettuare una connessione alto-basso livello.
 Devo riscrivere la configurazione dei parametri che non avrà più
 sdoppiata la V_FRC.
 
-* 04.11.23
+* 04.11.23                                          :Modello:Parametri:Input:
 Voglio semplificare la gestione dei parametri di sistema, in quanto vi
 sono molti duplicati delle stesse variabili/parametri.
 
@@ -1387,7 +1387,7 @@ parametri in un modello ad alto livello.
 - Alcuni parametri devono necessariamente essere scritti all'interno della funzione che genera quel componente (e.g. `frequency` e `smooth` per `Square()`).
 - I nomi dei parametri nel modello superiore (alias per "ad alto livello") possono essere gli stessi di quelli dei modelli inferiori, senza interferire tra loro.
 
-* 04.11.23
+* 04.11.23                                          :Modello:Parametri:Input:
 Ieri pomeriggio ho provato ad implementare un parametro ereditabile
 all'interno del modello superiore ma a quanto pare non ha funzionato:
 i parametri inferiori devono comunque essere inizializzati in qualche
@@ -1410,6 +1410,69 @@ Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#In
 ** TODO Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:
 
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Variable-descriptions][`Variables descriptions`]].
-** TODO Leggere `Composing Models and Building Reusable Components`  :Julia:
-Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].
+** TODO Leggere manuale di `ModelingToolkit`                    :Julia:Must:
+Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].  
+- [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#Numerics-with-Composed-Models][`Numerics with Composed Models`]] tratta di come estrarre le serie
+  temporali dalla soluzione del sistema.
+
+#+begin_src julia
+  sol[x,1:5] # Dove x è variabile, 1..5 è l'intervallo d'interesse
+#+end_src
+
+- [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#Variable-scope-and-parameter-expressions][`Variable scope and parameter expressions`]] tratta di come
+  condividere i parametri appartenenti a sistemi a diversi livelli.
+  (Per "comporre" i livelli, il codice d'esempio utilizza `\circ`).
+  Esiste una funzione `ParentScope()` che dovrebbe permettere di avere
+  la visibilità dei parametri del modello superiore ma per ora non
+  funziona correttamente.
+
+Leggi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/MTKModel_Connector/#mtkmodel_connector][`Components and Connectors`]]: Include le informazioni essenziali
+sulla gestione dei modelli costituiti da componenti.
+
+* 05.11.23
+** DONE Dubbi sulle unità di misura                                :Domande:
+Le unità di misura di ciascuna variabile devono essere quelle elettriche oppure quelle meccaniche?
+
+* 07.11.23                                            :Bash:Input:Repository:
+** Conversione dati di input                             :Conversione:Input:
+Sto lavorando su uno script per effettuare una conversione dei dati
+contenuti in `Albero.cir` in un formato che sia leggibile dal main di
+Julia.
+
+L'idea sarebbe quella di convertire ciascuna riga nella dichiarazione
+del componente superiore dell'apposito tipo.
+*** DONE I parametri `C_g` e `C_ga` verranno chiamati entrambi `C_g` :Conversione:Parametri:
+** Sistemazione del tree della repository              :Pulizia:Repository:
+I file sorgenti erano troppo caotici nella directory, quindi ho deciso
+di creare delle posizioni più sensate.
+
+* 08.11.23
+** DONE Sistemare nome parametri per corrispondere a quelli di `cir2jl` :Parametri:Julia:
+
+C'è un problema che devo risolvere, ossia che il file del modello che voglio importare è troppo grande per essere importato da Julia...
+** TODO Come posso importare un così gran numero di dati?          :Problema:
+* 09.11.23                                                       :Componenti:
+Il problema della gestione dell'input di 50k moduli è da risolversi
+suddividendo, per forza di cose, in sottoreti minori.  Fosse esso
+gestibile da diversi threads sarebbe ancora meglio.
+
+Come potrei gestire queste sottoreti?
+
+Ho parlato con Chiara: mi ha fornito dell'albero completo senza {R, C,
+I}_sw per capire se lo StackOverflowError si può risolvere.  Devo per
+forza di cose ora ritornare al problema del diodo, di `trigger_out` e
+`trigger_in`.  Dice inoltre che si possono utilizzare le unità
+elettriche per il nostro modello e non quelle fisiche/meccaniche.
+
+** DONE Sistemare lo script per includere anche i trigger{in, out}    :Bash:
+L'ho fatto in treno.  Basta un `echo` ed un `sed`.
+* 10.11.23                                                       :Componenti:
+Ho sistemato lo script e il `main.jl` così da calcolare l'integrale
+della corrente a partire da quando arriva il flusso.  Ho aggiunto
+`src/util/graphs_trigger.jl`: crea i grafici di quello che avviene a
+livello di trigger_in, trigger_out e integrale della corrente nei vari
+moduli.
+
+** TODO Convenzioni delle correnti                                 :Domande:
+La corrente negativa indica una corrente entrante nella via aerea?
 
