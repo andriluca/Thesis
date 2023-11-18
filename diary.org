@@ -1,6 +1,6 @@
 #+title: Diario dei Log del progetto
 #+author: Luca Andriotto
-#+STARTUP: overview
+#+STARTUP: overview latexpreview entitiespretty
 
 Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
 
@@ -8,13 +8,14 @@ Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
 - [X] La funzione =squarewave= è buggata e non può essere utilizzata come input del sistema in Julia. Posso riscriverla semplicemente
 - Il numero di threads utilizzabile è settabile all'avvio della REPL (-t auto).
 - La repl, da Emacs, non produce correttamente i grafici quindi è sempre meglio avere un terminale sotto mano
-- =test3.jl= fa il suo dovere
+- [[file:src/test/test3.jl][test3.jl]] fa il suo dovere
 
 * 12.10.23
-- ~test3.jl~ non permette di estrarre i flussi (aka le correnti) dalle soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La soluzione sarà riportata in ~test4.jl~.
+- [[file:src/test/test3.jl][test3.jl]] non permette di estrarre i flussi (aka le correnti) dalle soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La soluzione sarà riportata in [[file:src/test/test4.jl][test4.jl]].
 
 * 16.10.23                                               :Modello:Componenti:
-- La modularità del circuito è realizzata mediante dei modelli appositi, chiamati `Block`s:
+- La modularità del circuito è realizzata mediante dei modelli
+  appositi, chiamati `Block`s:
 
 #+begin_src julia
   @mtkmodel Block begin
@@ -34,7 +35,8 @@ Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
   end
 #+end_src
 
-Questi blocchi hanno un punto d'ingresso ed uno di uscita, comodi per effettuare dei collegamenti più complessi con blocchi in cascata.
+Questi blocchi hanno un punto d'ingresso ed uno di uscita, comodi per
+effettuare dei collegamenti più complessi con blocchi in cascata.
 
 Il sistema quindi altro non è se non una composizione di blocchi:
 
@@ -56,16 +58,21 @@ Il sistema quindi altro non è se non una composizione di blocchi:
   end
 #+end_src
 
-Il codice completo è in ~test5.jl~.
+Il codice completo è in [[file:src/test/test5.jl][test5.jl]].
 
 - Vi sono altri due problemi ora:
-  - [X] Generare diversi blocchi (airway e alveolo) con diverse strutture.
-  - [ ] Rendere la resistenza `Rtube` variabile e dipendente dall'integrale della corrente.
+  - [X] Generare diversi blocchi (airway e alveolo) con diverse
+    strutture.
+  - [ ] Rendere la resistenza `Rtube` variabile e dipendente
+    dall'integrale della corrente.
 
-- Nel file ~Albero.cir~, l'ultima riga rappresenta la trachea.  enable, IN sono due ingressi, NodeAA e TrigAB sono due uscite (stando a quello che dice Chiara).
+- Nel file ~Albero.cir~, l'ultima riga rappresenta la trachea.
+  enable, IN sono due ingressi, NodeAA e TrigAB sono due uscite
+  (stando a quello che dice Chiara).
 
 * 17.10.23                                               :Modello:Componenti:
-- Per entrambi gli schematici si vedano i fogli stampati.  Queste sono le versioni senza resistenza variabile.
+- Per entrambi gli schematici si vedano i fogli stampati.  Queste sono
+  le versioni senza resistenza variabile.
 
 #+begin_src julia
   @mtkmodel Airway begin
@@ -122,7 +129,9 @@ Il codice completo è in ~test5.jl~.
   end
 #+end_src
 
-- [X] Lavorare sull'importazione di file CSV in cui ciascuna colonna corrisponde ad un array di variabili dello stesso tipo (tutte resistenze...).
+- [X] Lavorare sull'importazione di file CSV in cui ciascuna colonna
+  corrisponde ad un array di variabili dello stesso tipo (tutte
+  resistenze...).
 
 * 18.10.23                                                            :Input:
 
@@ -156,7 +165,6 @@ IAI ( TrigAHB NodeAHA NodeAIA TrigAIB Vcharge ) alveolo_completo_luglio La= 7.22
 #+end_example
 
 ** IAD ( TrigACB NodeACA NodeADA TrigADB ) zwall_semplificato_veriloga 
-
 La= 1.852803e-03 -- sarebbe la I
 Lb= 1.664949e+00
 Ra= 3.100029e+01 -- resistenza in aria
@@ -170,7 +178,6 @@ Vin_th= 4.666378e+00 -- tensione su primo diodo
 Vgravity= 0
 
 ** IAE ( TrigADB NodeADA NodeAEA TrigAEB Vcharge ) alveolo_completo_luglio
-
 La= 6.440085e-03
 Lb= 5.718839e+00 
 Ra= 3.109214e+02 
@@ -186,7 +193,6 @@ Rs= 80000
 Cs= 2.100000e-05
 
 ** IAF ( TrigADB NodeADA NodeAFA TrigAFB ) zwall_semplificato_veriloga
-
 La= 1.166141e-03
 Lb= 1.047907e+00
 Ra= 2.231464e+01
@@ -200,7 +206,6 @@ Vin_th= 4.990351e+00
 Vgravity= 0
 
 ** IAG ( TrigAFB NodeAFA NodeAGA TrigAGB Vcharge ) alveolo_completo_luglio
-
 La= 6.908560e-03
 Lb= 6.134848e+00
 Ra= 4.012746e+02
@@ -216,7 +221,6 @@ Rs= 80000
 Cs= 2.100000e-05
 
 ** IAH ( TrigAFB NodeAFA NodeAHA TrigAHB ) zwall_semplificato_veriloga
-
 La= 1.653093e-03
 Lb= 1.485488e+00
 Ra= 3.554331e+01
@@ -230,7 +234,6 @@ Vin_th= 5.289833e+00
 Vgravity= 0
 
 ** IAI ( TrigAHB NodeAHA NodeAIA TrigAIB Vcharge ) alveolo_completo_luglio
-
 La= 7.229610e-03
 Lb= 6.419942e+00
 Ra= 4.759710e+02
@@ -295,18 +298,18 @@ Penso sia necessario elencare i parametri e le variabili in gioco (dal documento
 ** Parametri
 *** Non-terminal units (Airway)
 
-| Parametro                     | Simbolo |   Valore | Unità             |
-|-------------------------------+---------+----------+-------------------|
-| Air density                   | \rho_a  | 1.132e-2 | cmH2O * s^2 / m^2 |
-| Air viscosity                 | \mu_a   | 1.739e-7 | cmH2O * s         |
-| Atmospheric pressure          | P_{at}  |     1033 | cmH2O             |
-| Fetal fluid density           | \rho_l  |  1.006e1 | cmH2O * s^2 / m^2 |
-| Fetal fluid viscosity         | \mu_l   | 8.667e-6 | cmH2O * s         |
-| Radius at FRC                 | r_{FRC} |          | cm                |
-| Surface tension               | \gamma  |      .04 | cm * cmH2O        |
-| Young modulus of soft tissues | Y_s     |      600 | [N / m^2]         |
-| (?) Density                   | \rho_s  |      .88 | [g / mL?]         |
-| (?) Viscosity                 | \mu_s   |     1.06 | g / mL            |
+| Parametro                     | Simbolo |   Valore | Unità           |
+|-------------------------------+---------+----------+-----------------|
+| Air density                   | \rho_a      | 1.132e-2 | cmH_{2}O * s^2 / m^2 |
+| Air viscosity                 | \mu_a      | 1.739e-7 | cmH_{2}O * s       |
+| Atmospheric pressure          | P_{at}     |     1033 | cmH_{2}O           |
+| Fetal fluid density           | \rho_l      |  1.006e1 | cmH_{2}O * s^2 / m^2 |
+| Fetal fluid viscosity         | \mu_l      | 8.667e-6 | cmH_{2}O * s       |
+| Radius at FRC                 | r_{FRC}    |          | cm              |
+| Surface tension               | \gamma       |      .04 | cm * cmH_{2}O      |
+| Young modulus of soft tissues | Y_s      |      600 | [N / m^2]        |
+| (?) Density                   | \rho_s      |      .88 | [g / mL?]       |
+| (?) Viscosity                 | \mu_s      |     1.06 | g / mL          |
 
 Il valore di viscosità non mi convince (nemmeno nell'unità di misura).
 
@@ -314,47 +317,47 @@ Il valore di viscosità non mi convince (nemmeno nell'unità di misura).
 
 | Parametro                                      | Simbolo |        Valore | Unità                                  |
 |------------------------------------------------+---------+---------------+----------------------------------------|
-| Air density                                    | \rho_a  |      1.132e-2 | cmH2O*s^2/m^2                          |
-| Air viscosity                                  | \mu_a   |      1.739e-7 | cmH2O*s                                |
-| Atmospheric pressure                           | P_{at}  |          1033 | cmH2O                                  |
-| Fetal fluid density                            | \rho_l  |       1.006e1 | cmH2O*s^2/m^2                          |
-| Fetal fluid viscosity                          | \mu_l   |      8.667e-6 | cmH2O*s                                |
-| Radius at FRC                                  | r_{FRC} |               | cm                                     |
-| Surface tension                                | \gamma  |           .04 | cm*cmH2O                               |
-| Young modulus soft tissues                     | Y_s     |           600 |                                        |
-| Tissue compliance related to stress relaxation | C_s     |      7e-8 * 3 |                                        |
-| Static tissue compliance                       | C_t     |      8e-8 * 3 | L / cmH2O                              |
-| Tissue inertance                               | I_t     | .00069/300*NA | cmH2O * s^2 / L                        |
-| Tissue resistance related to stress relaxation | R_s     |           8e6 | cmH2O * s / L                          |
-| Newtonian tissue resistance                    | R_t     |          12e4 | cmH2O * s / L                          |
-| (?) Density                                    | \rho_s  |           .88 |                                        |
-| (?) Viscosity                                  | \mu_s   |          1.06 | [g/mL da documento ma non mi convince] |
+| Air density                                    | \rho_a      |      1.132e-2 | cmH_{2}O*s^2/m^2                            |
+| Air viscosity                                  | \mu_a      |      1.739e-7 | cmH_{2}O*s                                |
+| Atmospheric pressure                           | P_{at}     |          1033 | cmH_{2}O                                  |
+| Fetal fluid density                            | \rho_l      |       1.006e1 | cmH_{2}O*s^2/m^2                            |
+| Fetal fluid viscosity                          | \mu_l      |      8.667e-6 | cmH_{2}O*s                                |
+| Radius at FRC                                  | r_{FRC}    |               | cm                                     |
+| Surface tension                                | \gamma       |           .04 | cm*cmH_{2}O                               |
+| Young modulus soft tissues                     | Y_s      |           600 |                                        |
+| Tissue compliance related to stress relaxation | C_s      |      7e-8 * 3 |                                        |
+| Static tissue compliance                       | C_t      |      8e-8 * 3 | L / cmH_{2}O                              |
+| Tissue inertance                               | I_t      | .00069/300*NA | cmH_{2}O * s^2 / L                         |
+| Tissue resistance related to stress relaxation | R_s      |           8e6 | cmH_{2}O * s / L                          |
+| Newtonian tissue resistance                    | R_t      |          12e4 | cmH_{2}O * s / L                          |
+| (?) Density                                    | \rho_s      |           .88 |                                        |
+| (?) Viscosity                                  | \mu_s      |          1.06 | [g/mL da documento ma non mi convince] |
 
 ** Variabili
 *** Non-terminal units
 
-| Variabili                                     | Simbolo  | Range              | Unità           | Formula                                                                                   |
-|-----------------------------------------------+----------+--------------------+-----------------+-------------------------------------------------------------------------------------------|
-| Capillary pressure due to air-fluid interface | V_{th}   | .2 - 9.1           | cmH2O           | \dfrac{\gamma}{r_{FRC}} in air, 0 otherwise.                                              |
-| Airway Resistance                             | R_{tube} |                    | cmH2O * s / L   | R_a + (R_l - R_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
-| Resistance (air-filled)                       | R_{a}    | .64 - 4.50e4       | cmH2O * s / L   | \dfrac{8\mu_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                         |
-| Resistance (liquid-filled)                    | R_{l}    | 32 - 2.24e6        | cmH2O * s / L   | \dfrac{8\mu_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                         |
-| Volume at FRC                                 | V_{FRC}  |                    | L               | \pi\cdot {r_{FRC}}^2 \cdot l_{FRC}                                                        |
-| Flow*                                         | \dot{V}  |                    | [L / s]         |                                                                                           |
-| Airway inertance                              | I_{tube} |                    | cmH2O * s^2 / L | I_a + (I_l - I_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
-| Inertance (air-filled)                        | I_{a}    | .95e-2 - .91       | cmH2O * s^2 / L | \dfrac{8\rho_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                        |
-| Inertance (liquid-filled)                     | I_{l}    | 8.58 - 816.22      | cmH2O * s^2 / L | \dfrac{8\rho_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                        |
-| Shunt airway compliance due to gas            | C_g      |                    | L / cmH2O       | C_{FRC}\cdot (\dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}}) in air, 0 otherwise. |
-| Airway compliance at FRC                      | C_{FRC}  | 2.27e-13 - 4.32e-7 | L / cmH2O       | \dfrac{\pi\cdot {r_{FRC}}^2 \cdot l_{FRC}}{P_{at}}                                        |
-| Airway tissue shunt impedance                 | Z_w      |                    | cmH2O * s / L   | R_{ws} + j \cdot (\omega \cdot I_{ws} - \dfrac{1}{\omega \cdot C_{ws}})                   |
-| Resistance of the soft tissues**              | R_{sw}   |                    | cmH2O * s / L   | \dfrac{h_k \cdot \mu_{s}}{2\pi {r_{FRC}}^3 \cdot l_{FRC}}                                 |
-| Inertance of the soft tissues**               | I_{sw}   |                    | cmH2O * s^2 / L | \dfrac{h_k \cdot \rho_{s}}{2\pi r_{FRC} \cdot l_{FRC}}                                    |
-| Compliance of the soft tissues**              | C_{sw}   |                    | L / cmH2O       | \dfrac{2\pi {r_{FRC}}^3 \cdot l_{FRC}}{h_k \cdot \Y_{s}}                                  |
-|                                               | h_k      |                    | [cm?]           | \sqrt{{r_k}^2 + \dfrac{w_{ak}}{\pi}} - r_k                                                |
-|                                               | w_{ak}   |                    | [?]             | .033(2\pi\cdot r_k \cdot 1000 - .08) + .056                                               |
-| Resistance of airway soft tissues**           | R_{ws}   | 1.14e1 - 2.27e7    | cmH2O * s / L   | \dfrac{h_k \cdot \mu_{s}}{2\pi {r_{FRC}}^3 \cdot l_{FRC}}                                 |
-| Inertance of airway soft tissues**            | I_{ws}   | 5.77e-4 - 1.13e-1  | cmH2O * s^2 / L | \dfrac{h_k \cdot \rho_{s}}{2\pi r_{FRC} \cdot l_{FRC}}                                    |
-| Compliance of airway soft tissues**           | C_{ws}   | 5.64e-11 - 1.28e-4 | L / cmH2O       | \dfrac{2\pi {r_{FRC}}^3 \cdot l_{FRC}}{h_k \cdot \Y_{s}}                                  |
+| Variabili                                     | Simbolo | Range              | Unità          | Formula                                                                |
+|-----------------------------------------------+---------+--------------------+----------------+------------------------------------------------------------------------|
+| Capillary pressure due to air-fluid interface | V_{th}     | .2 - 9.1           | cmH_{2}O          | \dfrac{\gamma}{r_{FRC}} in air, 0 otherwise.                                   |
+| Airway Resistance                             | R_{tube}   |                    | cmH_{2}O * s / L  | R_a + (R_l - R_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
+| Resistance (air-filled)                       | R_{a}      | .64 - 4.50e4       | cmH_{2}O * s / L  | \dfrac{8\mu_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                          |
+| Resistance (liquid-filled)                    | R_{l}      | 32 - 2.24e6        | cmH_{2}O * s / L  | \dfrac{8\mu_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                          |
+| Volume at FRC                                 | V_{FRC}    |                    | L              | \pi\cdot {r_{FRC}}^2 \cdot l_{FRC}                                                      |
+| Flow*                                         | \dot{V} |                    | [L / s]        |                                                                        |
+| Airway inertance                              | I_{tube}   |                    | cmH_{2}O * s^2 / L | I_a + (I_l - I_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})         |
+| Inertance (air-filled)                        | I_{a}      | .95e-2 - .91       | cmH_{2}O * s^2 / L | \dfrac{8\rho_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                          |
+| Inertance (liquid-filled)                     | I_{l}      | 8.58 - 816.22      | cmH_{2}O * s^2 / L | \dfrac{8\rho_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                          |
+| Shunt airway compliance due to gas            | C_g      |                    | L / cmH_{2}O      | C_{FRC}\cdot (\dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}}) in air, 0 otherwise. |
+| Airway compliance at FRC                      | C_{FRC}    | 2.27e-13 - 4.32e-7 | L / cmH_{2}O      | \dfrac{\pi\cdot {r_{FRC}}^2 \cdot l_{FRC}}{P_{at}}                                         |
+| Airway tissue shunt impedance                 | Z_w      |                    | cmH_{2}O * s / L  | R_{ws} + j \cdot (\omega \cdot I_{ws} - \dfrac{1}{\omega \cdot C_{ws}})                               |
+| Resistance of the soft tissues**              | R_{sw}     |                    | cmH_{2}O * s / L  | \dfrac{h_k \cdot \mu_{s}}{2\pi {r_{FRC}}^3 \cdot l_{FRC}}                                     |
+| Inertance of the soft tissues**               | I_{sw}     |                    | cmH_{2}O * s^2 / L | \dfrac{h_k \cdot \rho_{s}}{2\pi r_{FRC} \cdot l_{FRC}}                                        |
+| Compliance of the soft tissues**              | C_{sw}     |                    | L / cmH_{2}O      | \dfrac{2\pi {r_{FRC}}^3 \cdot l_{FRC}}{h_k \cdot \Y_{s}}                                    |
+|                                               | h_k      |                    | [cm?]          | \sqrt{{r_k}^2 + \dfrac{w_{ak}}{\pi}} - r_k                                     |
+|                                               | w_{ak}     |                    | [?]            | .033(2\pi\cdot r_k \cdot 1000 - .08) + .056                                       |
+| Resistance of airway soft tissues**           | R_{ws}     | 1.14e1 - 2.27e7    | cmH_{2}O * s / L  | \dfrac{h_k \cdot \mu_{s}}{2\pi {r_{FRC}}^3 \cdot l_{FRC}}                                     |
+| Inertance of airway soft tissues**            | I_{ws}     | 5.77e-4 - 1.13e-1  | cmH_{2}O * s^2 / L | \dfrac{h_k \cdot \rho_{s}}{2\pi r_{FRC} \cdot l_{FRC}}                                        |
+| Compliance of airway soft tissues**           | C_{ws}     | 5.64e-11 - 1.28e-4 | L / cmH_{2}O      | \dfrac{2\pi {r_{FRC}}^3 \cdot l_{FRC}}{h_k \cdot \Y_{s}}                                    |
 
 
 *: Quando facciamo l'integrale nel tempo, gli estremi temporali significano il tempo in cui l'interfaccia aria-liquido entra nella airway e il tempo in cui essa esce.
@@ -362,28 +365,29 @@ Il valore di viscosità non mi convince (nemmeno nell'unità di misura).
 
 *** Terminal units
 
-| Variabili                                                        | Simbolo    | Range         | Unità           | Formula                                                                                                                                               |
-|------------------------------------------------------------------+------------+---------------+-----------------+-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Capillary pressure due to air-fluid interface of the acinar unit | v_{thA}    | 1.2 - 10.3    | cmH2O           | \dfrac{2\gamma}{r_k} at the interface, 0 otherwise.                                                                                                   |
-| Airway Resistance                                                | R_{tube}   |               | cmH2O * s / L   | \dfrac{R_a + (R_l - R_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})}{\frac{V_0 + \int\limits_{t_0}^{t} {\dot{V} dt}}{V_{FRC,A}}} |
-| Resistance (air-filled)                                          | R_a        | .64 - 4.50e4  | cmH2O * s / L   | \dfrac{8\mu_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                                                                                     |
-| Resistance (liquid-filled)                                       | R_l        | 32 - 2.24e6   | cmH2O * s / L   | \dfrac{8\mu_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                                                                                     |
-| Volume at FRC                                                    | V_{FRC}    |               | L               | \pi\cdot {r_{FRC}}^2 \cdot l_{FRC}                                                                                                                    |
-| Volume at FRC [acinar?]                                          | V_{FRC,A}  |               | L               | \dfrac{FRC}{N_A}                                                                                                                                      |
-|                                                                  | V_0        |               | L               | \dfrac{\text{initial liquid volume}}{N_A}                                                                                                             |
-| Airway inertance                                                 | I_{tube}   |               | cmH2O * s^2 / L | I_a + (I_l - I_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}}) in air, 0 otherwise.                                                |
-| Inertance (air-filled)                                           | I_a        | .95e-2 - .91  | cmH2O * s^2 / L | \dfrac{8\rho_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                                                                                    |
-| Inertance (liquid-filled)                                        | I_l        | 8.58 - 816.22 | cmH2O * s^2 / L | \dfrac{8\rho_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                                                                                    |
-| Shunt terminal unit compliance due to gas                        | C_{gA}     |               | L / cmH2O       | C_{FRC,A}\cdot (\dfrac{\int\limits_{t_i}^{t_fA} {\dot{V} dt}}{V_{FRC,A}}) in air, 0 otherwise.                                                        |
-|                                                                  | C_{FRC,A}  |               | L / cmH2O       | \dfrac{\text{FRC}}{P_{at} N_A} + \dfrac{\pi {r_FRC}^2 l_{FRC}}{P_{at}}                                                                                |
-| Acinar tissue impedance                                          | Z_{tissue} |               | cmH2O * s / L   | R_t + j \cdot (\omega\cdot I_t - \dfrac{1}{\omega \cdot C_t}) + \dfrac{R_s}{1 + j\omega C_s R_s}                                                      |
+| Variabili                                                        | Simbolo | Range         | Unità          | Formula                                                                                                               |
+|------------------------------------------------------------------+---------+---------------+----------------+-----------------------------------------------------------------------------------------------------------------------|
+| Capillary pressure due to air-fluid interface of the acinar unit | v_{thA}    | 1.2 - 10.3    | cmH_{2}O          | \dfrac{2\gamma}{r_k} at the interface, 0 otherwise.                                                                         |
+| Airway Resistance                                                | R_{tube}   |               | cmH_{2}O * s / L  | \dfrac{R_a + (R_l - R_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}})}{\frac{V_0 + \int\limits_{t_0}^{t} {\dot{V} dt}}{V_{FRC,A}}} |
+| Resistance (air-filled)                                          | R_a      | .64 - 4.50e4  | cmH_{2}O * s / L  | \dfrac{8\mu_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                                                                         |
+| Resistance (liquid-filled)                                       | R_l      | 32 - 2.24e6   | cmH_{2}O * s / L  | \dfrac{8\mu_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^4}                                                                                         |
+| Volume at FRC                                                    | V_{FRC}    |               | L              | \pi\cdot {r_{FRC}}^2 \cdot l_{FRC}                                                                                                     |
+| Volume at FRC [acinar?]                                          | V_{FRC,A}  |               | L              | \dfrac{FRC}{N_A}                                                                                                       |
+|                                                                  | V_0      |               | L              | \dfrac{\text{initial liquid volume}}{N_A}                                                                              |
+| Airway inertance                                                 | I_{tube}   |               | cmH_{2}O * s^2 / L | I_a + (I_l - I_a)\cdot(1 - \dfrac{\int\limits_{t_i}^{t_f} {\dot{V} dt}}{V_{FRC}}) in air, 0 otherwise.                                   |
+| Inertance (air-filled)                                           | I_a      | .95e-2 - .91  | cmH_{2}O * s^2 / L | \dfrac{8\rho_a\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                                                                         |
+| Inertance (liquid-filled)                                        | I_l      | 8.58 - 816.22 | cmH_{2}O * s^2 / L | \dfrac{8\rho_l\cdot l_{FRC}}{\pi\cdot {r_{FRC}}^2}                                                                                         |
+| Shunt terminal unit compliance due to gas                        | C_{gA}     |               | L / cmH_{2}O      | C_{FRC,A}\cdot (\dfrac{\int\limits_{t_i}^{t_fA} {\dot{V} dt}}{V_{FRC,A}}) in air, 0 otherwise.                                           |
+|                                                                  | C_{FRC,A}  |               | L / cmH_{2}O      | \dfrac{\text{FRC}}{P_{at} N_A} + \dfrac{\pi {r_FRC}^2 l_{FRC}}{P_{at}}                                                              |
+| Acinar tissue impedance                                          | Z_{tissue} |               | cmH_{2}O * s / L  | R_t + j \cdot (\omega\cdot I_t - \dfrac{1}{\omega \cdot C_t}) + \dfrac{R_s}{1 + j\omega C_s R_s}                                                       |
 
 ** DONE Domande da fare
 1. La resistenza `R_{tube}` ha diverse formule per i due modelli distinti (ossia per airway e alveolo)? yes
-2. Nel parametro `I_t` il valore NA è il numero di Avogadro? boh
+2. Nel parametro `I_t` il valore NA è il numero di Avogadro? Non saprei, non ci serve però
 
 * 23.10.23                                                          :Verilog:
-- Continuo il lavoro del 20.10 per sistemare le variabili ed i parametri del modello per capire di più.
+- Continuo il lavoro del 20.10 per sistemare le variabili ed i
+  parametri del modello per capire di più.
 - Rivedo il file in Verilog per comprendere le formule implementate.
 
 ** Unità non terminali
@@ -416,7 +420,8 @@ Vi sono una serie di variabili, istanziate come intere o reali.
 6. trigout
 7. thresholdb
 
-Noto che ci sono i parametri "simili" a quelli del file `Albero.cir` (i.e. stessi nomi).
+Noto che ci sono i parametri "simili" a quelli del file `Albero.cir`
+(i.e. stessi nomi).
 
 #+begin_src verilog
   // VerilogA for BIO, cella_zwall, veriloga
@@ -642,23 +647,21 @@ domanda. Ora so a cosa corrispondono i vari componenti nel modello, in
 termini di simboli utilizzati nel file `Albero.cir`.
 
 ** Non terminali
-
-| ".cir"   | Modello cartaceo                                                    |
-|----------+---------------------------------------------------------------------|
-| La       | Induttanza in aria                                                  |
-| Lb       | Quello da aggiungere per avere l'induttanza nel liquido (I_l - I_a) |
-| Ra       | Resistenza in aria                                                  |
-| Rb       | Quello da aggiungere per avere la resistenza nel liquido (rl - ra)  |
-| Rws      | Resistenza del ramo sotto                                           |
-| Lws      | Induttanza del ramo sotto                                           |
-| Cws      | capacità del ramo sotto                                             |
-| Chargeth | V_{FRC}                                                             |
+| ".cir"   | Modello cartaceo                                                   |
+|----------+--------------------------------------------------------------------|
+| La       | Induttanza in aria                                                 |
+| Lb       | Quello da aggiungere per avere l'induttanza nel liquido (I_l - I_a)  |
+| Ra       | Resistenza in aria                                                 |
+| Rb       | Quello da aggiungere per avere la resistenza nel liquido (rl - ra) |
+| Rws      | Resistenza del ramo sotto                                          |
+| Lws      | Induttanza del ramo sotto                                          |
+| Cws      | capacità del ramo sotto                                            |
+| Chargeth | V_{FRC}                                                               |
 | Ccap     | C_g                                                                 |
-| Vin_th   | Tensione sul primo diodo (aka V_{th})                               |
-| Vgravity |                                                                     |
+| Vin_th    | Tensione sul primo diodo (aka V_{th})                                 |
+| Vgravity |                                                                    |
 
 ** Terminali
-
 | ".cir"   | Modello cartaceo                                                    |
 |----------+---------------------------------------------------------------------|
 | La       | Induttanza in aria                                                  |
@@ -679,11 +682,13 @@ termini di simboli utilizzati nel file `Albero.cir`.
 ** DONE Esiste un componente "Diodo" in Julia                   :Componenti:
 Non sembrerebbe esistere un componente "Diodo" nella libreria standard
 di `ModelingToolkit`.
+
 ** Scrivo tutte le equazioni differenziali in Julia
 NodeC non corrisponde alla sua definizione nel modello elettrico: è
 come se l'induttanza e la resistenza sopra fossero scambiate di posto
 con la capacità che sta sotto (il nodo non è così importante stando a
 quello che dice Chiara).
+
 ** Quali sono le variabili in funzione del tempo di cui conosciamo l'andamento? :Variabili:
 Probabilmente anche quest'informazione la posso ricavare dal Verilog.
 Sicuramente la forma d'onda della tensione in ingresso.  Non so se
@@ -692,7 +697,6 @@ sappiamo qualcosa del flusso
 ** DONE Quali sono le equazioni differenziali che devo risolvere in ciascun modulo?
 Sicuramente sono contenute nei file Verilog quindi ripartirei da lì.
 Il Verilog contiene queste equazioni.
-
 *** Non terminali
 #+begin_src verilog
   // 1 -- [tensione tra Rvalue e Lvalue]
@@ -707,8 +711,8 @@ Il Verilog contiene queste equazioni.
   // 5 -- [Corrente attraverso Cvalue]
   I(through, gnd)    <+ ddt(Cvalue * V(through, gnd));
 #+end_src
-*** Terminali
 
+*** Terminali
 #+begin_src verilog
   // 1 -- [tensione sul blocco vin_th2-Rvalue-Lvalue]
   V (nodeA, OUT) <+ Lvalue * ddt(I(nodeA, OUT)) +(Rvalb + Rvalue) * I(nodeA, OUT) + Vin_th2 * transition (th_swap, 0, 10u, 10u);
@@ -722,20 +726,25 @@ Il Verilog contiene queste equazioni.
 
 ** DONE Cosa s'intende per `transition` in Verilog?
 Stando a quanto scritto [[https://verilogams.com/refman/basics/expressions.html#transition][qui]]:
-
 #+begin_example
 Converts a piecewise constant waveform, operand, into a waveform that has controlled transitions. 
 #+end_example
 
 Quindi converte una forma d'onda costante a tratti (immagino una
 "spezzata") in una forma d'onda con transizioni controllate.
+
 ** A cosa servono tutte le flag del Verilog?                       :Verilog:
 Non penso sia per ora necessario
 * 27.10.23                                          :Componenti:Bibliografia:
 Ho guardato due video del canale di Julia:
 - [[https://www.youtube.com/watch?v=q8SzFTtgA60][Cedar: un simulatore di circuito analogico accelerato]]
-- [[https://www.youtube.com/watch?v=ZYkojUozeC4][Causal vs. Acausal Modeling]]: spiega la differenza tra i due stili di modeling e quanto sia più facile scalare il problema, in termini di componenti, in un modello acausale.  Da ciò deduco che l'approccio migliore per creare il modello sia quello acausale perché anche più efficiente in termine di risoluzione delle equazioni differenziali.
-- [[https://www.youtube.com/watch?v=3DfVowNFI2c][Exploring audio circuits with `ModelingToolkit.jl`]]: Posso recuperare le equazioni del diodo da qui
+- [[https://www.youtube.com/watch?v=ZYkojUozeC4][Causal vs. Acausal Modeling]]: spiega la differenza tra i due stili di
+  modeling e quanto sia più facile scalare il problema, in termini di
+  componenti, in un modello acausale.  Da ciò deduco che l'approccio
+  migliore per creare il modello sia quello acausale perché anche più
+  efficiente in termine di risoluzione delle equazioni differenziali.
+- [[https://www.youtube.com/watch?v=3DfVowNFI2c][Exploring audio circuits with `ModelingToolkit.jl`]]: Posso recuperare
+  le equazioni del diodo da qui
 
 #+begin_src julia
   function LinearContinuationShockleyDiode(;name, Is = 1.0e-15, eta = 1.0,
@@ -841,7 +850,7 @@ Mi sono reso conto di aver sbagliato l'equazione caratteristica della resistenza
 
 Mostro un semplice circuito con generatore di onda quadra (e nel caso costante) e resistenza
 variabile a Chiara per capire se la forma d'onda può essere quella
-corretta oppure no. (vedi `test7.jl`)
+corretta oppure no. (vedi `[[file:src/test/test7.jl][test7.jl]]`)
 
 * 29.10.23                                                       :Componenti:
 Noto che si verifica un problema: quando la resistenza variabile
@@ -875,8 +884,9 @@ di Ohm.
   end
 #+end_src
 
-** Migliorare la tolleranza della soluzione
-L'opzione `reltol` va inserita nella funzione `solve()`. Leggi la sezione "Controlling the Solver" di [[https://docs.sciml.ai/SciMLTutorialsOutput/html/introduction/01-ode_introduction.html][questa risorsa]].
+** Migliorare la tolleranza della soluzione        :Suggerimenti:Julia:Must:
+L'opzione `reltol` va inserita nella funzione `solve()`. Leggi la
+sezione "Controlling the Solver" di [[https://docs.sciml.ai/SciMLTutorialsOutput/html/introduction/01-ode_introduction.html][questa risorsa]].
 
 #+begin_example
 [...] However, a good rule of thumb is that the total solution accuracy is 1-2 digits less than the relative tolerances. [...]
@@ -917,7 +927,7 @@ Ottenuto a partire dal codice di `CIDResistor`.  Da testare
 In realtà non sono ancora totalmente convinto dalle soluzioni che ho
 trovato in questi giorni e che riguardano la resistenza variabile.
 Questo perché l'equazione caratteristica non è mai comparsa.  Voglio
-presentare a Chiara due soluzioni: 
+presentare a Chiara due soluzioni:
 - Quella più corretta dal punto di vista matematico, con le equazioni
   riprese dal paper cartaceo da lei fornitomi.
   #+begin_src julia
@@ -953,8 +963,8 @@ presentare a Chiara due soluzioni:
   Fornisco delle immagini raffiguranti grafici delle simulazioni del
   componente (queste hanno nel titolo `*_not_approx`).
   
-- Quella meno rigorosa dal punto di vista matematico (con però una forma
-  d'onda migliore).
+- Quella meno rigorosa dal punto di vista matematico (con però una
+  forma d'onda migliore).
 
   #+begin_src julia
     @mtkmodel VariableResistor begin
@@ -1000,26 +1010,26 @@ dovrebbe, quindi inizio ad abbozzare il modello della sottorete.
 Mi è stato chiesto di farlo prima con resistenze e condensatori fissi
 e poi le rendo variabili in un altro test.
 
-|                  |          IAD |          IAE |          IAF |          IAG |          IAH |          IAI |          IBL |          IBA |          IBB |
-|------------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------|
-| Tipo             |       Airway |     Alveolus |       Airway |     Alveolus |       Airway |     Alveolus |       Airway |     Alveolus |     Alveolus |
-| Ra               | 3.100029e+01 | 3.109214e+02 | 2.231464e+01 | 4.012746e+02 | 3.554331e+01 | 4.759710e+02 | 3.097440e+01 | 2.017423e+02 | 2.282920e+02 |
-| Rb               | 1.514023e+03 | 1.518509e+04 | 1.089824e+03 | 1.959785e+04 | 1.735899e+03 | 2.324594e+04 | 1.512758e+03 | 9.852891e+03 | 1.114955e+04 |
-| La               | 1.852803e-03 | 6.440085e-03 | 1.166141e-03 | 6.908560e-03 | 1.653093e-03 | 7.229610e-03 | 1.290849e-03 | 5.687354e-03 | 5.896531e-03 |
-| Lb               | 1.664949e+00 | 5.718839e+00 | 1.047907e+00 | 6.134848e+00 | 1.485488e+00 | 6.419942e+00 | 1.159971e+00 | 5.050408e+00 | 5.236159e+00 |
+|                 |          IAD |          IAE |          IAF |          IAG |          IAH |          IAI |          IBL |          IBA |          IBB |
+|-----------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------|
+| Tipo            |       Airway |     Alveolus |       Airway |     Alveolus |       Airway |     Alveolus |       Airway |     Alveolus |     Alveolus |
+| Ra              | 3.100029e+01 | 3.109214e+02 | 2.231464e+01 | 4.012746e+02 | 3.554331e+01 | 4.759710e+02 | 3.097440e+01 | 2.017423e+02 | 2.282920e+02 |
+| Rb              | 1.514023e+03 | 1.518509e+04 | 1.089824e+03 | 1.959785e+04 | 1.735899e+03 | 2.324594e+04 | 1.512758e+03 | 9.852891e+03 | 1.114955e+04 |
+| La              | 1.852803e-03 | 6.440085e-03 | 1.166141e-03 | 6.908560e-03 | 1.653093e-03 | 7.229610e-03 | 1.290849e-03 | 5.687354e-03 | 5.896531e-03 |
+| Lb              | 1.664949e+00 | 5.718839e+00 | 1.047907e+00 | 6.134848e+00 | 1.485488e+00 | 6.419942e+00 | 1.159971e+00 | 5.050408e+00 | 5.236159e+00 |
 | Ccap (C_g)       | 1.689219e-09 | 2.462271e-07 | 8.128360e-10 | 2.461359e-07 | 9.126539e-10 | 2.460874e-07 | 5.722034e-10 | 2.464514e-07 | 2.463766e-07 |
-| Rti              |            - |         1200 |            - |         1200 |            - |         1200 |            - |         1200 |         1200 |
-| Lti              |            - | 5.795540e-04 |            - | 5.795540e-04 |            - | 5.795540e-04 |            - | 5.795540e-04 | 5.795540e-04 |
-| Cti              |            - | 2.400000e-05 |            - | 2.400000e-05 |            - | 2.400000e-05 |            - | 2.400000e-05 | 2.400000e-05 |
-| Rs               |            - |        80000 |            - |        80000 |            - |        80000 |            - |        80000 |        80000 |
-| Cs               |            - | 2.100000e-05 |            - | 2.100000e-05 |            - | 2.100000e-05 |            - | 2.100000e-05 | 2.100000e-05 |
-| Rws              | 4.186147e+06 |            - | 9.257208e+06 |            - | 8.703449e+06 |            - | 1.461035e+07 |            - |            - |
-| Lws              | 3.705082e-01 |            - | 7.164089e-01 |            - | 5.994469e-01 |            - | 9.016810e-01 |            - |            - |
-| Cws              | 3.503620e-10 |            - | 1.584351e-10 |            - | 1.685156e-10 |            - | 1.003855e-10 |            - |            - |
+| Rti             |            - |         1200 |            - |         1200 |            - |         1200 |            - |         1200 |         1200 |
+| Lti             |            - | 5.795540e-04 |            - | 5.795540e-04 |            - | 5.795540e-04 |            - | 5.795540e-04 | 5.795540e-04 |
+| Cti             |            - | 2.400000e-05 |            - | 2.400000e-05 |            - | 2.400000e-05 |            - | 2.400000e-05 | 2.400000e-05 |
+| Rs              |            - |        80000 |            - |        80000 |            - |        80000 |            - |        80000 |        80000 |
+| Cs              |            - | 2.100000e-05 |            - | 2.100000e-05 |            - | 2.100000e-05 |            - | 2.100000e-05 | 2.100000e-05 |
+| Rws             | 4.186147e+06 |            - | 9.257208e+06 |            - | 8.703449e+06 |            - | 1.461035e+07 |            - |            - |
+| Lws             | 3.705082e-01 |            - | 7.164089e-01 |            - | 5.994469e-01 |            - | 9.016810e-01 |            - |            - |
+| Cws             | 3.503620e-10 |            - | 1.584351e-10 |            - | 1.685156e-10 |            - | 1.003855e-10 |            - |            - |
 | Chargeth (V_FRC) | 1.744963e-06 | 3.642283e-07 | 8.396596e-07 | 2.699475e-07 | 9.427715e-07 | 2.198790e-07 | 5.910861e-07 | 5.958497e-07 | 5.185713e-07 |
 | Vin_th           | 4.666378e+00 | 7.926677e+00 | 4.990351e+00 | 8.694383e+00 | 5.289833e+00 | 9.256451e+00 | 5.588244e+00 | 6.794462e+00 | 7.098371e+00 |
-| Vgravity         |            0 |            0 |            0 |            0 |            0 |            0 |            0 |            0 |            0 |
-| STATUS           |           OK |           OK |           OK |           OK |           OK |           OK |           OK |           OK |           OK |
+| Vgravity        |            0 |            0 |            0 |            0 |            0 |            0 |            0 |            0 |            0 |
+| STATUS          |           OK |           OK |           OK |           OK |           OK |           OK |           OK |           OK |           OK |
 
 Tutti i componenti instanziati nel modello sottostanti sono stati
 ricontrollati con la precedente tabella riassuntiva.  Noto che alcuni
@@ -1187,17 +1197,18 @@ valori si ripetono ({R, L, C}ti, {R, C}s).
 #+end_src
 
 Noto che vi erano degli errori nella definizione della capacità `c_s`
-nel modello alveolare.  Questi sono stati sistemati in `test8.jl`.
+nel modello alveolare.  Questi sono stati sistemati in `[[file:src/test/test8.jl][test8.jl]]`.
 
 Ho sistemato il modello di stamattina isolando il parametri del
 sistema per rendere il tutto maggiormente modificabile. (si veda
-`test9.jl`).
+`[[file:src/test/test9.jl][test9.jl]]`).
 
 ** DONE Capire come graficare meglio i risultati
 ** DONE Implementare il modello con componenti variabili.          :Modello:
 
 * 01.11.23                                                       :Componenti:
-Implemento il diodo in Julia rimanipolando del codice trovato online il 27.10.
+Implemento il diodo in Julia rimanipolando del codice trovato online
+il 27.10.
 
 #+begin_src julia
   function Diode(;name, Ids=1e-6, Vt=0.04, max_exp=15, R=1e8)
@@ -1250,10 +1261,11 @@ Implemento il diodo in Julia rimanipolando del codice trovato online il 27.10.
 
 #+end_src
 
-Ho provato un po' di alternative ma nessuna di queste è valida per il mio utilizzo.  Ho migliorato la leggibilità del codice di `test9.jl`.
+Ho provato un po' di alternative ma nessuna di queste è valida per il
+mio utilizzo.  Ho migliorato la leggibilità del codice di `[[file:src/test/test9.jl][test9.jl]]`.
 
 * 02.11.23
-** DONE Mostro `test9.jl` ed il grafico risultante.
+** DONE Mostro `[[file:src/test/test9.jl][test9.jl]]` ed il grafico risultante.
 Ok, va bene ma vedi sotto.
 
 ** DONE Domande da fare
@@ -1269,7 +1281,6 @@ o solo acqua questo non c'è.
 Le resistenze devono essere uguali, quindi variabile.
 
 ** DONE Implementare il modello con componenti variabili
-
 ** Colloquio con Chiara                                       :Suggerimenti:
 L'integrale nella via aerea "media" (quindi via respiratoria ed
 alveolo) non deve essere effettuato dall'inizio della simulazione ma
@@ -1278,7 +1289,6 @@ trovare un modo per passare una variabile da un modulo all'altro
 (passerei l'integrale della corrente nel precedente modulo?).
 
 ** DONE Vedi come posso passare una variabile da un modulo all'altro :Componenti:
-
 ** DONE Modificare l'onda quadra così che abbia 40ns di rise e 400ns di HIGH.
 
 * 03.11.23                                                 :Input:Componenti:
@@ -1293,28 +1303,28 @@ smoothing factor dell'onda quadra.
 
 Cosa s'intende per smoothing factor?  Lo scoprirò empiricamente.  È
 legato alla pendenza dell'onda quadra, la cui implementazione
-"smoothed" è un'artan(x) (vedi `test11.jl`).
+"smoothed" è un'artan(x) (vedi `[[file:src/test/test11.jl][test11.jl]]`).
 
 Mi dedico ora al diodo.  Credo che spostando la variabile `∫i` nei
 modelli ad alto livello (i.e. `Airway` e `Alveolus`) dovrei avere modo
 di calcolarla una volta sola e poi sfruttarla in ciascun componente.
 Altre due variabili potrebbero essere interessanti da implementare:
-trigger_in e trigger_out. La prima indica lo stato di riempimento
-della via aerea in input a quella del modulo.  La seconda indica lo
-stato di riempimento della via aerea del modulo corrente.  L'integrale
-della corrente deve essere valutato a partire dal momento in cui
-arriva l'aria nella via aerea corrente, quindi ipotizzo che lo stato
-di `trigger_in` sarà true mentre quello di `trigger_out` sarà `false`.
-Lo stato sarà mantenuto fino a quando l'integrale sarà uguale a
-`V_FRC`, valore che rappresenta il volume massimo.  Quando `∫i / V_FRC
-= 1`, cambio stato: trigger_in = 1, trigger_out = 1.
+trigger_in e trigger_out. La prima indica lo stato di riempimento della
+via aerea in input a quella del modulo.  La seconda indica lo stato di
+riempimento della via aerea del modulo corrente.  L'integrale della
+corrente deve essere valutato a partire dal momento in cui arriva
+l'aria nella via aerea corrente, quindi ipotizzo che lo stato di
+`trigger_in` sarà true mentre quello di `trigger_out` sarà `false`.  Lo
+stato sarà mantenuto fino a quando l'integrale sarà uguale a `V_FRC`,
+valore che rappresenta il volume massimo.  Quando `∫i / V_FRC = 1`,
+cambio stato: trigger_in = 1, trigger_out = 1.
 
 | trigger_in | trigger_out | stato      | integrazione     |
-|------------+-------------+------------+------------------|
-| false      | false       | Full water | no --> D(∫i) = 0 |
-| false      | true        | ---        | ---              |
-| true       | false       | Interface  | sì --> D(∫i) = i |
-| true       | true        | Full air   | no --> D(∫i) = 0 |
+|-----------+------------+------------+------------------|
+| false     | false      | Full water | no --> D(∫i) = 0 |
+| false     | true       | ---        | ---              |
+| true      | false      | Interface  | sì --> D(∫i) = i |
+| true      | true       | Full air   | no --> D(∫i) = 0 |
 
 #+begin_src julia
   # Nel modulo gestisco solo trigger_out.
@@ -1384,8 +1394,12 @@ parametri in un modello ad alto livello.
 
 #+end_src
 
-- Alcuni parametri devono necessariamente essere scritti all'interno della funzione che genera quel componente (e.g. `frequency` e `smooth` per `Square()`).
-- I nomi dei parametri nel modello superiore (alias per "ad alto livello") possono essere gli stessi di quelli dei modelli inferiori, senza interferire tra loro.
+- Alcuni parametri devono necessariamente essere scritti all'interno
+  della funzione che genera quel componente (e.g. `frequency` e
+  `smooth` per `Square()`).
+- I nomi dei parametri nel modello superiore (alias per "ad alto
+  livello") possono essere gli stessi di quelli dei modelli inferiori,
+  senza interferire tra loro.
 
 * 04.11.23                                          :Modello:Parametri:Input:
 Ieri pomeriggio ho provato ad implementare un parametro ereditabile
@@ -1407,11 +1421,11 @@ Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#In
   @variables x[1:2, 1:2] [connect = Flow; unit = u"m^3/s"]
 #+end_src
 
-** TODO Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:
+** TODO Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:Manuale:
+Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Variable-descriptions][`Variables descriptions`]].  Inserire nella documentazione finale.
 
-Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Variable-descriptions][`Variables descriptions`]].
 ** TODO Leggere manuale di `ModelingToolkit`                    :Julia:Must:
-Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].  
+Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].
 - [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#Numerics-with-Composed-Models][`Numerics with Composed Models`]] tratta di come estrarre le serie
   temporali dalla soluzione del sistema.
 
@@ -1430,8 +1444,9 @@ Leggi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/MTKModel_Connector/#
 sulla gestione dei modelli costituiti da componenti.
 
 * 05.11.23
-** DONE Dubbi sulle unità di misura                                :Domande:
-Le unità di misura di ciascuna variabile devono essere quelle elettriche oppure quelle meccaniche?
+** DONE Dubbi sulle unità di misura                       :Domande:Risposte:
+Le unità di misura di ciascuna variabile devono essere quelle
+elettriche oppure quelle meccaniche?  R: Quelle elettriche
 
 * 07.11.23                                            :Bash:Input:Repository:
 ** Conversione dati di input                             :Conversione:Input:
@@ -1448,8 +1463,9 @@ di creare delle posizioni più sensate.
 
 * 08.11.23
 ** DONE Sistemare nome parametri per corrispondere a quelli di `cir2jl` :Parametri:Julia:
+C'è un problema che devo risolvere, ossia che il file del modello che
+voglio importare è troppo grande per essere importato da Julia...
 
-C'è un problema che devo risolvere, ossia che il file del modello che voglio importare è troppo grande per essere importato da Julia...
 ** TODO Come posso importare un così gran numero di dati?          :Problema:
 * 09.11.23                                                       :Componenti:
 Il problema della gestione dell'input di 50k moduli è da risolversi
@@ -1466,13 +1482,328 @@ elettriche per il nostro modello e non quelle fisiche/meccaniche.
 
 ** DONE Sistemare lo script per includere anche i trigger{in, out}    :Bash:
 L'ho fatto in treno.  Basta un `echo` ed un `sed`.
+
 * 10.11.23                                                       :Componenti:
 Ho sistemato lo script e il `main.jl` così da calcolare l'integrale
 della corrente a partire da quando arriva il flusso.  Ho aggiunto
 `src/util/graphs_trigger.jl`: crea i grafici di quello che avviene a
-livello di trigger_in, trigger_out e integrale della corrente nei vari
-moduli.
+livello di `trigger_in`, `trigger_out` e integrale della corrente nei
+vari moduli.
 
-** TODO Convenzioni delle correnti                                 :Domande:
+** DONE Convenzioni delle correnti                                 :Domande:
 La corrente negativa indica una corrente entrante nella via aerea?
+contrario.  Risposta completa nei giorni seguenti.
 
+* 13.11.23                                                 :Componenti:Input:
+** DONE Segno dell' integrale di corrente                 :Domande:Proposta:
+Ho dei dubbi relativi all'integrale della corrente.  Se questo deve
+modificare i componenti variabili, non avrebbe senso andare ad
+utilizzare solamente la corrente entrante nell'integrale?  Il grafico
+che ho generato mostra chiaramente che, nel momento in cui la flag
+`trigger_in = 1` e `trigger_out = 0`, il sistema continuerà a valutare
+l'integrale di corrente per quel particolare modulo.  Si noti però
+che, ad esempio, IBL ha un andamento oscillatorio ma raggiunge anche
+dei livelli negativi di integrale.  Penso si possa utilizzare anche
+un'opzione `bounds` delle variabili di ModelingToolkit, applicata alla
+variabile integrale.  Dalla documentazione, l'utilizzo di questo
+metadato è utile solo al tuning dei parametri, quindi non me ne faccio
+nulla.
+
+Ho provato anche una soluzione di questo tipo:
+#+begin_src julia
+  @equations begin
+      0 ~ ifelse(∫i > 0,
+                 D(∫i) - trigger_in * (1.0 - trigger_out) * in.i,
+                 ∫i)
+  end
+#+end_src
+
+I controlli nei componenti variabili dovrebbero limitare i valori di
+resistenza ed induttanza nel seguente modo:
+
+#+begin_src julia
+  @equations begin
+      # Ra <= R <= Rl: suppongo che i valori Ra ed Rl siano estremi da
+      # non superare.
+      R ~ min((Ra + Rb), max(Ra, (Ra + Rb * (1 - ∫i / V_FRC))))
+      v ~ R * i
+  end
+#+end_src
+
+La risposta è che non è fattibile perchè poi vogliamo che l'integrale
+vari quando ho solo aria.
+
+** DONE Devo valutare il comportamento in presenza di una tensione costante :Input:Componenti:
+Ho riscontrato un problema relativo a `MaxIters`, il massimo numero di
+iterazioni e ho risolto andando a modificare la tolleranza, rendendo
+la soluzione più approssimata.
+* 14.11.23                                                       :Repository:
+Devo mostrare i risultati a tensione costante a Chiara.
+** Package management
+Quali sono le guidelines per scrivere codice in julia correttamente?
+Il pacchetto julia `Pkg`, già preinstallato, crea in automatico due
+file toml: `Manifest.toml` e `Project.toml`. Si veda la [[https://docs.julialang.org/en/v1/stdlib/Pkg/][documentazione]]
+di Pkg.
+
+* 15.11.23
+** Risultati test con step function (alias tensione costante) :Input:Variabili:
+I risultati mostrati ieri sono abbastanza coerenti con quello che ci
+si aspetta ma alcuni versi delle correnti e picchi non convincono.  Ho
+voluto "smussare" la tensione costante che stavo fornendo in quanto
+credevo fosse il solito fenomeno di Gibbs, così ho sistemato il picco.
+Per quanto riguarda le correnti e i loro versi è bastato prendere come
+riferimento un componente e non il nodo d'uscita.
+** Convenzione correnti                                           :Risposte:
+Se la corrente è positiva, allora è anche entrante (viceversa).
+
+** Segno dell'integrale di corrente                               :Risposte:
+La risposta è che non è fattibile perchè poi vogliamo che l'integrale
+vari quando ho solo aria.
+
+** DONE Diodo                                    :Proposta:Domande:Risposte:
+La soluzione per il diodo è stata trovata sul [[https://discourse.julialang.org/t/diode-model-not-working-as-expected-with-modelingtoolkit/95125/2][forum online]].
+#+begin_src julia
+  exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
+  @mtkmodel Diode begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Ids     = 1e-6,
+          [description = "Reverse-bias current"]
+          Vt      = 0.04,
+          [description = "Threshold in voltage"]
+          max_exp = 15,
+          [description = "Value after which linearization is applied"]
+          R       = 1e8,
+          [description = "Diode Resistance"]
+      end
+      @equations begin
+          i ~ Ids * (exlin(v / Vt, max_exp) - 1) + (v / R)
+      end
+  end
+#+end_src
+
+Basterebbe quindi rimaneggiare questa forma per poter usufruire del
+componente.  Dovrei renderlo dipendente dall'integrale di corrente
+della via aerea e, a denominatore dell'esponenziale cosa dovrebbe
+esserci?  Qual è il ruolo di `Vin_th`? Solo la "disabilitazione" del
+diodo oppure svolge un ruolo all'interno del diodo?
+
+Creo del codice di test per il diodo.
+#+begin_src julia
+  using ModelingToolkit
+  using ModelingToolkitStandardLibrary.Blocks
+  using ModelingToolkitStandardLibrary.Electrical
+  using OrdinaryDiffEq
+  using Plots
+
+  @parameters t
+
+  exlin(x, max_x) = ifelse(x > max_x,
+                           exp(max_x)*(1 + x - max_x),
+                           exp(x))
+  @mtkmodel Diode begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Ids     = 1e-6,
+          [description = "Reverse-bias current"]
+          Vt      = 0.04,
+          [description = "Threshold in voltage"]
+          max_exp = 15,
+          [description = "Value after which linearization is applied"]
+          R       = 1e8,
+          [description = "Diode Resistance"]
+      end
+      @equations begin
+          i ~ Ids * (exlin(v / Vt, max_exp) - 1) + (v / R)
+      end
+  end
+
+  @mtkmodel System begin
+      @components begin
+          V = Voltage()
+          D = Diode()
+          R = Resistor(R = 100)
+          Gnd = Ground()
+      end
+      @equations begin
+          V.V.u ~ 15 * sin(2*π*50*t)
+          connect(V.p, D.p)
+          connect(D.n, R.p)
+          connect(V.n, R.n, Gnd.g)
+      end
+  end
+
+@mtkbuild system = System()
+prob = ODEProblem(system, Pair[], (0/50, 1/50), saveat=1/50e2);
+sol = solve(prob, Rodas4(), dtmax = 1.0e-3);
+
+#+end_src
+
+`Vin_th` rappresenta la soglia in tensione che esercita il diodo.  Ciò
+significa che il parametro `Vt` del diodo sarà da essere modificato in
+ogni componente.  L'esclusione del diodo la si effettua quando
+`trigger_in = 1` e `trigger_out = 0` (situazione di interfaccia
+aria-acqua).
+
+* 16.11.23
+** Diodo di Shockley                                                :Teoria:
+Il diodo si comporta come dovrebbe ma devo capire ora come gestire al
+meglio i vari parametri.  Per poterlo fare devo innanzitutto sapere a
+cosa si riferiscono tali parametri però, per cui mi riferisco alla
+pagina wiki del [[https://it.wikipedia.org/wiki/Equazione_del_diodo_ideale_di_Shockley][diodo ideale di Shockley]].
+
+\begin{equation}
+i_D = I_s\cdot \left(e^{\frac{v_D}{\eta v_T}} - 1\right)
+\end{equation}
+
+- Vt :: tensione termica
+- Vd :: tensione applicata ai capi
+- \eta :: fattore di idealità (dipendente dal materiale)
+
+** Diodo                                                            :Teoria:
+Riporto l'equazione del [[https://it.wikipedia.org/wiki/Diodo#Diodo_ideale][diodo ideale]].  Il mio scopo è quello di
+implementare questa soluzione ma per ora ho solo trovato online del
+materiale per la precedente.
+
+\begin{equation}
+I = I_0 \cdot e^{\frac{V_D}{V_T}}
+\end{equation}
+
+I parametri sono i medesimi, considerato I_0 = I_s.  La vera domanda è
+se esiste un modo per determinare inserire il valore di tensione di
+soglia (e.g. 0.6, 0.7V dei diodi visti ad Elettronica) all'interno
+dell'equazione caratteristica, dato che la tensione termica
+sembrerebbe essere diversa da questa.
+
+- Tensione di soglia (V_s, V_{th}) :: la minima differenza di potenziale
+  applicabile tra gate e source del transistore per formare il canale;
+  nei diodi è la minima tensione necessaria per attivare la conduzione
+  in polarizzazione diretta. [[[https://it.wikipedia.org/wiki/Tensione_di_soglia][Wikipedia]]]
+- Tensione termica (V_T, in engl. "Thermal voltage") :: è definita come
+  $V_T = \frac{k_B T}{q}$ Dove:
+  - k_B :: Costante di Boltzmann [J K^{-1}]
+  - T :: Temperatura [K]
+  - q :: Carica dell'elettrone [C]
+  In `Modia.jl` viene descritta nel seguente modo:
+  #+begin_quote
+  Voltage equivalent of temperature
+  #+end_quote
+
+
+  In condizioni fisiologiche: $V_T \approx 26.7 mV$. [[[https://www.edutecnica.it/elettronica/diodo/diodo.htm][Fonte]]]
+
+** Altre soluzioni                                :Componenti:Julia:Proposta:
+Leggendo degli esempi di `Modia.jl`, ho trovato anche questa
+formulazione che sembra interessante:
+#+begin_src julia
+  # Ideal diode
+  IdealDiode = OnePort | Model(
+      Ron   = 1e-5u"Ω",
+      Goff  = 1e-5u"1/Ω",
+      s = Var(start = 0.0),
+      equations = :[              
+          closed = positive(s)   # closed = s > 0  
+          v = s*u"V"*(if closed; Ron*u"1/Ω" else 1         end)
+          i = s*u"A"*(if closed; 1          else Goff*u"Ω" end)
+      ]
+  )
+#+end_src
+
+** Riflessioni                                           :Problema:Proposta:
+Il modello di diodo deve fare in modo che, superata la tensione di
+soglia, chiamata nel nostro problema `Vin_th`, la corrente `i_D` possa
+scorrere e la tensione `V_D = Vin_th` ai capi.  Se la tensione misurata
+dovesse essere inferiore alla soglia Vin_th, allora `i_D = 0` e la
+tensione sul diodo (`V_D`) seguirà quella del generatore.
+
+*** TODO Misurazione e sovrascrittura della differenza di potenziale :Problema:Domande:Proposta:
+Come faccio a gestire il fatto che devo sia misurare una differenza di
+potenziale che imporla?  Potrei utilizzare il sensore di tensione
+(i.e. VoltageSensor) presente nella libreria standard.
+
+#+begin_src julia
+  @mtkmodel VoltageSensor begin
+      @components begin
+          # Sfrutta due pin, positivo e negativo
+          p = Pin()
+          n = Pin()
+      end
+      @variables begin
+          # L'unica variabile in uscita
+          v(t)
+      end
+      @equations begin
+          # Misura la tensione senza introdurre corrente
+          p.i ~ 0
+          n.i ~ 0
+          v   ~ p.v - n.v
+      end
+  end
+#+end_src
+
+Segue una soluzione che vuole sfruttare questo componente. non resta
+che testarla nel circuito diodo-resistenza.
+
+#+begin_src julia
+  @mtkmodel Diode begin
+      @parameters begin
+          Vin_th, [description = "Diode threshold"]
+      end
+      @extend v, i = oneport = OnePort()
+      @components begin
+          VS = VoltageSensor()
+      end
+      @equations begin
+          connect(oneport.p, VS.p)
+          connect(oneport.n, VS.n)
+          v ~ (if VS.v >= Vin_th; 
+                   Vin_th
+               else
+                   VS.v)
+          i ~ (if VS.v < Vin_th;
+                   0)
+      end
+  end
+#+end_src
+
+Non sono riuscito per ora ad instanziarlo.  I risultati sono riportati in `[[file:src/test/test13.jl][test13.jl]]`
+
+* 17.11.23
+** Diodo                                          :Componenti:Julia:Modello:
+Esiste, nella libreria standard, anche un [[file:~/.julia/packages/ModelingToolkitStandardLibrary/sOsqv/src/Electrical/Analog/sensors.jl][sensore multiplo]] che
+incorpora due sensori: uno di corrente ed uno di tensione.  Mi
+riferisco a `MultiSensor`.  Potrei collegare i poli per la misurazione
+della corrente al generatore di tensione e i poli per la misurazione
+della tensione ai due rami del circuito, quello a monte del generatore
+e quello a valle del resto del modulo.  Consulto ora come è fatto il
+[[file:~/.julia/packages/ModelingToolkitStandardLibrary/sOsqv/src/Electrical/Analog/sources.jl][generatore di tensione]].  Devo ora capire esattamente quali sono i
+valori delle tensioni e delle correnti del due poli del diodo.
+
+| Stato       | Corrente_p | Corrente_n | Tensione_p | Tensione_n |
+|-------------+-----------+-----------+-----------+-----------|
+| VS.v >= V_th | CS.i      | CS.i      | V_th       | V_th       |
+| VS.v < V_th  | 0         | 0         | VS.v      | 0         |
+
+
+#+begin_src julia
+  #=
+  Proverei ad implementare queste equazioni.
+  p.i ~ n.i ~ CS.i
+  p.v ~ VS.v
+  n.v ~ V_th
+
+  p.i ~ CS.i
+  n.i ~ 0
+  p.v ~ VS.v
+  n.v ~ 0
+  =#
+  n.i ~ ifelse(VS.v >= V_th, CS.i, 0)
+  n.v ~ ifelse(VS.v >= V_th, V_th, 0)
+#+end_src
+
+Se mettessi la differenza di tensione ai capi uguale a zero avrei un
+corto circuito ma la tensione sul catodo seguirebbe l'andamento di
+quella dell'anodo, non rimanendo fissa.  Sperimento il codice su
+[[file:src/test/test14.jl][test14.jl]].  Il risultato sembrerebbe essere instabile.
+
+*** Alternativa: `Modia.jl`
