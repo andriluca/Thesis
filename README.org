@@ -1,4 +1,44 @@
 #+title: My Master Thesis
 #+author: Luca Andriotto
 
-This is the repository gathering all the required files.
+This is my master thesis repository, gathering Latex and model-related
+source files.
+
+* Information about the project
+It is a morphometric model, embedding both geometrical and
+physical/mechanical properties, of human lungs.
+
+* Repo's structure
+- [[file:src][src/]] :: contains all the source files used to process data ([[file:src/input][src/input]]), tests ([[file:src/test][src/test]]), components library ([[file:src/lib][src/lib]]), graphical results of the simulation ([[file:src/output][src/output]]).
+- [[file:diary.org][diary.org]] :: journal I keep to track verbose logs of my work.
+- [[file:Latex][Latex]] :: contains all the latex-related source files of my thesis.
+- [[file:modelloMorfometrico][modelloMorfometrico]] :: past works on the same model.
+
+* Install
+** System requirements
+In order for your system to properly run the simulation there are few
+requirements:
+- [[https://git-scm.com/][Git]] :: version control system.
+- [[https://julialang.org/][Julia]] :: REPL (i.e. Read, Eval, Print, Loop) to run code in.
+
+This software can be tested on any OS.
+
+** Setup
+Once requirements are properly installed, open a new terminal window
+and type:
+
+#+begin_src bash
+  git clone https://www.github.com/andriluca/Thesis.git Thesis
+  cd Thesis
+#+end_src
+
+*Change variable `repodir`* in file ~src/main.jl~ to match the
+location of your cloned repository.
+
+You are ready to run the code from terminal like this:
+
+#+begin_src bash
+  julia -t auto -q src/main.jl
+#+end_src
+
+or interactively in Julia REPL.

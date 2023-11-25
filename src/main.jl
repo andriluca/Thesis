@@ -5,9 +5,13 @@
 # |_| |_| |_|\__,_|_|_| |_(_)/ |_|
 #                          |__/   
 
+## Gestione delle dipendenze
+using Pkg
+
 ## Definizione paths di interesse.
-homedir = "/home/luca"
-srcdir  = "$homedir/Thesis/src"
+repodir = "/home/luca/Thesis"
+srcdir  = "$repodir/src"
+Pkg.activate(repodir)
 
 ## Definizione parametri.
 ### Generatore (di onda quadra "smussata", aka artan()).
