@@ -1590,52 +1590,52 @@ diodo oppure svolge un ruolo all'interno del diodo?
 
 Creo del codice di test per il diodo.
 #+begin_src julia
-  using ModelingToolkit
-  using ModelingToolkitStandardLibrary.Blocks
-  using ModelingToolkitStandardLibrary.Electrical
-  using OrdinaryDiffEq
-  using Plots
+    using ModelingToolkit
+    using ModelingToolkitStandardLibrary.Blocks
+    using ModelingToolkitStandardLibrary.Electrical
+    using OrdinaryDiffEq
+    using Plots
 
-  @parameters t
+    @parameters t
 
-  exlin(x, max_x) = ifelse(x > max_x,
-                           exp(max_x)*(1 + x - max_x),
-                           exp(x))
-  @mtkmodel Diode begin
-      @extend v, i = oneport = OnePort()
-      @parameters begin
-          Ids     = 1e-6,
-          [description = "Reverse-bias current"]
-          Vt      = 0.04,
-          [description = "Threshold in voltage"]
-          max_exp = 15,
-          [description = "Value after which linearization is applied"]
-          R       = 1e8,
-          [description = "Diode Resistance"]
-      end
-      @equations begin
-          i ~ Ids * (exlin(v / Vt, max_exp) - 1) + (v / R)
-      end
-  end
+    exlin(x, max_x) = ifelse(x > max_x,
+                             exp(max_x)*(1 + x - max_x),
+                             exp(x))
+    @mtkmodel Diode begin
+        @extend v, i = oneport = OnePort()
+        @parameters begin
+            Ids     = 1e-6,
+            [description = "Reverse-bias current"]
+            Vt      = 0.04,
+            [description = "Threshold in voltage"]
+            max_exp = 15,
+            [description = "Value after which linearization is applied"]
+            R       = 1e8,
+            [description = "Diode Resistance"]
+        end
+        @equations begin
+            i ~ Ids * (exlin(v / Vt, max_exp) - 1) + (v / R)
+        end
+    end
 
-  @mtkmodel System begin
-      @components begin
-          V = Voltage()
-          D = Diode()
-          R = Resistor(R = 100)
-          Gnd = Ground()
-      end
-      @equations begin
-          V.V.u ~ 15 * sin(2*π*50*t)
-          connect(V.p, D.p)
-          connect(D.n, R.p)
-          connect(V.n, R.n, Gnd.g)
-      end
-  end
+    @mtkmodel System begin
+        @components begin
+            V = Voltage()
+            D = Diode()
+            R = Resistor(R = 100)
+            Gnd = Ground()
+        end
+        @equations begin
+            V.V.u ~ 15 * sin(2*π*50*t)
+            connect(V.p, D.p)
+            connect(D.n, R.p)
+            connect(V.n, R.n, Gnd.g)
+        end
+    end
 
-@mtkbuild system = System()
-prob = ODEProblem(system, Pair[], (0/50, 1/50), saveat=1/50e2);
-sol = solve(prob, Rodas4(), dtmax = 1.0e-3);
+  @mtkbuild system = System()
+  prob = ODEProblem(system, Pair[], (0/50, 1/50), saveat=1/50e2);
+  sol = solve(prob, Rodas4(), dtmax = 1.0e-3);
 
 #+end_src
 
@@ -1740,7 +1740,6 @@ potenziale che imporla?  Potrei utilizzare il sensore di tensione
       end
   end
 #+end_src
-
 Segue una soluzione che vuole sfruttare questo componente. non resta
 che testarla nel circuito diodo-resistenza.
 
@@ -1807,3 +1806,77 @@ quella dell'anodo, non rimanendo fissa.  Sperimento il codice su
 [[file:src/test/test14.jl][test14.jl]].  Il risultato sembrerebbe essere instabile.
 
 *** Alternativa: `Modia.jl`
+Guardando sulla libreria di `Modia.jl`, il diodo non è implementato se
+non con una funzione commentata, la si veda nei giorni passati.
+
+#+begin_src julia
+  IdealDiode = OnePort | Model(
+      Ron   = 1e-5u"Ω",
+      Goff  = 1e-5u"1/Ω",
+      s = Var(start = 0.0),
+      equations = :[
+          closed = positive(s)   # closed = s > 0
+          v = s*u"V"*(if closed; Ron*u"1/Ω" else 1         end)
+          i = s*u"A"*(if closed; 1          else Goff*u"Ω" end)
+      ]
+  )
+#+end_src
+
+Non si capisce molto la logica del componente.
+
+* 20.11.23
+** Albero                                   :Input:Proposta:Julia:Parametri:
+L'altro giorno ho visto un [[https://www.youtube.com/watch?v=iwFMg-rCWNg][video]] che parlava di `DataFrames.jl`, un
+pacchetto per la gestione di dati tabulari su Julia.  In particolare
+si interfaccerebbe con uno standard open-source, Apache Arrow, che
+renderebbe istantanea l'importazione dell'albero.  Esiste un [[https://www.youtube.com/watch?v=SXF4BawX-hs][guida
+completa]] a `DataFrame.jl`, oltre alla documentazione sul [[https://dataframes.juliadata.org/stable/][sito
+ufficiale]].
+
+** TODO Diodo
+Penso sia meglio impostare un messaggio per discourse, così da trovare
+una soluzione del diodo lì.
+
+* 21.11.23
+Creo una tabella con i dati della sottorete e provo ad importarli in
+Julia.
+
+#+begin_src CSV
+Name,Type,Ra,Rb,La,Lb,C_g/C_ga,V_FRC,Vin_th,Rti/Rws,Lti/Lws,Cti/Cws,Rs,Cs,From
+IAD,airway,3.100029e+01,1.514023e+03,1.852803e-03,1.664949e+00,1.689219e-09,1.744963e-06,4.666378e+00,4.186147e+06,3.705082e-01,3.503620e-10,,,
+IAE,alveolus,3.109214e+02,1.518509e+04,6.440085e-03,5.718839e+00,2.462271e-07,3.642283e-07,7.926677e+00,1200,5.795540e-04,2.400000e-05,80000,2.100000e-05,IAD
+IAF,airway,2.231464e+01,1.089824e+03,1.166141e-03,1.047907e+00,8.128360e-10,8.396596e-07,4.990351e+00,9.257208e+06,7.164089e-01,1.584351e-10,,,IAD
+IAG,alveolus,4.012746e+02,1.959785e+04,6.908560e-03,6.134848e+00,2.461359e-07,2.699475e-07,8.694383e+00,1200,5.795540e-04,2.400000e-05,80000,2.100000e-05,IAF
+IAH,airway,3.554331e+01,1.735899e+03,1.653093e-03,1.485488e+00,9.126539e-10,9.427715e-07,5.289833e+00,8.703449e+06,5.994469e-01,1.685156e-10,,,IAF
+IAI,alveolus,4.759710e+02,2.324594e+04,7.229610e-03,6.419942e+00,2.460874e-07,2.198790e-07,9.256451e+00,1200,5.795540e-04,2.400000e-05,80000,2.100000e-05,IAH
+IBL,airway,3.097440e+01,1.512758e+03,1.290849e-03,1.159971e+00,5.722034e-10,5.910861e-07,5.588244e+00,1.461035e+07,9.016810e-01,1.003855e-10,,,IAH
+IBA,alveolus,2.017423e+02,9.852891e+03,5.687354e-03,5.050408e+00,2.464514e-07,5.958497e-07,6.794462e+00,1200,5.795540e-04,2.400000e-05,80000,2.100000e-05,IBL
+IBB,alveolus,2.282920e+02,1.114955e+04,5.896531e-03,5.236159e+00,2.463766e-07,5.185713e-07,7.098371e+00,1200,5.795540e-04,2.400000e-05,80000,2.100000e-05,IBL
+#+end_src
+
+* 22.11.23
+** Diodi, ruolo delle callbacks                :Componenti:Modello:Proposta:
+Le Callbacks sarebbero d'aiuto nella fase di solving, sostituendo la
+`transition` di Verilog, come documentato [[https://discourse.julialang.org/t/ideal-diode-mtk-callbacks-to-mimic-verilog-a-events/62528][qui]].
+
+* 23.11.23
+Il problema di queste callbacks è che si rifanno alla modalità senza
+macro, precedente a quella utilizzata attualmente.  Dovrei quindi
+capire se fosse possibile scrivere le callbacks pur mantenendo la
+struttura del codice che ho già, senza quindi rifare di nuovo tutto.
+
+** Test callbacks con sintassi obsoleta             :Modello:Julia:Proposta:
+Testo sul solito circuito D-R con vecchia sintassi (si veda
+`[[file:src/test/test14b.jl][test14b]]`).
+
+La sintassi utilizzata nella [[file:~/.julia/packages/ModelingToolkitStandardLibrary/sOsqv/src/Electrical/Analog/ideal_components.jl][libreria standard dei componenti]].
+Raccolgo le domande che sorgono durante la scrittura di questo
+sorgente.  Dalla [[~/.julia/packages/ModelingToolkit/66mEN/docs/src/basics/Events.md][documentazione]] (in locale), sembrerebbe che la
+necessità sia più quella di stabilire
+
+* 24.11.23
+** ModelingToolkitStandardLibrary (MSL)         :Modello:Julia:Bibliografia:
+Riporto come risorsa il [[https://www.youtube.com/watch?v=7hF0JRznxNU][video]] di presentazione del nuovo formato di
+coding.  Sulla repo di MSL sono presenti alcune [[https://github.com/SciML/ModelingToolkitStandardLibrary.jl/pull/166/commits/5d97d405ee66d7121a8facbe823425fd508f78a2][PR]] in cui degli utenti
+hanno utilizzato anche la macro `@component` per definire la funzione
+che descrive il componente.
