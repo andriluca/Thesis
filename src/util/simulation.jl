@@ -13,10 +13,11 @@
 @mtkbuild system = System()
 
 ## genero un problema da risolvere nell'intervallo 0-10s.
-prob = ODEProblem(system,
-                  [system.gen.frequency => resp_freq,
-                   system.gen.amplitude => resp_ampl],
-                  (0, 5.0))
+prob = ODEProblem(system, [], tspan)
+# [
+#     # system.gen.frequency => resp_freq,
+#     # system.gen.amplitude => resp_ampl
+# ],
 
 ## modifico le tolleranze della soluzione.
-sol = solve(prob, reltol = 1.0e-8, abstol = 1.0e-8)
+sol = solve(prob, reltol = 1.0e-7, abstol = 1.0e-7)
