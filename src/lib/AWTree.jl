@@ -22,6 +22,10 @@ using DifferentialEquations
 @parameters t
 D = Differential(t)
 
+#===============================================================
+ COMPONENTI INFERIORI (alias a basso livello)
+ ===============================================================#
+
 # Componenti variabili
 @mtkmodel CIDResistor begin
     @extend v, i = oneport = OnePort()
@@ -32,22 +36,14 @@ D = Differential(t)
     end
     @variables begin
         # Dopo l'uguale ho i valori di inizializzazione delle
-        # variabili.
+        # variabili
         ∫i(t) = 0,      [description = "Current integral"]
-        # Dichiaro come variabile d'interesse anche la resistenza.
+        # Dichiaro come variabile d'interesse anche la resistenza
         R(t) = Ra + Rb, [description = "Variable resistance"]
     end
     @equations begin
-        # Ho trasformato l'equazione integrale della resistenza in una
-        # differenziale. La notazione `∫i` indica il nome di una
-        # variabile che rappresenta l'integrale della corrente.
-        D(∫i) ~ i
-        # Ra <= R <= Rl: suppongo che i valori Ra ed Rl siano estremi da non superare.
+        # Ra <= R <= Rl: suppongo che i valori Ra ed Rl siano estremi da non superare
         R ~ min((Ra + Rb), max(Ra, (Ra + Rb * (1 - ∫i / V_FRC))))
-        # R ~ Ra + (Rl - Ra) * (1 - ∫i / V_FRC) # --> non funziona in
-        # questa forma.
-        # Legge di Ohm per legare la corrente alla
-        # tensione sulla resistenza.
         v ~ R * i
     end
 end
@@ -61,14 +57,13 @@ end
     end
     @variables begin
         # Il valore di default altro non è che il valore
-        # d'inizializzazione del sistema.
-        ∫i(t) = 0,  [description = "Current integral"]
+        # d'inizializzazione del sistema
+        ∫i(t) = 0,       [description = "Current integral"]
         L(t)  = La + Lb, [description = "Variable inductance"]
     end
     @equations begin
-        D(∫i) ~ i
-        # La <= L <= l
-        L ~ min((La + Lb), max((La), (La + Lb * (1 - ∫i / V_FRC))))
+        # La <= L <= Ll
+        L    ~ min((La + Lb), max(La, (La + Lb * (1 - ∫i / V_FRC))))
         # d/dt (i(t)) = 1 / L * v(t), equazione dell'induttore
         D(i) ~ (1 / L) * v
     end
@@ -126,6 +121,15 @@ end
         connect(r_tube_1.n, i_tube_1.p)
         connect(out, i_tube_1.n)
         connect(c_g.n, c_sw.n, ground.g)
+        # Equazioni
+        D(∫i)       ~ trigger_in * (1.0 - trigger_out) * in.i
+        trigger_out ~ ifelse(∫i / V_FRC >= 0.9,
+                             1.0,
+                             0.0)
+        r_tube.∫i      ~ ∫i
+        r_tube_1.∫i    ~ ∫i
+        i_tube.∫i      ~ ∫i
+        i_tube_1.∫i    ~ ∫i
     end
 end
 
@@ -134,18 +138,23 @@ end
         # Resistori
         Ra,    [description = "Resistance when air-filled"]
         Rb,    [description = "Resistance when liquid-filled"]
-        R_t,   [description = "Resistance ..."]
-        R_s,   [description = "Resistance ..."]
+        R_t,   [description = "Tissue resistance"]
+        R_s,   [description = "Tissue resistance related to stress relaxation"]
         # Condensatori
-        C_g,   [description = "Capacitance ..."]
-        C_s,   [description = "Capacitance ..."]
-        C_t,   [description = "Capacitance ..."]
+        C_g,   [description = "Shunt terminal unit compliance due to gas"]
+        C_s,   [description = "Tissue compliance related to stress relaxation"]
+        C_t,   [description = "Tissue compliance"]
         # Induttori
-        I_t,   [description = "Inductance ..."]
-        La,    [description = "Inductance when air-filled"]
-        Lb,    [description = "Inductance when liquid-filled"]
+        I_t,   [description = "Tissue inertance"]
+        La,    [description = "Inertance when air-filled"]
+        Lb,    [description = "Inertance when liquid-filled"]
         # Volume a FRC
         V_FRC, [description = "Airway Volume at FRC"]
+    end
+    @variables begin
+        ∫i(t)          = 0, [description = "Current integral"]
+        trigger_in(t)  = 0, [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
+        trigger_out(t) = 0, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
     end
     @components begin
         # Pin
@@ -178,5 +187,12 @@ end
         connect(r_t.n, c_t.p)
         connect(c_t.n, c_s.p, r_s.p)
         connect(c_ga.n, c_s.n, r_s.n, ground.g)
+        # Equazioni
+        D(∫i)       ~ trigger_in * (1.0 - trigger_out) * in.i
+        trigger_out ~ ifelse(∫i / V_FRC >= 0.9,
+                             1.0,
+                             0.0)
+        r_tube.∫i      ~ ∫i
+        i_tube.∫i      ~ ∫i
     end
 end
