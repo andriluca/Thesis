@@ -15,8 +15,9 @@ Pkg.activate(repodir)
 
 ## Definizione parametri.
 ### Generatore (di onda quadra "smussata", aka artan()).
-resp_freq   = 1.0       # Hz
-resp_ampl   = 1.0e-3    # V
+# resp_freq   = 1.0       # Hz
+resp_ampl   = 10.0        # V
+tspan       = (0, 4)      # s
 
 ## Inclusione componenti inferiori (i.e. CIDResistor, CIDInductor) e
 ## superiori (i.e. Airway, Alveolus).
@@ -33,7 +34,4 @@ include("$srcdir/util/simulation.jl")
 
 ## Generazione dei grafici.
 include("$srcdir/util/graphs.jl")
-
-## Salvataggio delle immagini.
-savefig(tot_pl,
-        "$srcdir/output/volt_curr_non_const_$(resp_ampl)_smooth.png")
+include("$srcdir/util/graphs_trigger.jl")

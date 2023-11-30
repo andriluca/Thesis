@@ -10,7 +10,7 @@ using Plots
 @parameters t
 
 function condition(u,t,integrator) # Event @ v = 0
-    u.v ~ 0
+    u.D.v ~ 0
 end
 
 function affect!(integrator)
@@ -22,7 +22,7 @@ cb = ContinuousCallback(condition, affect!)
 @component function Diode(; name)
     @named p = Pin()
     @named n = Pin()
-    vars = @variables begin
+    @variables begin
         v(t) = 0
         i(t) = 0
     end
@@ -32,14 +32,14 @@ cb = ContinuousCallback(condition, affect!)
         i ~ p.i #Positive current flows *into* p terminal
         0 ~ ifelse(v < 0, i, v)
     ]
-    ODESystem(eqs,
-              t,
-              vars,
-              [],
-              defaults = Dict();
-              name=name,
-              systems=[p, n],
-              continuous_events = cb)
+    return ODESystem(eqs,
+                     t,
+                     [v, i],
+                     [],
+                     defaults = Dict();
+                     name=name,
+                     systems=[p, n],
+                     continuous_events = [v ~ 0])
 end
 
 # Definisco il sistema
@@ -66,7 +66,8 @@ end
 @mtkbuild system = System()
 
 prob = ODEProblem(system, [], (0, 2))
-sol = solve(prob; callback = cb)
+sol = solve(prob)
 
 # Mostro il grafico delle grandezze di interesse
-
+gr()
+plot(sol, idxs = [system.D.i])

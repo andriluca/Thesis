@@ -10,9 +10,11 @@
  ===============================================================#
 
 # Modello
-using ModelingToolkit, ModelingToolkitStandardLibrary.Electrical
-using ModelingToolkitStandardLibrary.Blocks: Constant, Square
-using DifferentialEquations
+using DifferentialEquations, OrdinaryDiffEq
+using ModelingToolkit
+using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step
+using ModelingToolkitStandardLibrary.Electrical
+
 
 #===============================================================
  DEFINIZIONE COMPONENTI E MODELLI
@@ -69,27 +71,65 @@ end
     end
 end
 
-# Modelli di Via Respiratoria e di Alveolo
+@mtkmodel Diode begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        Ids     = 1e-6, [description = "Reverse-bias current"]
+        max_exp = 15,   [description = "Value after which linearization is applied"]
+        R       = 1e8,  [description = "Diode Resistance"]
+        Vth     = 1e-3, [description = "Threshold voltage"]
+        k       = 1e3,  [description = "Speed of exponential"]
+    end
+    @equations begin
+        i ~ Ids * (exlin(k * (v - Vth) / (Vth), max_exp) - 1) + (v / R)
+    end
+end
+
+@mtkmodel Switch begin
+    @extend v, i = oneport = OnePort()
+    @variables begin
+        trigger_in(t) = 1, [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
+        trigger_out(t) = 0, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
+    end
+    @equations begin
+        0 ~ ifelse(trigger_in == 1,
+                   ifelse(trigger_out == 1, v, i), v)
+    end
+end
+
+#===============================================================
+ MODELLI SUPERIORI (alias ad alto livello)
+ ===============================================================#
+
 @mtkmodel Airway begin
     @parameters begin
+        # Diodo
+        Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra,    [description = "Resistance when air-filled"]
         Rb,    [description = "Resistance when liquid-filled"]
-        R_sw,  [description = "Resistance ..."]
+        R_sw,  [description = "Resistance of the soft tissues"]
         # Condensatori
-        C_g,   [description = "Capacitance ..."]
-        C_sw,  [description = "Capacitance ..."]
+        C_g,   [description = "Shunt airway compliance due to gas"]
+        C_sw,  [description = "Compliance of the soft tissues"]
         # Induttori
-        I_sw,  [description = "Inductance ..."]
-        La,    [description = "Inductance when air-filled"]
-        Lb,    [description = "Inductance when liquid-filled"]
+        I_sw,  [description = "Inertance of the soft tissues"]
+        La,    [description = "Inertance when air-filled"]
+        Lb,    [description = "Inertance when liquid-filled"]
         # Volume a FRC
         V_FRC, [description = "Airway Volume at FRC"]
+    end
+    @variables begin
+        ∫i(t)          = 0, [description = "Current integral"]
+        trigger_in(t)  = 0, [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
+        trigger_out(t) = 0, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
     end
     @components begin
         # Pin
         in       = Pin()
         out      = Pin()
+        # Diodi
+        D1       = Diode(Vth         = ParentScope(Vin_th))
         # Resistori
         r_sw     = Resistor(R        = R_sw)
         r_tube   = CIDResistor(Ra    = 0.5 * Ra,
@@ -109,11 +149,15 @@ end
         i_tube_1 = CIDInductor(La    = 0.5 * La,
                                Lb    = 0.5 * Lb,
                                V_FRC = ParentScope(V_FRC))
+        # Switch
+        Sw       = Switch()
+        # Riferimenti
         ground   = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, r_tube.p)
+        connect(in, D1.p, Sw.p)
+        connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
         connect(i_sw.n, r_sw.p)
@@ -130,11 +174,15 @@ end
         r_tube_1.∫i    ~ ∫i
         i_tube.∫i      ~ ∫i
         i_tube_1.∫i    ~ ∫i
+        Sw.trigger_in  ~ trigger_in
+        Sw.trigger_out ~ trigger_out
     end
 end
 
 @mtkmodel Alveolus begin
     @parameters begin
+        # Diodo
+        Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra,    [description = "Resistance when air-filled"]
         Rb,    [description = "Resistance when liquid-filled"]
@@ -160,6 +208,8 @@ end
         # Pin
         in     = Pin()
         out    = Pin()
+        # Diodi
+        D1     = Diode(Vth         = ParentScope(Vin_th))
         # Resistori
         r_tube = CIDResistor(Ra    = ParentScope(Ra),
                              Rb    = ParentScope(Rb),
@@ -175,12 +225,15 @@ end
                              Lb    = ParentScope(Lb),
                              V_FRC = ParentScope(V_FRC))
         i_t    = Inductor(L        = I_t)
+        # Switch
+        Sw     = Switch()
         # Riferimenti
         ground = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, r_tube.p)
+        connect(in, D1.p, Sw.p)
+        connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_ga.p, i_t.p, out)
         connect(i_t.n, r_t.p)
@@ -194,5 +247,7 @@ end
                              0.0)
         r_tube.∫i      ~ ∫i
         i_tube.∫i      ~ ∫i
+        Sw.trigger_in  ~ trigger_in
+        Sw.trigger_out ~ trigger_out
     end
 end
