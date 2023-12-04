@@ -12,9 +12,18 @@
 # Modello
 using DifferentialEquations, OrdinaryDiffEq
 using ModelingToolkit
-using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step
+using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step, Sine
 using ModelingToolkitStandardLibrary.Electrical
 
+#===============================================================
+ FUNZIONI (HELPERS)
+ ===============================================================#
+
+function smooth_step(x, δ, height, offset, start_time)
+    offset + height * (atan((x - start_time) / δ) / π + 0.5)
+end
+
+exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
 
 #===============================================================
  DEFINIZIONE COMPONENTI E MODELLI
@@ -87,13 +96,19 @@ end
 
 @mtkmodel Switch begin
     @extend v, i = oneport = OnePort()
+    @parameters begin
+        V_FRC, [description = "Airway Volume at FRC"]
+        Rclosed = 1e-6, [description = "Switch Resistance when Closed"]
+        Ropen = 2.5e5, [description = "Switch Resistance when Open"]
+        k = 1e3
+    end
     @variables begin
-        trigger_in(t) = 1, [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
-        trigger_out(t) = 0, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
+        ∫i(t) = 0, [description = "Current integral"]
+        R(t) = 0,  [description = "Switch Resistance"]
     end
     @equations begin
-        0 ~ ifelse(trigger_in == 1,
-                   ifelse(trigger_out == 1, v, i), v)
+        R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (∫i / V_FRC) * (1 - (∫i / V_FRC))))
+        v ~ R * i
     end
 end
 
@@ -129,7 +144,7 @@ end
         in       = Pin()
         out      = Pin()
         # Diodi
-        D1       = Diode(Vth         = ParentScope(Vin_th))
+        D1       = Diode(Vth         = Vin_th)
         # Resistori
         r_sw     = Resistor(R        = R_sw)
         r_tube   = CIDResistor(Ra    = 0.5 * Ra,
@@ -150,7 +165,7 @@ end
                                Lb    = 0.5 * Lb,
                                V_FRC = ParentScope(V_FRC))
         # Switch
-        Sw       = Switch()
+        Sw       = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground   = Ground()
     end
@@ -174,8 +189,7 @@ end
         r_tube_1.∫i    ~ ∫i
         i_tube.∫i      ~ ∫i
         i_tube_1.∫i    ~ ∫i
-        Sw.trigger_in  ~ trigger_in
-        Sw.trigger_out ~ trigger_out
+        Sw.∫i          ~ ∫i
     end
 end
 
@@ -209,7 +223,7 @@ end
         in     = Pin()
         out    = Pin()
         # Diodi
-        D1     = Diode(Vth         = ParentScope(Vin_th))
+        D1     = Diode(Vth         = Vin_th)
         # Resistori
         r_tube = CIDResistor(Ra    = ParentScope(Ra),
                              Rb    = ParentScope(Rb),
@@ -226,7 +240,7 @@ end
                              V_FRC = ParentScope(V_FRC))
         i_t    = Inductor(L        = I_t)
         # Switch
-        Sw     = Switch()
+        Sw     = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground = Ground()
     end
@@ -247,7 +261,6 @@ end
                              0.0)
         r_tube.∫i      ~ ∫i
         i_tube.∫i      ~ ∫i
-        Sw.trigger_in  ~ trigger_in
-        Sw.trigger_out ~ trigger_out
+        Sw.∫i          ~ ∫i
     end
 end
