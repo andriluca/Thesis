@@ -1466,7 +1466,7 @@ di creare delle posizioni più sensate.
 C'è un problema che devo risolvere, ossia che il file del modello che
 voglio importare è troppo grande per essere importato da Julia...
 
-** TODO Come posso importare un così gran numero di dati?          :Problema:
+** TODO [#A] Come posso importare un così gran numero di dati?    :Problema:
 * 09.11.23                                                       :Componenti:
 Il problema della gestione dell'input di 50k moduli è da risolversi
 suddividendo, per forza di cose, in sottoreti minori.  Fosse esso
@@ -1716,7 +1716,7 @@ scorrere e la tensione `V_D = Vin_th` ai capi.  Se la tensione misurata
 dovesse essere inferiore alla soglia Vin_th, allora `i_D = 0` e la
 tensione sul diodo (`V_D`) seguirà quella del generatore.
 
-*** TODO Misurazione e sovrascrittura della differenza di potenziale :Problema:Domande:Proposta:
+*** Misurazione e sovrascrittura della differenza di potenziale :Problema:Domande:Proposta:
 Come faccio a gestire il fatto che devo sia misurare una differenza di
 potenziale che imporla?  Potrei utilizzare il sensore di tensione
 (i.e. VoltageSensor) presente nella libreria standard.
@@ -1833,7 +1833,7 @@ renderebbe istantanea l'importazione dell'albero.  Esiste un [[https://www.youtu
 completa]] a `DataFrame.jl`, oltre alla documentazione sul [[https://dataframes.juliadata.org/stable/][sito
 ufficiale]].
 
-** TODO Diodo
+** Diodo
 Penso sia meglio impostare un messaggio per discourse, così da trovare
 una soluzione del diodo lì.
 
@@ -1880,3 +1880,107 @@ Riporto come risorsa il [[https://www.youtube.com/watch?v=7hF0JRznxNU][video]] d
 coding.  Sulla repo di MSL sono presenti alcune [[https://github.com/SciML/ModelingToolkitStandardLibrary.jl/pull/166/commits/5d97d405ee66d7121a8facbe823425fd508f78a2][PR]] in cui degli utenti
 hanno utilizzato anche la macro `@component` per definire la funzione
 che descrive il componente.
+
+* 27.11.23
+
+#+begin_example
+Greetings,
+
+I am new to Julia Programming Language and I don't have any experience in writing to a community of programmers but I'll do my best to explain what my problem is.
+
+I am trying to instantiate a lung model (an electrical) made out of two kinds of blocks: alveoli and airways.  Each of such blocks is constituted by Resistors, Capacitors, Inductors (all of which I have used MSL ones with success) and diode that I'm struggling to implement.
+The syntax i used was the one considering the macros @mtkmodel and @mtkbuild.
+I have tried to use Shockley Diode equation in the component and everything went fine with the simulation but i couldn't be able to modify its forward threshold 
+[...]
+
+I hope I was clear in explaining my problem.
+#+end_example
+
+Sembrerebbe che il problema del diodo sia risolto, vedi `[[file:src/test/test14c.jl][test14c.jl]]`
+
+#+begin_src julia
+  exlin(x, max_x) = ifelse(x > max_x,
+                           exp(max_x)*(1 + x - max_x),
+                           exp(x))
+  @mtkmodel Diode begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Ids     = 1e-6,
+          [description = "Reverse-bias current"]
+          max_exp = 15,
+          [description = "Value after which linearization is applied"]
+          R       = 1e8,
+          [description = "Diode Resistance"]
+          Vth     = 1e-3,
+          [description = "Threshold voltage"]
+      end
+      @equations begin
+          i ~ Ids * (exlin((v - Vth) / (1e-3 * Vth), max_exp) - 1) + (v / R)
+      end
+  end
+
+#+end_src
+
+* 29.11.23
+** DONE Diodo                                                     :Proposta:
+Devo mostrare il modello del diodo a Chiara per capire se potrebbe
+quello che cerchiamo.  Va tutto bene, anche la parte sullo switch che
+abbiamo sotto.
+
+** Switch                                         :Componenti:Modello:Julia:
+L'idea è quella di passare le variabili trigger_in e trigger_out
+provenienti dai rispettivi moduli (i.e. Airway e Alveolus).
+
+#+begin_src julia
+  @mtkmodel Switch begin
+      @extend v, i = oneport = OnePort()
+      @variables begin
+          trigger_in,  [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
+          trigger_out, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
+      end
+      @equations begin
+          # Disabilito il diodo quando ho un completo riempimento di aria e di acqua
+          # Riempimento con acqua  (trigger_in = 0, trigger_out = 0) --> v = 0 (corto)
+          # Riempimento con aria   (trigger_in = 1, trigger_out = 1) --> v = 0 (corto)
+          # Interfaccia aria/acqua (trigger_in = 1, trigger_out = 0) --> i = 0 (aperto)
+          # Non possibile          (trigger_in = 0, trigger_out = 1) --> XXXXXXXXXXXXX
+          0 ~ ifelse(trigger_in == 1,
+                     ifelse(trigger_out == 1, v, i), v)
+      end
+  end
+#+end_src
+
+** TODO Instabilità della sottorete                               :Problema:
+Il sistema (la sottorete) non è stabile.  Faccio una lista dei
+possibili responsabili.
+
+* 30.11.23
+** Lista possibili cause instabilità
+- `trigger_out` e `trigger_in` sono variabili binarie, quindi hanno un
+  andamento simile a quello di uno scalino.  Inoltre non sono
+  perfettamente stabili (mi riferisco a trigger_out).  Riscrivo il
+  codice dello switch rendendolo dipendente dall'integrale di
+  corrente.  Si veda `[[file:src/test/test16a.jl][test16a.jl]]`
+- Lo switch ad un certo punto commuta istantaneamente.
+
+* 01.12.23
+Il funzionamento dello switch è stato testato con più valori di
+integrale di corrente e in funzione del tempo.  Non avevo ancora
+considerato che l'equazione caratteristica dell'interruttore introduce
+una discontinuità del problema, così ho generato una curva più
+smussata (si veda `[[file:src/test/test16b.jl][test16b.jl]]`).  Testandola risultano ancora dei
+warnings relativi alla stabilità della soluzione, per cui ho risolto
+solo in parte il problema.
+
+* 03.12.23
+** Modelingtoolkit                        :Domande:Problema:Julia:Callbacks:
+Quello che vorrei fare sarebbe implementare un sistema modulare simile
+a quello che ho ora ma introducendo le Callbacks.  Il problema che
+sussiste è che la sintassi obsoleta non permette una modularità,
+garantita invece dalla nuova.
+- Come funzionano le callbacks?  [[file:~/.julia/packages/ModelingToolkit/66mEN/docs/src/basics/Composition.md][Questo documento]], nella sezione
+  "Components with discontinuous dynamics", accenna a degli esempi di
+  utilizzo. Consulto la documentazione di ModelingToolkit.  Ci sono
+  alcuni esempi di utilizzo ma con la vecchia sintassi.  Conviene
+  davvero riscrivere l'esempio del diodo, switch e resistenza con la
+  vecchia sintassi.
