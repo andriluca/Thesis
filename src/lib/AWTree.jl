@@ -165,14 +165,16 @@ end
                                Lb    = 0.5 * Lb,
                                V_FRC = ParentScope(V_FRC))
         # Switch
-        Sw       = Switch(V_FRC      = ParentScope(V_FRC))
+#         Sw       = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground   = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, D1.p, Sw.p)
-        connect(D1.n, Sw.n, r_tube.p)
+        connect(in, D1.p)
+#         connect(in, D1.p, Sw.p)
+        connect(D1.n, r_tube.p)
+#         connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
         connect(i_sw.n, r_sw.p)
@@ -189,7 +191,7 @@ end
         r_tube_1.∫i    ~ ∫i
         i_tube.∫i      ~ ∫i
         i_tube_1.∫i    ~ ∫i
-        Sw.∫i          ~ ∫i
+#         Sw.∫i          ~ ∫i
     end
 end
 
@@ -240,14 +242,16 @@ end
                              V_FRC = ParentScope(V_FRC))
         i_t    = Inductor(L        = I_t)
         # Switch
-        Sw     = Switch(V_FRC      = ParentScope(V_FRC))
+#         Sw     = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, D1.p, Sw.p)
-        connect(D1.n, Sw.n, r_tube.p)
+        connect(in, D1.p)
+#         connect(in, D1.p, Sw.p)
+        connect(D1.n, r_tube.p)
+#         connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_ga.p, i_t.p, out)
         connect(i_t.n, r_t.p)
@@ -261,6 +265,6 @@ end
                              0.0)
         r_tube.∫i      ~ ∫i
         i_tube.∫i      ~ ∫i
-        Sw.∫i          ~ ∫i
+#         Sw.∫i          ~ ∫i
     end
 end

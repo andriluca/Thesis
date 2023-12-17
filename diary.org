@@ -662,21 +662,21 @@ termini di simboli utilizzati nel file `Albero.cir`.
 | Vgravity |                                                                    |
 
 ** Terminali
-| ".cir"   | Modello cartaceo                                                    |
-|----------+---------------------------------------------------------------------|
-| La       | Induttanza in aria                                                  |
-| Lb       | Quello da aggiungere per avere l'induttanza nel liquido (I_l - I_a) |
-| Ra       | Resistenza in aria                                                  |
-| Rb       | Quello da aggiungere per avere la resistenza nel liquido (rl - ra)  |
-| Chargeth | V_{FRC}                                                             |
+| ".cir"   | Modello cartaceo                                                   |
+|----------+--------------------------------------------------------------------|
+| La       | Induttanza in aria                                                 |
+| Lb       | Quello da aggiungere per avere l'induttanza nel liquido (I_l - I_a)  |
+| Ra       | Resistenza in aria                                                 |
+| Rb       | Quello da aggiungere per avere la resistenza nel liquido (rl - ra) |
+| Chargeth | V_{FRC}                                                               |
 | Ccap     | C_g                                                                 |
-| Vin_th   | Tensione sul primo diodo (aka V_{th})                               |
-| Vgravity |                                                                     |
-| Lti      | Vedi grafico                                                        |
-| Rti      | Vedi grafico                                                        |
-| Cti      | Vedi grafico                                                        |
-| Rs       | Vedi grafico                                                        |
-| Cs       | Vedi grafico                                                        |
+| Vin_th    | Tensione sul primo diodo (aka V_{th})                                 |
+| Vgravity |                                                                    |
+| Lti      | Vedi grafico                                                       |
+| Rti      | Vedi grafico                                                       |
+| Cti      | Vedi grafico                                                       |
+| Rs       | Vedi grafico                                                       |
+| Cs       | Vedi grafico                                                       |
 
 * 25.10.23                                               :Modello:Componenti:
 ** DONE Esiste un componente "Diodo" in Julia                   :Componenti:
@@ -1411,7 +1411,7 @@ Sto leggendo la documentazione di `ModelingToolkit.jl` per capirne
 meglio il funzionamento, dato che molte delle cose che vorrei
 implementare dipendono da ciò.
 
-** TODO Associare unità di misura e input/output alle variabili :Componenti:
+** TODO [#C] Associare unità di misura e input/output alle variabili :Componenti:
 
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/ContextualVariables/#Variable-metadata][`Variable Metadata`]].
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Input-or-output][`Input or output`]].
@@ -1421,10 +1421,10 @@ Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#In
   @variables x[1:2, 1:2] [connect = Flow; unit = u"m^3/s"]
 #+end_src
 
-** TODO Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:Manuale:
+** TODO [#C] Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:Manuale:
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Variable-descriptions][`Variables descriptions`]].  Inserire nella documentazione finale.
 
-** TODO Leggere manuale di `ModelingToolkit`                    :Julia:Must:
+** TODO [#B] Leggere manuale di `ModelingToolkit`               :Julia:Must:
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].
 - [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#Numerics-with-Composed-Models][`Numerics with Composed Models`]] tratta di come estrarre le serie
   temporali dalla soluzione del sistema.
@@ -1466,7 +1466,7 @@ di creare delle posizioni più sensate.
 C'è un problema che devo risolvere, ossia che il file del modello che
 voglio importare è troppo grande per essere importato da Julia...
 
-** TODO [#A] Come posso importare un così gran numero di dati?    :Problema:
+** TODO [#B] Come posso importare un così gran numero di dati?    :Problema:
 * 09.11.23                                                       :Componenti:
 Il problema della gestione dell'input di 50k moduli è da risolversi
 suddividendo, per forza di cose, in sottoreti minori.  Fosse esso
@@ -1950,7 +1950,7 @@ provenienti dai rispettivi moduli (i.e. Airway e Alveolus).
   end
 #+end_src
 
-** TODO Instabilità della sottorete                               :Problema:
+** TODO [#A] Instabilità della sottorete                          :Problema:
 Il sistema (la sottorete) non è stabile.  Faccio una lista dei
 possibili responsabili.
 
@@ -1984,3 +1984,261 @@ garantita invece dalla nuova.
   alcuni esempi di utilizzo ma con la vecchia sintassi.  Conviene
   davvero riscrivere l'esempio del diodo, switch e resistenza con la
   vecchia sintassi.
+
+* 04.12.23
+Scrivo un esempio di messaggio per discourse.
+
+#+begin_example
+Greetings.
+
+I am new to `ModelingToolkit` and, more generally, to Julia programming language. In particular, I am using it in my M.Sc. thesis project to model a morphometric lung model (i.e. an electrical equivalent of lung mechanical model taking account of its geometrical properties as well). I am using ModelingToolkit new format with `@mtkmodel` and `@mtkbuild` macros.
+
+One of the problems I am tackling is modeling an ideal Diode Component.
+#+end_example
+
+Sono alla ricerca su discourse di informazioni utili.  [[https://discourse.julialang.org/t/mtk-simple-case-with-mtkmodel-and-standard-library-doesnt-work/104807][Questo thread]]
+mostra come inizializzare input e output dei moduli.  [[https://discourse.julialang.org/t/tool-for-composable-circuit-simulation/103449][Questo thread]]
+mostra come implementare un IdealSwitch con modeling toolkit sia con
+vecchio che nuovo formato (in teoria sempre in situazioni stazionarie
+ma guarda anche `ControlledSwitch`).
+
+* 05.12.23
+Esiste una documentazione di `ModelingToolkit` in fase beta che va ad
+elencare le funzioni in fase di sviluppo, non ancora disponibili.
+`RealInput` e `RealOutput` sono dedicate a segnali generici e non
+rappresentativi di tensioni o correnti.  Ho testato anche
+ControlledSwitch ma non funziona correttamente.
+
+* 06.12.23
+Devo mandare una mail a Chiara per aggiornarla sullo stato dei lavori.
+
+#+begin_example
+Ciao Chiara,
+Ti aggiorno su quello che ho fatto negli ultimi giorni.
+L'interruttore che avevo implementato, e che ti avevo mostrato l'ultima volta, per ora funziona solo mantenendo l'integrale di corrente in un range che lo tiene sempre aperto oppure sempre chiuso durante la simulazione.
+Facendo variare l'integrale di corrente consentendo il superamento della soglia, la simulazione risulta essere instabile.
+Ho provato quindi a modificarne l'equazione caratteristica per fare in modo che la transizione della corrente e della tensione fosse più dolce di quella data da uno scalino: ho utilizzato la tangente iperbolica per modulare la resistenza interna dello switch.
+Questo mi ha permesso di avere una simulazione che dura un po' di più ma comunque in fase di risoluzione risulta instabile.
+Ho scoperto però che si possono scrivere delle callbacks, eventi che si attivano a seguito di una condizione dettata da una o più equazioni definite dall'utente,
+Queste callbacks possono essere inserite in fase di risoluzione e dovrebbero limitare, se non addirittura risolvere, l'instabilità del sistema.
+Quest'ultima soluzione però non l'ho ancora considerata del tutto perché per me significherebbe necessariamente cestinare il codice che ho scritto in precedenza in quanto le callbacks non sono compatibili con le macro implementate nell'ultima versione di `ModelingToolkit`.
+Posso però comunque provare a creare il solito circuito diodo-resistenza-switch utilizzando le callbacks, accertarmi se l'instabilità è risolta e poi agire di conseguenza.
+In alternativa scriverei un messaggio sul forum della community di Julia per capire se hanno implementato o hanno intenzione di implementare le callbacks all'interno delle macro che ho già utilizzato.
+Ti scrivo di quest'ultima alternativa perché `ModelingToolkit` mi sembra un progetto ancora in attivo sviluppo e ogni mese all'incirca rilasciano nuovi aggiornamenti con delle nuove funzionalità.
+
+Mi dispiace di non essere venuto oggi in laboratorio per aggiornarti di persona ma purtroppo non mi sento bene.
+A presto,
+Luca
+#+end_example
+
+* 11.12.23
+Considero il circuito switch-resistenza, riscritto utilizzando il
+non-DSL (aka non Domain-Specific Language).  In un esempio, si
+utilizza `RealInput` come componente per gestire il segnale da
+controllare.
+
+La sintassi per descrivere un componente è la seguente:
+#+begin_src julia
+  @component function Switch
+      # Equazioni, collegamenti ecc.
+  end
+#+end_src
+
+* 12.12.23
+** Switch                                       :Componenti:Julia:Callbacks:
+Per comprendere come dichiarare il componente devo prima comprendere
+dove verrebbe locata la callback.
+
+#+begin_src julia
+  using ModelingToolkit, OrdinaryDiffEq, Plots
+  function UnitMassWithFriction(k; name)
+      @variables t x(t)=0 v(t)=0
+      D = Differential(t)
+      eqs = [D(x) ~ v
+             D(v) ~ sin(t) - k * sign(v)]
+      # Locazione in ODESystem
+      ODESystem(eqs, t; continuous_events = [v ~ 0], name) # when v = 0 there is a discontinuity
+  end
+  @named m = UnitMassWithFriction(0.7)
+  prob = ODEProblem(m, Pair[], (0, 10pi))
+  sol = solve(prob, Tsit5())
+  plot(sol)
+#+end_src
+
+Ora posso istanziare il componente `Switch`.
+
+#+begin_src julia
+  @component function ControlledSwitch(; name)
+      @named n = Pin()
+      @named p = Pin()
+      @named u = RealInput()
+      eqs = [ 0 ~ ifelse(u.u > 0.5, n.v - p.v, n.i)
+              0 ~ ifelse(u.u > 0.5, n.i + p.i, p.i)
+              ]
+      ODESystem(eqs, t, [], []; name,
+                systems=[p, n, u], continuous_events=[u.u ~ 0.5])
+  end
+#+end_src
+
+Purtroppo non funziona neanche in questo modo dato che non riconosce
+la variabile `u.u`.
+* 13.12.23
+Non riesco a scrivere la callback per il diodo.  Devo contattare gli
+sviluppatori di `ModelingToolkit` per chiedere come potrei risolvere
+il problema.
+
+** TODO [#A] Contattare gli sviluppatori su discourse
+*** Definizione del problema
+È relativo all'instabilità del modello.  L'instabilità è dovuta
+principalmente alla presenza di componenti che creano uno scalino,
+vedi l'interruttore.
+
+*** Alcuni test
+- [ ] Comprendere se centrano il problema oppure no.
+- [X] Cosa succederebbe se inserissi solamente il diodo di Shockley
+  nel circuito e poi simulassi? Non funzionerebbe comunque
+
+*** TODO Scrivere il messaggio e poi inoltrarlo a Chiara
+
+** Colloquio con Chiara
+Posso discutere sul forum del componente ma prima invio a lei per
+capire se, in tal modo, non rivelo nulla dell'eventuale contenuto.
+
+Posso provare a testare anche la funzionalità, ancora in via di
+sviluppo, che utilizza gli if sui componenti.
+
+* 14.12.23
+
+#+begin_example
+Buongiorno,
+
+Sono nuovo nella community di Julia e di `ModelingToolkit`, in particolare.  Vorrei implementare un componente `DiodoIdeale` che venga rimpiazzato da un corto circuito quando la variabile di controllo (in particolare l'integrale della corrente che lo attraversa) raggiunge uno dei due valori di soglia (0 oppure `Vin_th`).  Inizialmente ho pensato di implementare un modello di diodo ideale semplice ed un modello di switch ideale controllato, realizzando poi un parallelo tra i due nel circuito finale.
+
+Ho riscontrato alcune difficoltà:
+- Il componente diodo ideale genera un errore di instabilità dovuto (probabilmente) al fronte di salita troppo ripido, per cui mi sono orientato su un diodo di Shockley.
+- Lo switch ideale rimane chiuso, così da escludere il diodo, fino a quando la variabile controllata rimane a zero, quando la variabile diventa positiva, lo switch si apre per poi ritornare chiuso quando la variabile controllata raggiunge un valore `Vin_th`
+
+Questi stratagemmi purtroppo non funzionano in fase di simulazione utilizzando il circuito completo.  Ho letto in alcuni threads che è possibile sfruttare delle Callbacks ma utilizzando le macro `@mtkmodel` ed `@mtkbuild` non ho ben chiaro dove posso inserirle e come scriverle.  Un'altra strada sarebbe quella di utilizzare i condizionali per escludere/includere il diodo nel circuito.  Volevo chiedere dei consigli per evitare di aggirare i problemi dovuti all'instabilità ed affrontarli direttamente.
+Fornisco di seguito il codice dei componenti che ho scritto e delle istruzioni che ho utilizzato per la risoluzione.
+#+end_example
+
+#+begin_example
+Greetings,
+
+I am new to Julia community and, in particular, to the use of `ModelingToolkit` package.  I would like to implement an `IdealDiode` component to be replaced by a short circuit when the controlled variable (i.e. integral of the current flowing into the Diode) has reached one of the two thresholds (being either 0 or `Vin_th`).
+
+Initially, i had thought of implementing a model for a simple ideal diode and a model of an ideal controlled switch. Such devices would be connected in parallel in the final circuit.
+
+I had faced some difficulties:
+- Ideal Diode returns instability (dt < dtmin) probably dued to the rising edge. This is why I have decided to go for a Shockley Diode.
+- Ideal Switch works this way: if controlled variable is <= 0 or >= `Vin_th`, the switch is closed, so that the diode is excluded. The switch is otherwise open. I am getting the very same error.  I decided to introduce a `tanh` function in the current equation of such device in order to reduce this behavior.
+
+These workarounds seem not to have worked when simulating, considering the full circuit.  In some Threads on Discourse and in the Documentation, I've read about Callbacks but I haven't understood how to write them properly and where to insert them in the DSL code and if there exist some macro helping in this process.  Should I drop the usage of new macros (i.e. @mtkmodel, @mtkbuild ...) for the old format in order to add Callbacks?
+
+Another possibility could be to use conditionals, in order to include/exclude the IdealDiode in the circuit but i don't think this will solve instability, in the end.  I write here to ask some suggestion to avoid workarounds and for some help facing these problems directly.
+
+This is the code i used for modeling.  Forgive my English, it's not my first language.  Thanks in advance for any feedback.
+
+Used libraries
+
+```julia
+using ModelingToolkit
+using ModelingToolkitStandardLibrary.Blocks
+using ModelingToolkitStandardLibrary.Electrical
+using OrdinaryDiffEq
+using Plots
+```
+
+Diode
+
+```julia
+@mtkmodel Diode begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        threshold = 0, [description = "Voltage Threshold"]
+    end
+    @components begin
+        input = RealInput()
+    end
+    @equations begin
+        0 ~ ifelse(input.u > 0, v, i)
+    end
+end
+```
+
+ver. 2
+
+```julia
+exlin(x, max_x) = ifelse(x > max_x,
+                         exp(max_x)*(1 + x - max_x),
+                         exp(x))
+@mtkmodel Diode begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        Ids     = 1e-6,
+        [description = "Reverse-bias current"]
+        max_exp = 15,
+        [description = "Value after which linearization is applied"]
+        R       = 1e8,
+        [description = "Diode Resistance"]
+        Vth     = 1e-3,
+        [description = "Threshold voltage"]
+        k       = 1e3,
+        [description = "Speed of exponential"]
+    end
+    @equations begin
+        i ~ Ids * (exlin(k * (v - Vth) / Vth, max_exp) - 1) + (v / R)
+    end
+end
+```
+
+Switch:
+
+```julia
+@mtkmodel Switch begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        V_FRC, [description = "Airway Volume at FRC"]
+    end
+    @variables begin
+        ∫i(t) = 0, [description = "Current integral"]
+    end
+    @equations begin
+        0 ~ ifelse(∫i / V_FRC <= 0, v,
+                   ifelse(∫i / V_FRC < 0.9, i, v))
+    end
+end
+```
+
+Switch ver. 2
+
+```julia
+@mtkmodel Switch begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        V_FRC, [description = "Airway Volume at FRC"]
+        Rclosed = 1e-12, [description = "Switch Resistance when Closed"]
+        Ropen = 2.5e5, [description = "Switch Resistance when Open"]
+        k = 1e3
+    end
+    @variables begin
+        ∫i(t) = 0, [description = "Current integral"]
+        R(t) = 0,  [description = "Switch Resistance"]
+    end
+    @equations begin
+        R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (∫i / V_FRC) * (1 - (∫i / V_FRC))))
+        v ~ R * i
+    end
+end
+```
+
+For performing the simulation I've used:
+
+```julia
+@mtkbuild system = System()
+prob = ODEProblem(system, Pair[], (0, 2));
+sol = solve(prob, Rodas4());
+```
+#+end_example
+
+** TODO Riprendi da `CONTROLLA` il messaggio da scrivere
