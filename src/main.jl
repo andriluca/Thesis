@@ -16,7 +16,7 @@ Pkg.activate(repodir)
 ## Definizione parametri.
 ### Generatore (di onda quadra "smussata", aka artan()).
 # resp_freq   = 1.0       # Hz
-resp_ampl   = 10.0        # V
+resp_ampl   = 1.0        # V
 tspan       = (0, 4)      # s
 
 ## Inclusione componenti inferiori (i.e. CIDResistor, CIDInductor) e

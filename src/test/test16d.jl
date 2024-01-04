@@ -4,18 +4,8 @@ using ModelingToolkitStandardLibrary.Blocks
 using ModelingToolkitStandardLibrary.Electrical
 using Plots
 
-@mtkmodel Switch begin
-    @extend v, i = oneport = OnePort()
-    @parameters begin
-        threshold = 0, [description = "Voltage Threshold"]
-    end
-    @components begin
-        input = RealInput()
-    end
-    @equations begin
-        0 ~ ifelse(input.u > threshold, v, i)
-    end
-end
+@parameters t
+D = Differential(t)
 
 @mtkmodel Diode begin
     @extend v, i = oneport = OnePort()
@@ -25,17 +15,33 @@ end
     @components begin
         input = RealInput()
     end
+    @variables begin
+        ∫i(t) = 0, [description = "Current integral"]
+    end
     @equations begin
-        0 ~ ifelse(input.u > threshold, v - threshold, i)
+        D(∫i) ~ i
+        0 ~ ifelse(input.u >= threshold,
+                   v - threshold,
+                   i)
+
+        # 0 ~ ifelse(∫i <= 0,
+        #            v,
+        #            ifelse(i < 0,
+        #                   i,
+        #                   ifelse(input.u > threshold,
+        #                          v - threshold,
+        #                          i)
+        #                   )
+        #            )
     end
 end
 
 @mtkmodel System begin
     @components begin
-        src = Sine(frequency = 1, amplitude = 1)
-#         control = Sine(frequency = 1, amplitude = 1)
+        src = Sine(frequency = 1, amplitude = 2)
+        control = Constant(k = 1)
         gen = Voltage()
-        D1 = Diode(threshold = 0.6)
+        D1 = Diode(threshold = 0.5)
         R1 = Resistor(R = 1)
         C1 = Capacitor(C = 1)
         gnd = Ground()
@@ -43,7 +49,6 @@ end
     @equations begin
         connect(src.output, gen.V)
         connect(src.output, D1.input)
-#         connect(control.output, D1.input)
         connect(gen.p, D1.p)
         connect(D1.n, R1.p)
         connect(R1.n, C1.p)
@@ -51,11 +56,17 @@ end
     end
 end
 
+@mtkbuild System1 begin
+    @components begin
+        
+    end
+end
+
 @mtkbuild system = System()
-prob = ODAEProblem(system, [], (0, 10))
+prob = ODAEProblem(system, [system.D1.∫i => 0.0], (0, 10))
 
 function condition(u, t, integrator)
-    u[1] - integrator.p[7]
+    integrator.u[2] - integrator.p[7]
 end
 
 function affect!(integrator)
@@ -63,8 +74,8 @@ function affect!(integrator)
 end
 
 cb = ContinuousCallback(condition, affect!)
-sol = solve(prob, TRBDF2(),
-            #reltol = 1e-5, abstol = 1e-5,
+sol = solve(prob, Tsit5(),
+#             reltol = 1e-5, abstol = 1e-5,
             callback = cb)
 
 plot(sol, idxs = [system.C1.v, system.C1.i, system.src.output.u])

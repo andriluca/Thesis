@@ -2087,7 +2087,7 @@ Non riesco a scrivere la callback per il diodo.  Devo contattare gli
 sviluppatori di `ModelingToolkit` per chiedere come potrei risolvere
 il problema.
 
-** TODO [#A] Contattare gli sviluppatori su discourse
+** DONE [#A] Contattare gli sviluppatori su discourse
 *** Definizione del problema
 È relativo all'instabilità del modello.  L'instabilità è dovuta
 principalmente alla presenza di componenti che creano uno scalino,
@@ -2098,7 +2098,7 @@ vedi l'interruttore.
 - [X] Cosa succederebbe se inserissi solamente il diodo di Shockley
   nel circuito e poi simulassi? Non funzionerebbe comunque
 
-*** TODO Scrivere il messaggio e poi inoltrarlo a Chiara
+*** DONE Scrivere il messaggio e poi inoltrarlo a Chiara
 
 ** Colloquio con Chiara
 Posso discutere sul forum del componente ma prima invio a lei per
@@ -2241,4 +2241,44 @@ sol = solve(prob, Rodas4());
 ```
 #+end_example
 
-** TODO Riprendi da `CONTROLLA` il messaggio da scrivere
+** DONE Riprendi da `CONTROLLA` il messaggio da scrivere
+
+* 18.12.23
+Ieri sera ho sviluppato una soluzione con l'utilizzo delle Callbacks, la riporto in `[[~/Thesis/src/test/test16c.jl][test16c.jl]]`. Non riesco ad indicizzare per «etichetta».
+
+Colloquio con Chiara. Sistemare il componente Diodo.
+
+* 19.12.23
+Mi hanno risposto al post.  Ora sto elaborando un nuovo messaggio.
+
+#+begin_example
+Grazie a tutti per le risposte.  Non ho fornito dettagli per ragioni di brevità ma li posso descrivere meglio in questo post.
+
+Devo realizzare un modello morfometrico di polmone umano: un equivalente elettico delle proprietà meccaniche del polmone che tiene conto anche di quelle geometriche a seconda del collegamento di moduli circuitali.
+
+Esistono di due tipi di moduli nel modello morfometrico:
+1. Airway: funge da linea di trasmissione.
+2. Alveolous: nodo terminale.
+
+Ciascuno di questi (50K) moduli è composto da Resistori, Condensatori, Induttanze e Diodi.  In particolare alcune Resistenze e Condensatori di un modulo sono dipendenti dall'integrale della Corrente entrante in quello specifico modulo.
+La Corrente entrante viene sottoposta alla presenza del diodo (posto all'inizio di ciascun modulo) solamente se integrale di corrente è compreso tra 0 e `Vin_th`, altrimenti non ho tale componente.  Questo avviene per delle specifiche di progetto.
+
+L'utilizzo del linguaggio Julia è data dall'esigenza di svincolarsi da licenze proprietarie e di utilizzare efficienti solver di equazioni differenziali come `DifferentialEquations`.
+
+Per ora la mia codebase è stata scritta a partire da ModelingToolkit ma sono aperto a qualunque strumento mi consenta di:
+- Creare le due tipologie di moduli
+- Istanziare un così grande numero di moduli e, di conseguenza, di componenti
+- Simulare il modello morfometrico risultante
+
+
+#+end_example
+* 21.12.23
+** TODO [#B] Scrivere risposta su community Julia
+** TODO [#A] Finire il resoconto
+
+* 22.12.23
+** TODO Leggere le mail nella cartella `Tesi magistrale`
+Su thunderbird ho un nuovo progetto da portare avanti per la tesi.
+** TODO Installare il software necessario
+Il software va compilato da sorgente e si trova in `Repo/avatree`.
+Il software girerebbe solo su windows, come scritto su readme.

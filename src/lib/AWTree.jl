@@ -34,7 +34,7 @@ exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
 D = Differential(t)
 
 #===============================================================
- COMPONENTI INFERIORI (alias a basso livello)
+ MODELLI INFERIORI (alias a basso livello)
  ===============================================================#
 
 # Componenti variabili
