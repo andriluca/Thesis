@@ -2279,6 +2279,26 @@ Per ora la mia codebase è stata scritta a partire da ModelingToolkit ma sono ap
 * 22.12.23
 ** TODO Leggere le mail nella cartella `Tesi magistrale`
 Su thunderbird ho un nuovo progetto da portare avanti per la tesi.
-** TODO Installare il software necessario
+** TODO [#A] Installare il software necessario (paper)
 Il software va compilato da sorgente e si trova in `Repo/avatree`.
 Il software girerebbe solo su windows, come scritto su readme.
+
+* 04.01.24
+Da ciò che è scritto sulle mail inoltratemi da Chiara, sembrerebbe che
+il software non possa eseguire correttamente su Linux.  Devo eseguire
+quel software utilizzando VisualStudio 2019.
+
+** DONE Installa VisualStudio 2019
+** TODO Compila AVATree da sorgente
+
+* 11.01.24
+In questi giorni è comparso un [[https://github.com/SciML/ModelingToolkit.jl/issues/2421][issue su Github]] che vuole introdurre
+gli eventi continui e discreti nei componenti.  Spero che abbia
+abbastanza visibilità da poter essere mergiato in main.  Sarebbe
+fantastico.  Da tenere sotto controllo e da testare.
+
+* 12.01.24
+Quell'issue si è dimostrato utile perchè ha risolto il problema degli
+eventi continui e discreti nella progettazione di componenti.  Ora
+resta da capire come posso utilizzare questa feature nella
+progettazione del diodo e dello switch.
