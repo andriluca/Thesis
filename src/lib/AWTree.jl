@@ -16,16 +16,6 @@ using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step, Sine
 using ModelingToolkitStandardLibrary.Electrical
 
 #===============================================================
- FUNZIONI (HELPERS)
- ===============================================================#
-
-function smooth_step(x, δ, height, offset, start_time)
-    offset + height * (atan((x - start_time) / δ) / π + 0.5)
-end
-
-exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
-
-#===============================================================
  DEFINIZIONE COMPONENTI E MODELLI
  ===============================================================#
 
@@ -80,46 +70,14 @@ end
     end
 end
 
-@mtkmodel Diode begin
-    @extend v, i = oneport = OnePort()
-    @parameters begin
-        Ids     = 1e-6, [description = "Reverse-bias current"]
-        max_exp = 15,   [description = "Value after which linearization is applied"]
-        R       = 1e8,  [description = "Diode Resistance"]
-        Vth     = 1e-3, [description = "Threshold voltage"]
-        k       = 1e3,  [description = "Speed of exponential"]
-    end
-    @equations begin
-        i ~ Ids * (exlin(k * (v - Vth) / (Vth), max_exp) - 1) + (v / R)
-    end
-end
-
-@mtkmodel Switch begin
-    @extend v, i = oneport = OnePort()
-    @parameters begin
-        V_FRC, [description = "Airway Volume at FRC"]
-        Rclosed = 1e-6, [description = "Switch Resistance when Closed"]
-        Ropen = 2.5e5, [description = "Switch Resistance when Open"]
-        k = 1e3
-    end
-    @variables begin
-        ∫i(t) = 0, [description = "Current integral"]
-        R(t) = 0,  [description = "Switch Resistance"]
-    end
-    @equations begin
-        R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (∫i / V_FRC) * (1 - (∫i / V_FRC))))
-        v ~ R * i
-    end
-end
-
 #===============================================================
  MODELLI SUPERIORI (alias ad alto livello)
  ===============================================================#
 
 @mtkmodel Airway begin
     @parameters begin
-        # Diodo
-        Vin_th, [description = "Diode's Threshold"]
+        # Diodo (sviluppo futuro)
+        # Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra,    [description = "Resistance when air-filled"]
         Rb,    [description = "Resistance when liquid-filled"]
@@ -143,8 +101,8 @@ end
         # Pin
         in       = Pin()
         out      = Pin()
-        # Diodi
-        D1       = Diode(Vth         = Vin_th)
+        # Diodi (sviluppo futuro)
+        # D1       = Diode(Vth         = Vin_th)
         # Resistori
         r_sw     = Resistor(R        = R_sw)
         r_tube   = CIDResistor(Ra    = 0.5 * Ra,
@@ -164,17 +122,16 @@ end
         i_tube_1 = CIDInductor(La    = 0.5 * La,
                                Lb    = 0.5 * Lb,
                                V_FRC = ParentScope(V_FRC))
-        # Switch
-#         Sw       = Switch(V_FRC      = ParentScope(V_FRC))
+        # Switch (sviluppo futuro)
+        # Sw       = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground   = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, D1.p)
-#         connect(in, D1.p, Sw.p)
-        connect(D1.n, r_tube.p)
-#         connect(D1.n, Sw.n, r_tube.p)
+        connect(in, r_tube.p)
+        # connect(in, D1.p, Sw.p)
+        # connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
         connect(i_sw.n, r_sw.p)
@@ -191,14 +148,14 @@ end
         r_tube_1.∫i    ~ ∫i
         i_tube.∫i      ~ ∫i
         i_tube_1.∫i    ~ ∫i
-#         Sw.∫i          ~ ∫i
+        # Sw.∫i          ~ ∫i
     end
 end
 
 @mtkmodel Alveolus begin
     @parameters begin
-        # Diodo
-        Vin_th, [description = "Diode's Threshold"]
+        # Diodo (sviluppo futuro)
+        # Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra,    [description = "Resistance when air-filled"]
         Rb,    [description = "Resistance when liquid-filled"]
@@ -224,8 +181,8 @@ end
         # Pin
         in     = Pin()
         out    = Pin()
-        # Diodi
-        D1     = Diode(Vth         = Vin_th)
+        # Diodi (Sviluppo futuro)
+        # D1     = Diode(Vth         = Vin_th)
         # Resistori
         r_tube = CIDResistor(Ra    = ParentScope(Ra),
                              Rb    = ParentScope(Rb),
@@ -242,16 +199,15 @@ end
                              V_FRC = ParentScope(V_FRC))
         i_t    = Inductor(L        = I_t)
         # Switch
-#         Sw     = Switch(V_FRC      = ParentScope(V_FRC))
+        # Sw     = Switch(V_FRC      = ParentScope(V_FRC))
         # Riferimenti
         ground = Ground()
     end
     @equations begin
         # Connessioni
-        connect(in, D1.p)
-#         connect(in, D1.p, Sw.p)
-        connect(D1.n, r_tube.p)
-#         connect(D1.n, Sw.n, r_tube.p)
+        connect(in, r_tube.p)
+        # connect(in, D1.p, Sw.p)
+        # connect(D1.n, Sw.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         connect(i_tube.n, c_ga.p, i_t.p, out)
         connect(i_t.n, r_t.p)
@@ -265,6 +221,6 @@ end
                              0.0)
         r_tube.∫i      ~ ∫i
         i_tube.∫i      ~ ∫i
-#         Sw.∫i          ~ ∫i
+        # Sw.∫i          ~ ∫i
     end
 end

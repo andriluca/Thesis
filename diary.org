@@ -1466,7 +1466,7 @@ di creare delle posizioni più sensate.
 C'è un problema che devo risolvere, ossia che il file del modello che
 voglio importare è troppo grande per essere importato da Julia...
 
-** TODO [#B] Come posso importare un così gran numero di dati?    :Problema:
+** TODO [#A] Come posso importare un così gran numero di dati?    :Problema:
 * 09.11.23                                                       :Componenti:
 Il problema della gestione dell'input di 50k moduli è da risolversi
 suddividendo, per forza di cose, in sottoreti minori.  Fosse esso
@@ -1950,7 +1950,7 @@ provenienti dai rispettivi moduli (i.e. Airway e Alveolus).
   end
 #+end_src
 
-** TODO [#A] Instabilità della sottorete                          :Problema:
+** DONE [#A] Instabilità della sottorete                          :Problema:
 Il sistema (la sottorete) non è stabile.  Faccio una lista dei
 possibili responsabili.
 
@@ -2273,8 +2273,8 @@ Per ora la mia codebase è stata scritta a partire da ModelingToolkit ma sono ap
 
 #+end_example
 * 21.12.23
-** TODO [#B] Scrivere risposta su community Julia
-** TODO [#A] Finire il resoconto
+** [#B] Scrivere risposta su community Julia
+** DONE [#A] Finire il resoconto
 
 * 22.12.23
 ** TODO Leggere le mail nella cartella `Tesi magistrale`
@@ -2302,3 +2302,68 @@ Quell'issue si è dimostrato utile perchè ha risolto il problema degli
 eventi continui e discreti nella progettazione di componenti.  Ora
 resta da capire come posso utilizzare questa feature nella
 progettazione del diodo e dello switch.
+
+* 24.01.24
+Il diodo e l'interruttori sono esclusi dai moduli di via aerea e di
+alveolo.  Lo step successivo da risolvere consiste nell'importazione
+massiccia dei dati in Julia.
+
+Prima di concludere con questi componenti vado a raccogliere di
+seguito i precedenti tentativi per poi inserirli negli sviluppi futuri.
+
+#+begin_src julia
+  # Utilizzo di caratteristiche "smooth"
+  @mtkmodel Diode begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Ids     = 1e-6, [description = "Reverse-bias current"]
+          max_exp = 15,   [description = "Value after which linearization is applied"]
+          R       = 1e8,  [description = "Diode Resistance"]
+          Vth     = 1e-3, [description = "Threshold voltage"]
+          k       = 1e3,  [description = "Speed of exponential"]
+      end
+      @equations begin
+          i ~ Ids * (exlin(k * (v - Vth) / (Vth), max_exp) - 1) + (v / R)
+      end
+  end
+
+  @mtkmodel Switch begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          V_FRC, [description = "Airway Volume at FRC"]
+          Rclosed = 1e-6, [description = "Switch Resistance when Closed"]
+          Ropen = 2.5e5, [description = "Switch Resistance when Open"]
+          k = 1e3
+      end
+      @variables begin
+          ∫i(t) = 0, [description = "Current integral"]
+          R(t) = 0,  [description = "Switch Resistance"]
+      end
+      @equations begin
+          R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (∫i / V_FRC) * (1 - (∫i / V_FRC))))
+          v ~ R * i
+      end
+  end
+
+  # Utilizzo di Callback function (continuous_events) [non funzionante]
+  @mtkmodel Diode begin
+      @components begin
+          p = Pin()
+          n = Pin()
+      end
+      @variables begin
+          v(t) = 0
+          i(t) = 0
+      end
+      @equations begin
+          v ~ p.v - n.v
+          0 ~ p.i + n.i
+          i ~ p.i
+          0 ~ ifelse(v < 0, i, v)
+      end
+      @continuous_events begin
+          [v ~ 0]
+      end
+  end
+
+#+end_src
