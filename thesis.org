@@ -1,0 +1,10 @@
+#+title: <Titolo della tesi>
+#+author: Luca Andriotto
+
+
+* Il linguaggio Julia
+È un linguaggio moderno, general purpose, con il quale posso
+modellizzare un circuito elettrico.  Ha delle prestazioni paragonabili
+a C e Fortran in quanto ciascuna istruzione viene compilata (JIT
+compiler).  Le macro rendono possibile l'impiego DSL (Domain Specific
+Language).
