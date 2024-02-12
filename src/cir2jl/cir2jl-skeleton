@@ -1,0 +1,50 @@
+#       _     ____   _ _
+#   ___(_)_ _|___ \ (_) |
+#  / __| | '__|__) || | |
+# | (__| | |  / __/ | | |
+#  \___|_|_| |_____|/ |_|
+#                 |__/
+
+#!/bin/sh
+
+input=$1
+convdir="$HOME/Thesis/src/input/"
+
+[[ ! -d $convdir ]] && mkdir $convdir
+
+# Controllo inserimento del file di input.
+if [ $# -le 1 ]; then
+    echo "Usage: $0 <name_of_airway_tree.cir> <Airway_start>"
+    exit 1
+fi
+
+# Parsing delle connessioni
+tr -d '\r' < $input     \
+| cut -d'=' -f1         \
+| sed 's/ La//g;
+    s/[[:punct:]]//g;
+    s/ /.in,/;
+    s/Trig/I/g;'        \
+| cut -d ' ' -f1-2      \
+| sed 's/^/connect(/;
+    s/.$/.out)/;'       \
+| head -n -1            \
+| tail -n +2 > "$convdir/Connections.jl"
+
+# Parsing dei moduli
+tr -d '\r' < $input     \
+| sed 's/(.*)/ = /g;
+    s/zwall[_a-z]* /Airway()\n/g;
+    s/alveolo[_a-z]* /Alveolus()\n/g;
+    s/[[:space:]][A-Za-z]*= 0//g;
+    s/[[:space:]]La.*//g;'         \
+| tail -n +2 > "$convdir/Albero.jl"
+
+# Creazione del Modello di Sistema
+echo -e "@mtkmodel System begin\n@components begin\n# Sorgenti del segnale e ground.\ngen    = Square(smooth = 1e-3)\nsource = Voltage()\nground = Ground()" > "$convdir/System.jl"
+cat "$convdir/Albero.jl"          >> "$convdir/System.jl"
+echo -e "end\n@equations begin\nconnect(gen.output, source.V)\nconnect(source.p, $2.in)\nconnect(source.n, ground.g)" >> "$convdir/System.jl"
+cat "$convdir/Connections.jl"     >> "$convdir/System.jl"
+echo "$2.trigger_in ~ 1"          >> "$convdir/System.jl"
+sed "s/connect(//g;s/, / ~ /g;s/\./\.trigger_/g;s/)//g" $convdir/Connections.jl >> "$convdir/System.jl"
+echo -e "end\nend\n"              >> "$convdir/System.jl"

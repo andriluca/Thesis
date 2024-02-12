@@ -1,0 +1,46 @@
+#!/bin/sh
+
+input=$1
+clean_input="$1_cleaned"
+convdir="$HOME/Thesis/src/input/"
+
+[[ ! -d $convdir ]] && mkdir $convdir
+
+# Controllo inserimento del file di input.
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <name_of_airway_tree.cir>"
+    exit 1
+fi
+
+tr -d "\r" < $input > $clean_input
+
+echo "ps = [" > "$convdir/Parameters.jl"
+awk '								\
+/alveolo/ {print						\
+	"system." $1 ".La=>"    $11", "	   			\
+	"system." $1 ".Lb=>"    $13", "		      		\
+    	"system." $1 ".Ra=>"    $15", "			        \
+    	"system." $1 ".Rb=>"    $17", "				\
+    	"system." $1 ".V_FRC=>" $19", "				\
+    	"system." $1 ".C_g=>"   $21", "				\
+	"system." $1 ".I_t=>"   $27", "				\
+	"system." $1 ".R_t=>"   $29", "				\
+	"system." $1 ".C_t=>"   $31", "				\
+	"system." $1 ".R_s=>"   $33", "				\
+	"system." $1 ".C_s=>"   $35","				\
+	};							\
+/zwall/ {print							\
+	"system." $1 ".La=>"    $10", "	       			\
+    	"system." $1 ".Lb=>"    $12", "		      		\
+    	"system." $1 ".Ra=>"    $14", "				\
+    	"system." $1 ".Rb=>"    $16", "				\
+    	"system." $1 ".R_sw=>"  $18", "				\
+    	"system." $1 ".I_sw=>"  $20", "				\
+    	"system." $1 ".C_sw=>"  $22", "				\
+	"system." $1 ".V_FRC=>" $24", "	       			\
+	"system." $1 ".C_g=>"   $26","				\
+}' $clean_input >> "$convdir/Parameters.jl"
+
+echo "]" >> "$convdir/Parameters.jl"
+
+rm $clean_input

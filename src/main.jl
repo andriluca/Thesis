@@ -28,6 +28,9 @@ include("$srcdir/lib/AWTree.jl")
 ## Importazione dell'input (i.e. modello dei componenti superiori e
 ## delle loro connessioni).
 include("$srcdir/input/System.jl")
+# Istanzio il modello di polmone.
+@mtkbuild system = System()
+include("$srcdir/input/Parameters.jl")
 
 ## Esecuzione della simulazione.
 include("$srcdir/util/simulation.jl")
