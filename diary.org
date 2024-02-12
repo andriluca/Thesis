@@ -5,13 +5,18 @@
 Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
 
 * 11.10.23
-- [X] La funzione =squarewave= è buggata e non può essere utilizzata come input del sistema in Julia. Posso riscriverla semplicemente
-- Il numero di threads utilizzabile è settabile all'avvio della REPL (-t auto).
-- La repl, da Emacs, non produce correttamente i grafici quindi è sempre meglio avere un terminale sotto mano
+- [X] La funzione =squarewave= è buggata e non può essere utilizzata
+  come input del sistema in Julia. Posso riscriverla semplicemente
+- Il numero di threads utilizzabile è settabile all'avvio della REPL
+  (-t auto).
+- La repl, da Emacs, non produce correttamente i grafici quindi è
+  sempre meglio avere un terminale sotto mano
 - [[file:src/test/test3.jl][test3.jl]] fa il suo dovere
 
 * 12.10.23
-- [[file:src/test/test3.jl][test3.jl]] non permette di estrarre i flussi (aka le correnti) dalle soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La soluzione sarà riportata in [[file:src/test/test4.jl][test4.jl]].
+- [[file:src/test/test3.jl][test3.jl]] non permette di estrarre i flussi (aka le correnti) dalle
+  soluzioni. Passo alla soluzione cosiddetta acausale (circuitale). La
+  soluzione sarà riportata in [[file:src/test/test4.jl][test4.jl]].
 
 * 16.10.23                                               :Modello:Componenti:
 - La modularità del circuito è realizzata mediante dei modelli
@@ -2367,3 +2372,14 @@ seguito i precedenti tentativi per poi inserirli negli sviluppi futuri.
   end
 
 #+end_src
+
+* 30.01.24
+
+Modifico lo script `cir2jl` per ottenere solamente lo scheletro del
+modello, senza aver istanziato alcun parametro.  Questo script l'ho
+rinominato `cir2jl-skeleton`.
+
+* 01.02.24
+
+Da ieri sto eseguendo `main.jl`, che sta costruendo la struttura
+principale del modello, l'impalcatura senza parametri.
