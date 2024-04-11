@@ -1,6 +1,7 @@
-#+title: Diario dei Log del progetto
-#+author: Luca Andriotto
-#+STARTUP: overview latexpreview entitiespretty
+#+TITLE:    Diario dei Log del progetto
+#+AUTHOR:   Luca Andriotto
+#+STARTUP:  overview latexpreview entitiespretty
+#+CATEGORY: Tesi
 
 Raccolgo in questo file cosa è stato fatto/scoperto ogni giorno.
 
@@ -1429,7 +1430,7 @@ Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#In
 ** TODO [#C] Aiutare il futuro sviluppatore del sistema mediante `getdescription(var)` :Futuro:Manuale:
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Variable_metadata/#Variable-descriptions][`Variables descriptions`]].  Inserire nella documentazione finale.
 
-** TODO [#B] Leggere manuale di `ModelingToolkit`               :Julia:Must:
+** DONE [#B] Leggere manuale di `ModelingToolkit`               :Julia:Must:
 Vedi [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#components][`Composing Models and Building Reusable Components`]].
 - [[https://docs.sciml.ai/ModelingToolkit/stable/basics/Composition/#Numerics-with-Composed-Models][`Numerics with Composed Models`]] tratta di come estrarre le serie
   temporali dalla soluzione del sistema.
@@ -1471,7 +1472,7 @@ di creare delle posizioni più sensate.
 C'è un problema che devo risolvere, ossia che il file del modello che
 voglio importare è troppo grande per essere importato da Julia...
 
-** TODO [#A] Come posso importare un così gran numero di dati?    :Problema:
+** DONE [#A] Come posso importare un così gran numero di dati?    :Problema:
 * 09.11.23                                                       :Componenti:
 Il problema della gestione dell'input di 50k moduli è da risolversi
 suddividendo, per forza di cose, in sottoreti minori.  Fosse esso
@@ -2282,9 +2283,9 @@ Per ora la mia codebase è stata scritta a partire da ModelingToolkit ma sono ap
 ** DONE [#A] Finire il resoconto
 
 * 22.12.23
-** TODO Leggere le mail nella cartella `Tesi magistrale`
+** DONE Leggere le mail nella cartella `Tesi magistrale`
 Su thunderbird ho un nuovo progetto da portare avanti per la tesi.
-** TODO [#A] Installare il software necessario (paper)
+** DONE [#A] Installare il software necessario (paper)
 Il software va compilato da sorgente e si trova in `Repo/avatree`.
 Il software girerebbe solo su windows, come scritto su readme.
 
@@ -2294,7 +2295,7 @@ il software non possa eseguire correttamente su Linux.  Devo eseguire
 quel software utilizzando VisualStudio 2019.
 
 ** DONE Installa VisualStudio 2019
-** TODO Compila AVATree da sorgente
+** TODO [#C] Compila AVATree da sorgente
 
 * 11.01.24
 In questi giorni è comparso un [[https://github.com/SciML/ModelingToolkit.jl/issues/2421][issue su Github]] che vuole introdurre
@@ -2383,3 +2384,1289 @@ rinominato `cir2jl-skeleton`.
 
 Da ieri sto eseguendo `main.jl`, che sta costruendo la struttura
 principale del modello, l'impalcatura senza parametri.
+
+* 20.02.24
+Il progetto ora si concentra sulla generazione dell'albero
+respiratorio del neonato con una particolare libreria, Chaste.
+Esistono alcuni esempi dell'utilizzo di questa libreria in C++ sul
+sito ufficiale: `AirwayGeneration` e `AirwayGeneration2015`.  Ho
+installato tutto su una partizione di Ubuntu dedicata sul mio PC per
+motivi di prestazioni.
+
+* 28.02.24                                                        :Colloquio:
+Nel modello è necessario reinserire sia il diodo che lo switch.  Ho
+tenuto oggi un colloquio con il Prof. Dellaca' e Chiara e mi è stato
+detto di provare con delle sigmoidi a raccordare la corrente.  Devo
+riguardarmi la documentazione di `ModelingToolkit`.
+
+Dovrei considerare una rete più piccola (solo 3 nodi) così da essere
+più in grado di comprendere a cosa è dovuto l'errore
+
+** DONE Riguardare la documentazione di `ModelingToolkit`
+** TODO [#C] Comprendere le questioni legate alla licenza software che devo utilizzare
+** DONE [#B] Importare la TAC neonatale (vedi CD in cartelletta)
+Importata in `~/Documents/CT/DICOM` (su arch) e `~/Documenti/CT/DICOM`
+(su Ubuntu).
+
+* 29.02.24
+Ho copiato il contenuto del disco fornitomi da Chiara e ora posso
+utilizzare i file DICOM relativi ad una TAC di neonato.
+
+* 04.03.24                                                        :Colloquio:
+
+pag 30-31
+
+installa Segment editor --> per 3dslicer
+
+** TODO Come esportare in .vtu e .stl? con MATLAB? Risolvi questo.
+- dove definisce il volume della griglia?
+
+#include "AirwayGenerator.hpp"
+#include "OutputFileHandler.hpp"
+#include "TetrahedralMesh.hpp"
+#include "FileFinder.hpp"
+#include "UblasIncludes.hpp"
+
+#include "vtkVersion.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkPointData.h"
+#include "vtkSphereSource.h"
+#include "vtkXMLPolyDataWriter.h"
+#include "vtkSTLReader.h"
+
+* 28.02.24                                                  :Domande:Manuale:
+  Appunti sullo status.
+
+** Processing TAC
+*** 3D-slicer
+ Ho installato questo software (Ubuntu 18.04 LTS) per effettuare la
+ segmentazione della TAC.
+
+ #+begin_src bash
+   # Mi sposto sulla build di Slicer
+   cd ~/Builds/Slicer-5.6.1-linux-amd64
+   # Lo eseguo
+   ./Slicer
+ #+end_src
+
+ Ho installato anche il plugin `AirwaySegmentation` che, una volta
+ posizionato un punto di seed all'interno della trachea, automatizza la
+ segmentazione dei primi tratti.  Non ancora testato perchè non ho
+ degli input.
+
+**** Domande
+ - Per la fase della segmentazione dei lobi come posso procedere?
+
+*** CHASTE
+ Ho installato Chaste sulla partizione di Ubuntu (versione 20.04 LTS)
+ del PC di Chiara utilizzando `CMake` nella fase di building.  Si
+ tratta di una libreria per C++, perciò ho cercato sia in locale che
+ online (su [[https://chaste.github.io/docs/][sito ufficiale]], [[https://github.com/Chaste/Chaste?tab=readme-ov-file][GitHub]] e GitLab) se vi fossero dei progetti
+ già esistenti che potessi utilizzare.  In locale, sulla stessa Repo di
+ Chaste, esistono alcuni test (`TestAirwayGeneration`,
+ `TestAirwayGenerationTutorial`).
+
+ Ho trovato online anche «[[https://chaste.cs.ox.ac.uk/trac/wiki/PaperTutorials/AirwayGeneration2015][AirwayGeneration2015]]», quindi ho pensato di
+ installarlo seguendo la procedura.  Purtroppo non era compatibile con
+ la versione di Chaste installata perché richiedeva l'utilizzo di
+ `scons` (ormai deprecato) nella fase di building, mentre Chaste poteva
+ essere buildato solo con `CMake` quindi ho provato ad installare
+ diverse versioni di Ubuntu sul mio PC per trovarne una che fosse
+ compatibile con questo build manager.  Alla fine utilizzo una Ubuntu
+ 18.04 LTS e ho installato sia i due test che «AirwayGeneration2015».
+ Sto cercando di capire come funzionano perchè non c'è un granchè di
+ documentazione e sono entrambi scritti in C++.
+
+ Allo stato attuale, mediante `TestAirwayGeneration` sono in grado di
+ generare dati di un albero respiratorio di esempio:
+
+ #+begin_src bash
+   # Mi sposto sulla Repo di Chaste.
+   cd ~/Builds/Chaste
+   # Compilo il test con 8 threads.
+   make -j8 TestAirwayGeneration
+   # Eseguo il test con 8 threads.
+   ctest -j8 -V -R TestAirwayGeneration
+
+   # Mi sposto sulla cartella contenente gli output.
+   cd $CHASTE_TEST_OUTPUT/TestAirwayGenerationTutorial
+   # Visualizzo l'albero respiratorio in 3D (i suoi nodi)
+   paraview --data=example_complete_conducting_airway.vtu
+ #+end_src
+
+**** Domande
+ Volevo chiedere se già in passato qualcuno avesse utilizzato un
+ programma specifico che utilizzasse la libreria Chaste nella fase di
+ processing della TAC.  Come potrei altrimenti procedere?  Ho anche
+ notato che esiste un wrapper della libreria per Python chiamato
+ `PyChaste` ma nei tutorial nella documentazione non viene mostrato
+ nulla riguardo la generazione delle vie aeree.
+
+**** Risorse importanti
+ - `[[/home/luca/Repos/Chaste/lung/test/tutorials/TestAirwayGenerationTutorial.hpp][AirwayGenerationTutorial.hpp]]`
+ - `[[/home/luca/Builds/Chaste/lung/test/TestAirwayGenerationTutorial.cpp][AirwayGenerationTutorial.cpp]]`
+ - `[[/home/luca/Repos/Chaste/lung/test/airway_generation/TestAirwayGeneration.hpp][AirwayGeneration.hpp]]`
+ - `[[/home/luca/Builds/Chaste/lung/test/TestAirwayGeneration.cpp][AirwayGeneration.cpp]]`
+ - Bootstrap di un progetto sulla repo di CHASTE: vedi wiki
+
+**** Per recapitolare
+ Ho utilizzato `AirwayGenerationTutorial`. Il file
+ `lung/test/data/TestSubject002MajorAirways.vtu` rappresenta la
+ skeletonizzazione dei primi tratti delle vie aeree mentre i file
+ `*.stl` siano le segmentazioni lobari (i.e. lll, lul, rul, rml,
+ rll). Se si dispone di queste informazioni si dovrebbe riuscire a
+ generare il file `.vtu` dell'albero respiratorio completo.
+** Generazione del modello
+ Il modello di albero respiratorio implementato in `Julia` utilizza
+ resistori ed induttanze (entrambe fisse o variabili in funzione
+ dell'integrale di corrente).  Il problema in questa sezione è legato
+ alla potenza di calcolo: il modello completo (50k parametri) non è
+ stato generato dopo due giorni di esecuzione del codice su questo PC
+ (parallelizzato su 8 threads).
+
+* 05.03.24                                                   :Teoria:Manuale:
+  Alcune definizioni.  Espongo un approccio per la segmentazione delle
+  vie aeree nei primi tratti.
+
+** Cosa sono files ".vtu" e i files ".stl"?
+ [[https://discourse.slicer.org/t/convert-a-surface-mesh-to-a-volumetric-mesh-in-3d-slicer/1416/10][Questa fonte]] definisce i file ".vtu" e ".stl".
+ - .vtu :: tetrahedral mesh in a VTK unstructured grid.  Si veda anche
+   [[https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf][qui]].
+ - .stl :: surface mesh
+** Cosa è `Tetgen'?
+ [[https://www.wias-berlin.de/software/tetgen/1.5/index.html][Fonte:]] Software (datato) per la generazione di mesh tetraedriche.
+** Primi tratti
+ Ho segmentato i primi tratti utilizzando `Chest Imaging Platform` >
+ `Toolkit` > `Segmentation` > `Segment Lung Airways`. Questo tool
+ genera una label map che identifica i punti appartenenti ai primi
+ tratti nei 3 piani. Posso esportare la label map in una segmentazione
+ ed infine in un modello per poterlo esportare in `.vtk`. Non mi è
+ stato ancora possible esportare in `.vtu`.
+* 14.03.24                                                 :Manuale:Problema:
+  Alcuni `How-Tos` e gestioni problemi relativi alla compatibilità con
+  Ubuntu.
+
+** Generazione input per Chaste
+*** Importazione dei DICOM
+ Slicer > Add DICOM Data > [Selezione]
+
+*** Render 3D
+ Selezione modulo `Volume Rendering`. Dal menù `Volume` scelgo
+ `Parenchima IMR`. Dal volume `Preset` scelgo `CT-Lung`.
+
+*** Segmentazione Vie Aeree
+ Dal menù `Modules` scelgo `Markups` > `Point list`, poi seleziono un
+ punto appartenente alla trachea (selezione punto fiduciario chiamato
+ automaticamente "F").  Dal menù `Modules` scelgo `Segmentation` >
+ `Airway Segmentation`.  Dal menu `CT volume` seleziono `203:
+ Parenchima IMR` e dal menu `Seed point` seleziono il punto fiduciario
+ "F" identificato precedentemente.
+
+*** Skeletonizzazione
+ Utilizzo il modulo `Vascular Modeling Toolkit` > `Extract Centerline`.
+ Eseguo l'autodetect degli endpoints. Nella sezione `Tree`, dal menù
+ `Centerline model`, seleziono il modello generato in fase di
+ segmentazione (chiamato "Trachea"). Premo su `Apply`.
+
+*** Esportazione della skeletonizzazione
+ Vi sono vari formati disponibili, alcuni compatibili con VTK:
+ - ".vtk" :: VTK Polygon Mesh
+ - ".vtp" :: VTK XML Polygon Mesh
+ - ".stl" :: Stereolitography Mesh
+ - ".ply" :: Standford Polygon Mesh
+ - ".obj" :: Wavefront Mesh
+ - ".vtu" :: tetrahedral mesh in a VTK unstructured grid.  Si veda anche
+   [[https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf][qui]].
+
+ Si consulti `[[https://manpages.ubuntu.com/manpages/focal/man1/vtkplotter-convert.1.html][VTKplotter-convert]]` e `[[https://github.com/marcomusy/vedo][vedo]]`.  Riscontro dei problemi in
+ fase di installazione dovuti alla mancanza di librerie software
+ necessarie.
+
+ Testato il tool `vedo` (Ubuntu 22.04), in quanto `VTKplotter` non fa
+ parte delle repository ufficiali (a quanto pare vedo dovrebbe essere
+ la continuazione del progetto vtkplotter-convert).  Il tool genera un
+ file .vtk a partire da un file .obj ma non è in grado di convertire
+ in .vtu.
+
+** Gestione distribuzione Linux
+ Finora ho eseguito Chaste su Ubuntu 18.04.6 LTS (codename bionic).
+ #+begin_example
+ Distributor ID:	Ubuntu
+ Description:	Ubuntu 18.04.6 LTS
+ Release:	18.04
+ Codename:	bionic
+ #+end_example
+
+ I problemi che ho riscontrato nella precedente fase possono essere
+ risolti aggiornando all'ultima versione LTS.  L'ultimo rilascio della
+ libreria Chaste è 2024.1 e le dipendenze installabili da package
+ manager (apt) sono disponibili fino alla versione di Ubuntu 22.04 LTS
+ (codename jammy).  Se non erro sul computer di Chiara è installata
+ questa versione, provo lì prima di fare cambiamenti.  Funziona tutto
+ correttamente, posso eseguire l'upgrade all'ultima versione LTS.
+
+ #+begin_example
+ Distributor ID:	Ubuntu
+ Description:	Ubuntu 22.04.4 LTS
+ Release:	22.04
+ Codename:	jammy
+ #+end_example
+
+ Ho deciso di mantenere l'ultima versione solamente sul computer di
+ Chiara, così da avere una soluzione di backup nel caso scegliessimo di
+ utilizzare `AirwayGeneration2015`.
+ 
+* 18.03.24                                  :Problema:Scrittura_Tesi:Domande:
+** DONE Gestione distribuzione Linux (installazione)
+Provo a ricompilare Chaste utilizzando i sorgenti della release
+2024.1.  
+
+Se non dovesse funzionare tento con la versione precedente (2021.1).
+Comincio a scaricarne il codice in `~/Repos/Chaste.old`.
+nn
+Il seguente comando permette di utilizzare una qualunque release
+(precedente o attuale) sostituendo <versione> con il numero di
+versione desiderata (e.g. 2024.1).
+
+#+begin_src bash
+git clone -b <versione> https://github.com/Chaste/Chaste.git ~/Repos/Chaste
+#+end_src
+
+
+*** 2024.1 (Release più recente)
+
+#+begin_src bash
+  # Clonare la Repository.
+  git clone -b 2024.1 https://github.com/Chaste/Chaste.git ~/Repos/Chaste
+
+  # Creare la cartella di build.
+  mkdir -p ~/Build/Chaste
+
+  # Spostarsi sulla cartella di build.
+  cd ~/Build/Chaste
+
+  # Lanciare cmake interattivo (ncurses).
+  ccmake ~/Repos/Chaste
+  
+#+end_src
+
+Nell'interfaccia testuale di `ccmake`, digitare i seguenti comandi
+(associati alla pressione di tasti singoli) uno per volta, aspettando
+la fine dell'esecuzione di ciascuno prima di lanciare il successivo.
+
+#+begin_example
+  c
+  e
+  c
+  e
+  g
+  q
+#+end_example
+
+I precedenti comandi eseguono le funzioni:
+- c :: configure.  Va eseguito due volte per la corretta configurazione
+- e :: exit. Alla fine di un'operazione di configure 
+- g :: generate. Genera Makefile.
+- q :: quit. Uscire dal programma ccmake
+
+Infine eseguire:
+
+#+begin_src bash
+  # Build dell'oggetto `Continuous` (si veda CMakeFirstRun sul sito di Chaste)
+  make -j4 Continuous
+#+end_src
+
+Il building è andato a buon fine.  Provo con il building dei test
+specifici (`TestAirwayGeneration` e `TestAirwayGenerationTutorial`).
+
+#+begin_src bash
+  # Build dell'oggetto `TestAirwayGeneration`
+  make -j4 TestAirwayGeneration
+  make -j4 TestAirwayGenerationTutorial
+#+end_src
+
+Provo ad eseguirli:
+
+#+begin_src bash
+  # Eseguo `TestAirwayGeneration`
+  ctest -j4 -V -R TestAirwayGeneration
+  ctest -j4 -V -R TestAirwayGenerationTutorial
+#+end_src
+
+Il comando restituisce degli errori
+
+#+begin_example
+Start testing: Mar 18 11:06 CET
+----------------------------------------------------------
+364/558 Testing: TestAirwayGeneration
+364/558 Test: TestAirwayGeneration
+Command: "/home/chiara/Builds/Chaste/lung/test/TestAirwayGeneration"
+Directory: /home/chiara/Repos/Chaste/
+"TestAirwayGeneration" start time: Mar 18 11:06 CET
+Output:
+----------------------------------------------------------
+Running 2 tests
+
+ ***** TestAirwayGeneration.hpp *****
+
+
+Entering TestGeneration
+Passed
+Entering TestDummyClassCoverage
+Passed
+OK!
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"TestAirwayGeneration" end time: Mar 18 11:06 CET
+"TestAirwayGeneration" time elapsed: 00:00:00
+----------------------------------------------------------
+
+374/558 Testing: TestAirwayGenerationTutorial
+374/558 Test: TestAirwayGenerationTutorial
+Command: "/home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial"
+Directory: /home/chiara/Repos/Chaste/
+"TestAirwayGenerationTutorial" start time: Mar 18 11:06 CET
+Output:
+----------------------------------------------------------
+Running 1 test
+
+ ***** TestAirwayGenerationTutorial.hpp *****
+
+
+Entering TestGenerateAirways
+ERROR: In ./IO/XMLParser/vtkXMLParser.cxx, line 389
+vtkXMLDataParser (0x55b31a5b8230): Error parsing XML in stream at line 24, column 3, byte index 1599: not well-formed (invalid token)
+
+ERROR: In ./IO/XML/vtkXMLReader.cxx, line 467
+vtkXMLUnstructuredGridReader (0x55b31a5af3c0): Error parsing input file.  ReadXMLInformation aborting.
+
+ERROR: In ./Common/ExecutionModel/vtkExecutive.cxx, line 781
+vtkCompositeDataPipeline (0x55b31a5c52b0): Algorithm vtkXMLUnstructuredGridReader(0x55b31a5af3c0) returned failure for request: vtkInformation (0x55b31a5cb2c0)
+  Debug: Off
+  Modified Time: 83
+  Reference Count: 1
+  Registered Events: (none)
+  Request: REQUEST_INFORMATION
+  FORWARD_DIRECTION: 0
+  ALGORITHM_AFTER_FORWARD: 1
+
+
+
+terminate called after throwing an instance of 'Exception'
+  what():  
+Chaste error: ./mesh/src/reader/VtkMeshReader.cpp:483: No point data 'radius'
+[Satellite-L50-B:27311] *** Process received signal ***
+[Satellite-L50-B:27311] Signal: Aborted (6)
+[Satellite-L50-B:27311] Signal code:  (-6)
+[Satellite-L50-B:27311] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7f135ae9e520]
+[Satellite-L50-B:27311] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7f135aef29fc]
+[Satellite-L50-B:27311] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7f135ae9e476]
+[Satellite-L50-B:27311] [ 3] /lib/x86_64-linux-gnu/libc.so.6(abort+0xd3)[0x7f135ae847f3]
+[Satellite-L50-B:27311] [ 4] /lib/x86_64-linux-gnu/libstdc++.so.6(+0xa2b9e)[0x7f135b74db9e]
+[Satellite-L50-B:27311] [ 5] /lib/x86_64-linux-gnu/libstdc++.so.6(+0xae20c)[0x7f135b75920c]
+[Satellite-L50-B:27311] [ 6] /lib/x86_64-linux-gnu/libstdc++.so.6(+0xae277)[0x7f135b759277]
+[Satellite-L50-B:27311] [ 7] /lib/x86_64-linux-gnu/libstdc++.so.6(+0xae4d8)[0x7f135b7594d8]
+[Satellite-L50-B:27311] [ 8] /home/chiara/Builds/Chaste/mesh/libchaste_mesh.so(_ZN13VtkMeshReaderILj1ELj3EE12GetPointDataENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERSt6vectorIdSaIdEE+0x1cc)[0x7f135ce2c3aa]
+[Satellite-L50-B:27311] [ 9] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0x105e5)[0x55b319fa05e5]
+[Satellite-L50-B:27311] [10] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0x110d3)[0x55b319fa10d3]
+[Satellite-L50-B:27311] [11] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xb9ab)[0x55b319f9b9ab]
+[Satellite-L50-B:27311] [12] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xe6f7)[0x55b319f9e6f7]
+[Satellite-L50-B:27311] [13] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xe5dc)[0x55b319f9e5dc]
+[Satellite-L50-B:27311] [14] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xe482)[0x55b319f9e482]
+[Satellite-L50-B:27311] [15] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xe344)[0x55b319f9e344]
+[Satellite-L50-B:27311] [16] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xe958)[0x55b319f9e958]
+[Satellite-L50-B:27311] [17] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xa976)[0x55b319f9a976]
+[Satellite-L50-B:27311] [18] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7f135ae85d90]
+[Satellite-L50-B:27311] [19] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7f135ae85e40]
+[Satellite-L50-B:27311] [20] /home/chiara/Builds/Chaste/lung/test/TestAirwayGenerationTutorial(+0xa845)[0x55b319f9a845]
+[Satellite-L50-B:27311] *** End of error message ***
+<end of output>
+Test time =   0.50 sec
+----------------------------------------------------------
+Test Failed.
+"TestAirwayGenerationTutorial" end time: Mar 18 11:06 CET
+"TestAirwayGenerationTutorial" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Mar 18 11:06 CET
+
+Continuous_lung =   0.07 sec*proc
+
+Nightly_lung =   0.50 sec*proc
+
+#+end_example
+
+*** 2024.1 (Ultimo commit, versione di sviluppo)
+
+Durante l'installazione delle dipendenze il tool `python3-paraview`
+bloccava l'installazione dell'ultima versione di VTK (9).  Non è
+chiaro quale sia la versione adeguata (il pacchetto
+`chaste-dependencies` che raccoglie tutte le dipendenze è aggiornato
+al 2022 e la versione di VTK consigliata è ferma alla 7.1).
+
+*** 2021.1 (penultima Release)
+
+#+begin_src bash
+# Clonare la Repository.
+git clone -b 2021.1 https://github.com/Chaste/Chaste.git ~/Repos/Chaste.old
+
+# Creare la cartella di build.
+mkdir -p ~/Build/Chaste.old
+
+# Spostarsi sulla cartella di build.
+cd ~/Build/Chaste.old
+
+# Lancio cmake interattivo (ncurses). --> ERRORE
+ccmake ~/Repos/Chaste.old
+#+end_src
+
+CMake restituisce un errore:
+
+#+begin_example
+CMake Error at /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find MPI (missing: MPI_C_FOUND) (found version "3.1")
+Call Stack (most recent call first):
+  /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:594 (_FPHSA_FAILURE_MESSAGE)
+  /usr/share/cmake-3.22/Modules/FindMPI.cmake:1830 (find_package_handle_standard_args)
+  CMakeLists.txt:428 (find_package)
+#+end_example
+
+Posso eventualmente utilizzare questa versione ma portandomi allo
+stesso commit che ho sul mio PC.
+
+
+*** 2024.1 Installazione manuale
+
+1. Editare `.bashrc` aggiungendo delle variabili d'ambiente
+
+#+begin_src bash
+export CHASTE_LIBS=$HOME/apps/chaste-libs
+export PATH=$CHASTE_LIBS/bin:$PATH
+#+end_src
+
+2. Fare il sourcing del nuovo `.bashrc`
+
+#+begin_src bash
+source ~/.bashrc
+#+end_src
+
+3. Creare la cartella per accogliere le dipendenze
+
+#+begin_src bash
+mkdir -p $CHASTE_LIBS
+#+end_src
+
+4. Compilare le dipendenze (operazione molto lunga e con alto rischio di fallimento).
+
+** Scrittura tesi
+Comincio a delineare i requisiti software da soddisfare per garantire
+ripetibilità.  Cosa s'intende per modello morfometrico?  Consultare il
+pdf fornito da Chiara.  Quali altri concetti sono importanti ai fini
+della comprensione della tesi?
+
+*** Definizioni importanti
+- Modello morfometrico
+
+*** Requisiti software
+- Julia :: utilizzato nello sviluppo del modello morfometrico.
+- Chaste :: libreria utilizzata in fase di generazione dell'input al
+  modello morfometrico.  Genera un surrogato polmonare, i cui
+  parametri geometrici sono necessari alla stima di impedenze,
+  resistenze e capacità impiegate nel modello morfometrico.
+
+**** Domande
+- Dovrei inserire anche le alternative, o meglio, i tentativi di
+  installazione delle alternative?
+
+* 20.03.24                                                :Conversione:Input:
+** Gestione distribuzione Linux
+L'installazione di Chaste sul mio portatile funziona (Ubuntu), quindi
+non faccio alcun aggiornamento e tento di eseguire con quella.  Il
+motivo per cui ho tentato di installare Chaste su una versione LTS più
+aggiornata è quello di poter utilizzare lo stesso computer per fare
+diverse cose senza dover lasciare il sistema operativo che sto
+utilizzando.
+
+** TODO Conversione skeletonizzazione
+*** TODO vtkToolbox (MATLAB)
+Su arch ho scaricato ed installato (in un virtual environment) il tool
+`vedo`.  Provo ad utilizzare la libreria `[[https://it.mathworks.com/matlabcentral/fileexchange/94993-vtktoolbox][vtkToolbox]]` per MATLAB.
+L'installazione è avvenuta senza problemi (non è stato necessario
+compilare alcun software da sorgente).
+
+Questa libreria è in grado di lavorare solamente con due tipologie di
+file: `vtkPolyData` e `vtkUnstructuredGrid`.  Per comprendere cosa
+siano mi sto riferendo a [[https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf][questa fonte]].
+
+**** Formato dei file VTK
+Esistono due differenti stili di formato di file in VTK:
+- Serial formats :: (legacy) più semplici da leggere e scrivere (anche
+  con intervento umano). Sono meno flessibili della seconda categoria.
+- XML formats    :: Formati preferiti e più utilizzati. Esistono due
+  tipi di file XML:
+  - Serial   :: progettato per lettura e scrittura da parte di
+    applicazioni di un solo processo.
+  - Parallel :: progettato per lettura e scrittura da parte di
+    applicazioni con processi multipli.
+
+  Nei file XML i dataset VTK sono classificati in due categorie:
+  - Structured   :: Array topologicamente regolare di celle (pixel,
+    voxel, quatrilateri o esaedri).  I tipi di dataset structured sono
+    `vtkImageData`, `vtkRectilinearGrid`, `vtkStructuredGrid`.
+  - Unstructured :: Array topologicamente irregolare di punti o
+    celle. i subset sono descritti utilizzando «pieces». I tipi di
+    dataset unstructured sono `vtkPolyData` `vtkUnstructuredGrid`
+    
+  Di seguito elenco tutti i tipi di date e di file associati ad una
+  particolare estensione.
+  - ImageData (.vti)          :: Serial   vtkImageData        (structured).
+  - PolyData (.vtp)           :: Serial   vtkPolyData         (unstructured).
+  - RectilinearGrid (.vtr)    :: Serial   vtkRectilinearGrid  (structured).
+  - StructuredGrid (.vts)     :: Serial   vtkStructuredGrid   (structured).
+  - UnstructuredGrid (.vtu)   :: Serial   vtkUnstructuredGrid (unstructured).
+  - PImageData (.pvti)        :: Parallel vtkImageData        (structured).
+  - PPolyData (.pvtp)         :: Parallel vtkPolyData         (unstructured).
+  - PRectilinearGrid (.pvtr)  :: Parallel vtkRectilinearGrid  (structured).
+  - PStructuredGrid (.pvts)   :: Parallel vtkStructuredGrid   (structured).
+  - PUnstructuredGrid (.pvtu) :: Parallel vtkUnstructuredGrid (unstructured). 
+
+Chaste richiederebbe l'utilizzo di un Serial Unstructured Grid (.vtu).
+Il toolbox per MATLAB può lavorare con .vtp, .pvtp, .vtu e .pvtu.
+
+*** WriteVTK (Julia)
+Ho anche trovato una libreria per Julia chiamato [[https://juliavtk.github.io/WriteVTK.jl/stable/][WriteVTK]].  Esiste
+anche una [[https://github.com/JuliaVTK/ReadVTK.jl][ReadVTK]].  Non ancora testato.
+
+** TODO Bootstrap di un test (Chaste)
+Cerco la documentazione su come posso creare un nuovo test su Chaste.
+Su Chaste quest'operazione viene chiamata «creazione di un User
+Project».  Si veda [[https://chaste.github.io/docs/user-guides/user-projects/][questa]] documentazione.
+- Scaricare [[https://github.com/Chaste/template_project][template]] di User Project.
+
+* 21.03.24                                        :Conversione:Input:Manuale:
+** Bootstrap di un test (Chaste)
+Quando faccio il bootstrap invoco il giusto interprete Python.  Su
+Ubuntu 20.04 ho sia python (2.7 mi pare) che python3.
+
+#+begin_src bash
+  python3 setup_project.py
+#+end_src
+
+** Gestione distribuzione Linux
+Provo a installare Chaste compilando da sorgente le librerie
+necessarie.  Provo a farlo su Artix Linux, derivata di Arch.  Si
+consulti la documentazione su [[https://chaste.github.io/docs/dev-guides/developer-install-guide/][questo sito]].  Il processore del PC ha in
+totale 8 threads, quindi modifico di seguito il seguente codice per
+compilare le librerie necessarie utilizzando tutta la potenza di
+calcolo disponibile.
+
+#+begin_src bash
+  # CMake 3.22.6
+  wget https://www.cmake.org/files/v3.22/cmake-3.22.6.tar.gz
+  tar -zxf cmake-3.22.6.tar.gz
+  cd cmake-3.22.6
+  ./bootstrap --prefix=$CHASTE_LIBS --parallel=8 && make -j8 && make install
+  cd ..
+  rm -rf cmake-3.22.6.tar.gz cmake-3.22.6
+
+  # Boost 1.74.0
+  cd $CHASTE_LIBS
+  wget https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
+  tar -zxf boost_1_74_0.tar.gz
+  cd boost_1_74_0
+  ./bootstrap.sh --prefix=$CHASTE_LIBS --with-libraries=system,serialization,program_options
+  ./b2 install
+  cd ..
+  rm -rf boost_1_74_0.tar.gz boost_1_74_0
+
+  # PETSc lite 3.18.6
+  # mpich-4.1.2
+  # HDF5-1.10.11
+  # ParMETIS
+  cd $CHASTE_LIBS
+  wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.18.6.tar.gz
+  tar -zxf petsc-lite-3.18.6.tar.gz
+  rm -f petsc-lite-3.18.6.tar.gz
+  cd petsc-3.18.6
+  export PETSC_DIR=`pwd`
+
+  mpich=https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
+  hdf5=https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.11/src/hdf5-1.10.11.tar.bz2
+
+  export PETSC_ARCH=linux-gnu
+  ./configure \
+      --with-make-np=8 \
+      --with-cc=gcc \
+      --with-cxx=g++ \
+      --with-fc=0 \
+      --with-x=false \
+      --with-ssl=false \
+      --download-f2cblaslapack=1 \
+      --download-mpich=$mpich \
+      --download-hdf5=$hdf5 \
+      --download-parmetis=1 \
+      --download-metis=1 \
+      --with-shared-libraries \
+      --with-debugging=0
+  make all
+  make test # optional
+
+  # SUNDIALS 5.8.0
+  cd $CHASTE_LIBS
+  wget https://github.com/LLNL/sundials/releases/download/v5.8.0/sundials-5.8.0.tar.gz
+  tar -zxf sundials-5.8.0.tar.gz
+  mkdir build-sundials-5.8.0 && cd build-sundials-5.8.0
+  cmake \
+      -DCMAKE_INSTALL_PREFIX=$CHASTE_LIBS \
+      -DBUILD_SHARED_LIBS=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DEXAMPLES_ENABLE=OFF ../sundials-5.8.0
+  make -j8 && make install
+  cd ..
+  rm -rf build-sundials-5.8.0 sundials-5.8.0 sundials-5.8.0.tar.gz
+
+  # XSD 4.0.0
+  cd $CHASTE_LIBS
+  wget https://www.codesynthesis.com/download/xsd/4.0/linux-gnu/x86_64/xsd-4.0.0-x86_64-linux-gnu.tar.bz2
+  tar -xjf xsd-4.0.0-x86_64-linux-gnu.tar.bz2
+  ln -s $CHASTE_LIBS/xsd-4.0.0-x86_64-linux-gnu/bin/xsd $CHASTE_LIBS/bin/xsd
+  rm -f xsd-4.0.0-x86_64-linux-gnu.tar.bz2
+
+  # Xerces 3.2.3
+  cd $CHASTE_LIBS
+  wget https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.3.tar.gz
+  tar -zxf xerces-c-3.2.3.tar.gz
+  cd xerces-c-3.2.3/
+  export XERCESCROOT=`pwd`
+  ./configure --prefix=$CHASTE_LIBS
+  make -j8 all
+  make install
+  cd ..
+  rm -rf xerces-c-3.2.3 xerces-c-3.2.3.tar.gz
+
+  # VTK 9.1.0 --> ERROR
+  cd $CHASTE_LIBS
+  wget https://www.vtk.org/files/release/9.1/VTK-9.1.0.tar.gz
+  tar -zxf VTK-9.1.0.tar.gz
+  mkdir build_VTK-9.1.0 && cd build_VTK-9.1.0
+  cmake -DCMAKE_INSTALL_PREFIX=$CHASTE_LIBS ../VTK-9.1.0
+  make -j8
+  make install
+  cd ..
+  rm -rf build_VTK-9.1.0 VTK-9.1.0 VTK-9.1.0.tar.gz
+
+  # chaste_codegen (in a Python virtual environment)
+  python3 -m venv $CHASTE_LIBS/chaste_codegen
+  source $CHASTE_LIBS/chaste_codegen/bin/activate
+  python3 -m pip install --upgrade pip setuptools wheel
+  python3 -m pip install chaste_codegen
+
+#+end_src
+
+(Quasi) Tutte le dipendenze sono state compilate ed installate da
+sorgente.  VTK non compila correttamente quindi utilizzo la versione
+9.3.0 con package manager.  Provo ora a compilare Chaste.  Avevo
+saltato la compilazione di Boost e la fase di configuration di ccmake,
+così come quella di generation.  Forse è il caso di utilizzare solo le
+dipendenze aggiornate.
+
+Ho disinstallato tutte le dipendenze compilate da sorgente e ho
+compilato da sorgente l'ultima versione di `petsc`.  Dava ancora
+errore, a causa di `xsd` (non avevo installato `libxsd`).  Sono
+riuscito a configurare e generare con cmake ma non a compilare con
+make.  Rimango della mia teoria: lascio l'installazione di Chaste
+sulla mia macchina senza aggiornare alcun componente.  L'ultimo
+tentativo che potrei fare quando sono a casa è quello di disinstallare
+le dipendenze di chaste (pacchetto chaste-dependencies) e reinstallare
+le singole dipendenze allo stato aggiornato.
+
+** Conversione skeletonizzazione (vtkToolbox)
+*** Funzioni utili
+Creo un elenco di funzioni che serviranno alla conversione del file
+".vtp" al ".vtu":
+- vtkRead  :: Legge un file legacy: .vtk oppure XML: .vtp o .vtu
+  #+begin_src octave
+    function outStruct = vtkRead(filename, verbose)
+  #+end_src
+  
+- vtkWrite :: Scrive un file legacy: .vtk oppure XML: .vtp o .vtu
+  #+begin_src octave
+    % Defaults:
+    % verbose = false
+    % 
+    % dataMode can be chosen from {'ascii', 'binary'} for vtk, ply, stl
+    %                         and {'ascii', 'binary', 'appended'} for vtp, vtu
+    %                         and {'ascii'} for obj, off
+    function vtkWrite(inStruct, filename, verbose, dataMode)
+  #+end_src
+
+L'idea sarebbe quella di generare un nuovo file .vtp e di sottoporlo a `vtkRead`.
+
+* 22.03.24
+** Disinstallazione vecchie dipendenze
+#+begin_src bash
+# Rimozione
+sudo apt remove chaste-dependencies
+# Aggiornamento di sistema (update delle repository)
+sudo apt update
+#+end_src
+
+** Installazione nuove dipendenze
+  Ottengo la lista delle dipendenze da installare.
+
+| Dipendenze   | Versione | Pacchetto                    |
+|--------------+----------+------------------------------|
+| GCC          |     12.x | gcc                          |
+| Clang        |     14.x | clang                        |
+| Intel oneAPI |   2024.x | ---                          |
+| Boost        |     1.74 | libboost-system-dev          |
+|              |          | libboost-serialization-dev   |
+|              |          | libboost-program-options-dev |
+| HDF5         |   1.10.7 | hdf5-tools                   |
+|              |          | libhdf5-openmpi-dev          |
+| ParMETIS     |      4.0 | libmetis-dev                 |
+|              |          | libparmetis-dev              |
+| PETSc        |     3.15 | libpetsc-real3.15            |
+|              |          | libpetsc-real3.15-dev        |
+|              |          | libpetsc-real3.15-dbg        |
+| SUNDIALS     |      5.8 | libsundials-dev              |
+| VTK          |      9.1 | libvtk9.1                    |
+|              |          | libvtk9-dev                  |
+| Xerces       |    3.2.3 | libxerces-c-dev              |
+| XSD          |      4.0 | xsdcxx                       |
+
+
+Comandi di installazione manuale
+
+#+begin_src bash
+sudo apt install 
+
+sudo apt-get install cmake cmake-curses-gui                                 \
+libboost-system-dev libboost-serialization-dev libboost-program-options-dev \
+libpetsc-real3.15 libpetsc-real3.15-dev libpetsc-real3.15-dbg               \
+hdf5-tools libhdf5-openmpi-dev                                              \
+libmetis-dev libparmetis-dev                                                \
+libsundials-dev                                                             \
+xsdcxx                                                                      \
+libxerces-c-dev                                                             \
+libvtk9.1 libvtk9-dev
+
+#+end_src 
+
+Dopo l'installazione delle dipendenze più aggiornate, posso provare a
+compilare i sorgenti più aggiornati di Chaste.
+
+#+begin_src bash
+# Aggiornamento del codice sorgente
+cd ~/Repos/Chaste-dev
+git pull
+
+# Rimozione della precedente build
+cd ~/Builds/Chaste-dev
+rm -rf *
+
+# Compilazione del codice (per polmone)
+cmake ~/Repos/Chaste-dev
+make -j4 lung
+
+# Compilazione dei test che mi servono
+make -j4 TestAirwayGeneration
+make -j4 TestAirwayGenerationTutorial
+ctest -V -R TestAirwayGeneration
+ctest -V -R TestAirwayGenerationTutorial
+#+end_src 
+
+Il solito errore di VTK è comparso.  Non proseguo su questa via.
+
+* 25.03.24
+** Idea di Francesca
+Segmentazione da 3DSlicer, esporto in .mhd, importo su matlab e lavoro
+per estrarre la linea centrale (center-line) e generare il
+.vtp. utilizzo poi la funzione del toolbox per generare il .vtu.
+Quando esporto in mhd con Chaste, i file che questo restituisce sono
+in formato zraw e mhd.  Stando a ciò che è stato detto all'incontro,
+il mhd è un formato che punta al contenuto di zraw quindi entrambi i
+file devono essere nella working directory di matlab per funzionare
+correttamente.
+
+- region_growing: funzione in matlab per effettuare l'estrazione delle
+  vie aeree.  La soglia che ci servirà è sui 900. Devo però ricondurmi
+  ad un range da -1000 a 0.
+
+- se uso .mhd: utilizzare [[https://mipav.cit.nih.gov/][MIPAV]].
+
+Altri programmi che posso utilizzare:
+- [[https://imagej.net/ij/index.html][imagej]]
+
+** DONE Importare documenti da computer di Chiara
+Mi servono gli appunti che avevo sull'altro computer per aggiornare lo
+stato della gestione della distribuzione.
+
+Gli appunti su questo computer (arch) includono informazioni file vtk?
+
+** Conversione skeletonizzazione (vtkToolbox)
+Devo rivedere la procedura
+
+* 26.03.24
+Non posso generare io un file vtp e se anche lo facessi non saprei
+come cambiare quello di 3DSlicer.
+
+** Idea di Francesca
+Ho alcuni dubbi sull'utilizzo di altri formati (tipo mhd).  Per quale
+motivo passare a questo formato se poi devo fare parte del lavoro che
+già facevo in 3DSlicer su MATLAB?  Se intendo bypassare la vtkRead è
+la strada giusta ma cosa mi dice che vtkWrite non abbia gli stessi
+problemi?  Ci devo riflettere.  Esistono modalità alternative per la
+manipolazione di file vtk?  Cosa accadrebbe se utilizzassi Julia ad
+esempio?
+
+** Julia ReadVTK
+Sto provando a utilizzare la libreria per Julia chiamata [[https://juliavtk.github.io/ReadVTK.jl/stable/][ReadVTK]] per
+effettuare la conversione.  Ho manipolato il file generato da
+3DSlicer, in particolare il campo `version` e `header_type` di VTKFile.
+In questo modo la funzione VTKFile riesce ad importare il file .vtp.
+Di seguito le modifiche utili alla lettura del file:
+
+#+begin_example
+<VTKFile type="PolyData" version="1" byte_order="LittleEndian" header_type="UInt64" compressor="vtkZLibDataCompressor">
+#+end_example
+
+Il numero celle che riesce ad indicizzare con questa lettura è
+negativo, quindi non corretto (-9223372036854775808).  La REPL trova
+però un numero positivo di punti (1735).
+
+ReadVTK lavora con un encoding di tipo `raw` per gli AppendedData
+mentre quello utilizzato da 3DSlicer è `Base64`.
+
+* 27.03.24
+Per utilizzare una libreria con funzioni per effettuare l'estrazione
+della centerline MATLAB avrei bisogno di un'immagine binary, double,
+single, integer o logical.
+
+** Avatree su arch linux
+Clono la Repo da [[https://github.com/snousias/avatree][qui]].
+
+#+begin_src bash
+  cd ~/Repos/
+  git clone https://github.com/snousias/avatree
+  mkdir ~/Builds/avatree
+  cd ~/Builds/avatree
+  cmake ~/Repos/avatree
+#+end_src
+
+Aspetto che finisca la compilazione di ITK (dipedenza di avatree).
+fast non compila su arch.  Provo con Ubuntu.  Potrei provare a vedermi
+le funzioni C++ che servirebbero per scrivere il test con Chaste.
+
+* 28.03.24
+Provo a fare bootstrap di progetto da Ubuntu 20.04.
+
+* 29.03.24
+Ho provato a disinstallare l'ultima versione di vtk per Ubuntu 22.04 e
+a reinstallare le vecchie dipendenze (chaste dependencies).  Il
+messaggio che ho ottenuto è il seguente
+
+#+BEGIN_EXAMPLE
+chiara@Satellite-L50-B:~/Repos/Chaste-dev$ sudo apt install chaste-dependencies
+Lettura elenco dei pacchetti... Fatto
+Generazione albero delle dipendenze... Fatto
+Lettura informazioni sullo stato... Fatto   
+I seguenti pacchetti sono stati installati automaticamente e non sono più richiesti:
+  libdouble-conversion-dev libutfcpp-dev
+Usare "sudo apt autoremove" per rimuoverli.
+I seguenti pacchetti aggiuntivi saranno inoltre installati:
+  libfltk1.1 libqt5x11extras5 libvtk7-dev libvtk7-java libvtk7-jni libvtk7.1p-qt python3-vtk7 tcl-vtk7 vtk7
+Pacchetti suggeriti:
+  vtk7-doc vtk7-examples java-virtual-machine mayavi2
+I seguenti pacchetti NUOVI saranno installati:
+  chaste-dependencies libfltk1.1 libqt5x11extras5 libvtk7-dev libvtk7-java libvtk7-jni libvtk7.1p-qt python3-vtk7 tcl-vtk7 vtk7
+0 aggiornati, 10 installati, 0 da rimuovere e 32 non aggiornati.
+È necessario scaricare 7.714 kB di archivi.
+Dopo quest'operazione, verranno occupati 50,7 MB di spazio su disco.
+Continuare? [S/n]
+#+END_EXAMPLE
+
+Curioso, esistono dei test per gestire le mesh.  Che siano questi
+quelli di cui ho bisogno?  Vedi [[https://chaste.github.io/docs/dev-guides/cmake-build-guide/][qui]] e, soprattutto [[https://chaste.github.io/docs/dev-guides/building-executable-apps/][qui]].
+
+Non mi sono fidato delle precedenti installazioni e ho disinstallato
+tutte le dipendenze vecchie e nuove e ho reinstallato le vecchie
+(chaste-dependencies), che hanno come ultimo aggiornamento
+2022.04.11.  Provo ora a lavorare con la versione 2021.1.
+
+La versione 2021.1 non compila l'oggetto `lung` quindi non è
+utilizzabile.  Provo con l'ultima versione e vecchie dipendenze.
+
+* 03.04.24
+Ho provato ad installare dipendenze e Chaste su Fedora (Computer di
+Chiara) e compare di nuovo quell'errore di VTK.
+
+* 04.04.24
+Rileggo la mail di Davide.  Ci sono varie soluzioni:
+1. [[https://github.com/ElsevierSoftwareX/SOFTX_2019_291][Meshtool]] (in C++)
+2. [[https://github.com/baxmittens/VTUFileHandler.jl][VTUFileHandler]] (per Julia)
+3. [[http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP4][ITK-snap]]
+4. [[https://github.com/KIT-IBT/vtkToolbox][vtkToolbox]] (MATLAB)
+
+** DONE Meshtool
+Considero il primo per ora e lo installo.  Studio ora il comportamento
+delle varie funzioni:
+- clean quality          :: Deform mesh elements to reach a certain quality threshold value.
+- clean topology         :: Clean the mesh from bad topology definitions.
+- convert                :: Convert between different mesh formats.
+- collect                :: Merge a mesh with datasets.
+- extract data           :: Data defined on a mesh is extracted for a given submesh.
+- extract gradient       :: Compute gradient and gradient magnitude of a scalar function on a mesh.
+- extract mesh           :: A submesh is extracted from a given mesh based on given element tags.
+- extract myocard        :: The myocardium is extracted from a given mesh.
+- extract surface        :: Extract a sequence of surfaces defined by set operations on element tags.
+- extract unreachable    :: Extract elements that are unreachable through edge-traversal from a given start vertex.
+- extract volume         :: Extract elements inside a given box volume.
+- generate fibres        :: Generate default fibers for a given mesh file.
+- generate distancefield :: Generate a distancefield between two surfaces.
+- generate mesh          :: Generate a tetrahedral mesh from a list of nested triangle surfaces.
+- insert data            :: Data defined on a submesh is inserted back into a mesh.
+- insert meshdata        :: The fiber and tag data of a mesh is inserted into another mesh.
+- insert submesh         :: A submesh is inserted back into a mesh and written to an output mesh.
+- interpolate clouddata  :: Interpolate data from a pointcloud onto a mesh.
+- interpolate elemdata   :: Interpolate element data from one mesh onto another.
+- interpolate elem2node  :: Interpolate data from elements onto nodes.
+- interpolate node2elem  :: Interpolate data from nodes onto elements.
+- interpolate nodedata   :: Interpolate nodal data from one mesh onto another.
+- itk close              :: Apply closing (i.e. dilate-erode) algorithm to itk data.
+- itk crop               :: Remove surrounding whitespace.
+- itk dtype              :: Convert datatype.
+- itk extract            :: Extract slices of an itk image stack.
+- itk flip               :: Flip the voxel data along given axes.
+- itk normalize          :: Normalize voxel spacing.
+- itk padding            :: Add padding to voxel data.
+- itk refine             :: Refine voxel data.
+- itk sample             :: Create an itk image stack from sampeling surfaces.
+- itk smooth             :: Smooth the voxel data.
+- map                    :: Map .vtx, .surf and .neubc files to the indexing of a submesh.
+- merge surface          :: Merge the geometry given by a closed surface mesh into a different mesh.
+- merge meshes           :: Merge two meshes, unifying co-located vertices.
+- query bbox             :: Print the bounding box of a given mesh.
+- query curvature        :: Compute the curvature of a surface.
+- query edges            :: Print several statistics related to the mesh edges.
+- query graph            :: Print the nodal connectivity graph.
+- query idx              :: Print indices in a proximity to a given coordinate.
+- query insidepoint      :: Get a point inside a given closed surface.
+- query quality          :: Print mesh quality statistics.
+- query tags             :: Print the tags present in a given mesh.
+- reindex                :: Reindex a mesh to improve matrix bandwidth and cache efficiency.
+- resample mesh          :: Resample a tetrahedral mesh to fit a given edge size range.
+- resample purkinje      :: Resample purkinje cables as close as possible to a segment size.
+- resample surfmesh      :: Resample a triangle mesh to fit a given edge size range.
+- restore mapping        :: Restore nodal and element mapping for a submesh w.r.t. a reference mesh.
+- smooth data            :: Smooth data defined on a mesh.
+- smooth mesh            :: Smooth surfaces and volume of a mesh.
+- smooth surface         :: Smooth one or multiple surfaces of a mesh.
+- split                  :: Generate the split list for given split operations.
+
+Ricerco tra queste quelle che mi interessano.
+- convert         :: Convert between different mesh formats.
+- extract data    :: Data defined on a mesh is extracted for a given submesh.
+- extract mesh    :: A submesh is extracted from a given mesh based on given element tags.
+- extract surface :: Extract a sequence of surfaces defined by set operations on element tags.
+- extract volume  :: Extract elements inside a given box volume.
+
+*** Formati di input supportati
+Noto, analizzando i formati possibili degli output, che sono sempre
+gli stessi in ciascuna delle funzioni di interesse (in seguito scarto
+quelli inutili):
+- carp_txt
+- carp_bin
+- vtk
+- vtk_bin
+- mmg
+- neu
+- purk
+- obj
+- stellar
+- vcflow
+
+Quelli utili sono:
+- vtk
+- vtk_bin
+- obj
+
+Potrei utilizzare un file `*.vtk' o `*.obj' come input.
+
+*** Formati di output supportati
+Noto,
+analizzando i formati possibili degli output, che sono sempre
+gli stessi in ciascuna delle funzioni di interesse (in seguito scarto
+quelli inutili):
+- carp_txt
+- carp_bin
+- vtk
+- vtk_bin
+- vtk_polydata
+- mmg
+- neu
+- obj
+- stellar
+- vcflow
+- ensight_txt
+
+Quelli utili sono:
+- vtk
+- vtk_bin
+- vtk_polydata
+- obj
+
+Mi servirebbe un .vtu con particolari caratteristiche ma questo
+strumento non assicura l'esportazione in quel formato, a meno che
+`vtk_bin' non sia .vtu
+
+*** Meshtool convert
+Non difficile da capire ma non sono sicuro funzioni con i formati che
+voglio.
+
+#+begin_example
+[luca@probook SOFTX_2019_291]$ ./meshtool convert
+OpenMP thread utilization: 8 / 8 threads.
+convert: convert between different mesh formats
+parameters:
+-imsh=<path>	 (input) path to basename of the input mesh
+-ifmt=<path>	 (input) format of the input mesh
+-omsh=<path>	 (output) path to basename of the output mesh
+-ofmt=<path>	 (input) format of the output mesh
+-scale=<float>	 (optional) Vertex scaling applied to output mesh
+
+The supported input formats are:
+carp_txt, carp_bin, vtk, vtk_bin, mmg, neu, purk, obj, stellar, vcflow
+
+The supported output formats are:
+carp_txt, carp_bin, vtk, vtk_bin, vtk_polydata, mmg, neu, obj, stellar, vcflow, ensight_txt
+#+end_example
+
+**** Parametri
+- input:
+  - path to basename of the input mesh.
+  - format of the input mesh.
+  - format of the output mesh.
+- output:
+  - path to basename of the output mesh.
+    
+*** Meshtool extract data
+Non ho capito come utilizzarla.
+
+#+begin_example
+[luca@probook SOFTX_2019_291]$ ./meshtool extract data
+OpenMP thread utilization: 8 / 8 threads.
+Data extract error: Insufficient parameters provided.
+extract data: data defined on a mesh is extracted for a given submesh
+parameters:
+-submsh=<path>		 (input) path to basename of the submesh
+-msh_data=<path>	 (input) file the data is extracted from.
+-submsh_data=<path>	 (output) file the data is extracted into
+-mode=<int>		 (optional) Data mode. 0 = nodal, 1 = element. Default is 0.
+
+Note that the files defining the submesh must include a *.eidx and a *.nod file.
+This files define how elements and nodes of the submesh map back into the original mesh.
+The *.eidx and *.nod files are generated when using the "extract mesh" mode.
+#+end_example
+
+**** Parametri
+- input:
+  - path to basename of the submesh.
+  - file the data is extracted from.
+- output:
+  - file the data is extracted into.
+    
+*** Meshtool extract surface
+Non utile
+
+#+begin_example
+[luca@probook SOFTX_2019_291]$ ./meshtool extract surface
+OpenMP thread utilization: 8 / 8 threads.
+Surface extract error: Insufficient parameters provided.
+extract surface: extract a sequence of surfaces defined by set operations on element tags
+parameters:
+-msh=<path>		 (input) path to basename of the mesh
+-surf=<path>		 (output) list of names associated to the given operations
+-op=operations		 (optional) list of operations to perform. By default, the
+			 surface of the full mesh is computed.
+-tag_file=<path>	 (optional) path to an alternative tag file {*.tags, *.btags}.
+-edge=<deg. angle>	 (optional) surface elements connected to sharp edges will
+			 be removed. A sharp edge is defined by the nodes which connect elements
+			 with normal vectors at angles above the given threshold.
+-ang_thr=<deg. angle>	 (optional) if set, surface traversal stops when angle between
+			 current and starting normal vectors exceeds threshold.
+-coord=<xyz>:<xyz>:..	 (optional) restrict surfaces to those elements reachable by
+			 surface edge-traversal from the surface vertices closest to the given
+			 coordinates. If -edge= is also provided, sharp edges will block
+			 traversal, thus limit what is reachable.
+-size=<float>		 (optional) surface edge-traversal is limited to the given
+			 radius from the initial index.
+-lower_size=<float>	 (optional) surface edge-traversal limitation lower size (for extracting bands).
+-hybrid=<int>		 (optional) Write hybrid quad + tri surfaces. 1 == on, 0 == off. 0 is default.
+-ifmt=<format>		 (optional) mesh input format.
+-ofmt=<format>		 (optional) mesh output format. If set, the surfaces will also
+			 be written as surface meshes.
+
+The supported input formats are:
+carp_txt, carp_bin, vtk, vtk_bin, mmg, neu, purk, obj, stellar, vcflow
+The supported output formats are:
+carp_txt, carp_bin, vtk, vtk_bin, vtk_polydata, mmg, neu, obj, stellar, vcflow, ensight_txt
+
+The format of the operations is:
+tagA1,tagA2,[surfA1,surfA2..]..[+-:]tagB1,tagB2,[surfB1..]..;tagA1,..[+-:]tagB1..;..
+Tag regions separated by "," will be unified into submeshes and their surface computed.
+Alternatively, surfaces can be provided directly by .surf surface files (only basename, no extension).
+If two surfaces are separated by "-", the rhs surface will be removed from the
+lhs surface (set difference). Similarly, using "+" will compute the surface union.
+If the submeshes are separated by ":", the set intersection of the two submesh surfaces will be computed.
+Individual operations are separated by ";".
+
+The number of names provided with "-surf=" must match the number of operations. If no operations are provided,
+the surface of the whole geometry will be extracted. Individual names are separated by ",".
+
+Further restrictions can be added to the surface extraction with the -edge= , -coord= , -size= options.
+#+end_example
+
+**** Parametri
+- input:
+  - path to basename of the mesh
+- output:
+  - list of names associated to the given operations
+- opzionali:
+  - tutti i rimanenti (molti)
+    
+*** Meshtool extract volume
+Questa funzione non credo mi servirà.
+
+#+begin_example
+[luca@probook SOFTX_2019_291]$ ./meshtool extract volume
+OpenMP thread utilization: 8 / 8 threads.
+Volume extract error: Insufficient parameters provided.
+extract volume: extract elements inside a given box volume.
+parameters:
+-msh=<path>		 (input) path to basename of the mesh to extract from
+-coord=x,xd,y,yd,z,zd	 (input) volume definition
+-submsh=<path>		 (output) path to basename of the submesh to extract to
+-mode=<int>		 (optional) mesh output mode. 0 = submesh, 1 = vtx file. Default is 0.
+-ifmt=<format>		 (optional) mesh input format.
+-ofmt=<format>		 (optional) mesh output format.
+
+The supported input formats are:
+carp_txt, carp_bin, vtk, vtk_bin, mmg, neu, purk, obj, stellar, vcflow
+The supported output formats are:
+carp_txt, carp_bin, vtk, vtk_bin, vtk_polydata, mmg, neu, obj, stellar, vcflow, ensight_txt
+#+end_example
+
+**** Parametri
+- Input:
+  - path to basename of the mesh to extract from.
+  - volume definition.
+- Output:
+  - path to basename of the submesh to extract to.
+
+*** Possibili test con meshtool
+1. Provare a convertire da `vtk' o `.obj' a `vtk_bin' con `meshtool convert'
+** VTUFileHandler
+SCHEDULED: <2024-04-08 lun>
+Framework scritto in Julia per effettuare il post processing di
+simulazioni numeriche su interi domini usando il .vtu file system.
+
+Vedi [[https://baxmittens.github.io/VTUFileHandler.jl/dev/][Documentazione]] su Github.
+
+#+begin_src julia
+  function VTUFile(file::String) ... end
+  function Base.write(vtu::VTUFile, add_timestamp=true) ... end
+#+end_src
+
+Tramite queste funzioni si realizza la lettura e la scrittura di un file .vtu.
+Installo il pacchetto nella REPL di Julia.
+
+#+begin_src julia
+  # Installo
+  # using Pkg
+  # Pkg.add("VTUFileHandler")
+
+  # Includo
+  using VTUFileHandler
+
+  # Posso effettuare una "decompressione" dei campi di interesse.
+  set_uncompress_keywords(["horsfield_order","radius","start_id"])
+
+  # Leggo il file
+  file = VTUFile("~/Documents/Polimi/Thesis/output-slicer/major_airways.vtu")
+#+end_src
+
+Tramite questo tool riesco a decifrare il contenuto della mesh ma non
+riesco a modificarlo, né a crearne una nuova.  Magari ne *parlo con
+Chiara*.
+
+** DONE ITK-snap
+Non ho idea di come questo possa servire.  Devo leggere meglio la
+documentazione.
+
+** vtkToolbox
+SCHEDULED: <2024-04-08 lun>
+Ho compilato le funzioni da sorgente su tutti i sistemi ma non si
+riesce a procedere nell'installazione.  Forse posso provare con
+Windows.
+
+#+begin_src bash
+  # Clonare
+  cd ~/Repos
+  git clone https://github.com/KIT-IBT/vtkToolbox
+
+  # Generazione makefiles
+  mkdir ~/Builds/vtkToolbox
+  cd ~/Builds/vtkToolbox
+  cmake ~/Repos/vtkToolbox
+
+  # Generazione file binari
+  make
+
+  # Installazione --> Errore!
+  make install
+#+end_src
+
+Installando anche il toolbox mediante il gestore degli add-on di
+Matlab ho riscontrato un errore nell'utilizzo dei parametri.
+
+#+begin_example
+>> out=readVTK("major_airways.vtu", true)
+Output argument "outStruct" (and possibly others) not assigned a value in the execution with "vtkRead" function.
+
+Error in readVTK (line 20)
+outStruct = vtkRead(filename, verbose);
+#+end_example
+
+*** Domande
+- Come è riuscito Davide a compilare ed installare le librerie?
+
+* 05.04.24
+** DONE Meshtool convert
+Provo a convertire da `vtk' o `.obj' a `vtk_bin' con `meshtool convert'.
+#+begin_src bash
+  ./meshtool convert                                                              \
+      -imsh=/home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation \
+      -ifmt=vtk                                                                   \
+      -omsh=/home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation \
+      -ofmt=vtk_bin
+#+end_src
+
+Riporto l'output con errore.  (Visualizzando con ParaView il file
+`trachea_segmentation.vtk' questo risulta visibile.
+#+begin_example
+[luca@probook SOFTX_2019_291]$ ./meshtool convert                                 \
+      -imsh=/home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation \
+      -ifmt=vtk                                                                   \
+      -omsh=/home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation \
+      -ofmt=vtk_bin
+OpenMP thread utilization: 8 / 8 threads.
+Reading mesh: /home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation
+Reading vtk file:                                      [============]
+readVTKmesh error: File /home/luca/Documents/Polimi/Thesis/output-slicer/trachea_segmentation.vtk did not contain a complete mesh (points and elements)!
+Aborting!
+#+end_example
+
