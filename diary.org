@@ -2385,7 +2385,7 @@ rinominato `cir2jl-skeleton`.
 Da ieri sto eseguendo `main.jl`, che sta costruendo la struttura
 principale del modello, l'impalcatura senza parametri.
 
-* 20.02.24
+* 20.02.24                                         :Chaste:Generazione_input:
 Il progetto ora si concentra sulla generazione dell'albero
 respiratorio del neonato con una particolare libreria, Chaste.
 Esistono alcuni esempi dell'utilizzo di questa libreria in C++ sul
@@ -3570,7 +3570,6 @@ carp_txt, carp_bin, vtk, vtk_bin, vtk_polydata, mmg, neu, obj, stellar, vcflow, 
 *** Possibili test con meshtool
 1. Provare a convertire da `vtk' o `.obj' a `vtk_bin' con `meshtool convert'
 ** VTUFileHandler
-SCHEDULED: <2024-04-08 lun>
 Framework scritto in Julia per effettuare il post processing di
 simulazioni numeriche su interi domini usando il .vtu file system.
 
@@ -3608,7 +3607,6 @@ Non ho idea di come questo possa servire.  Devo leggere meglio la
 documentazione.
 
 ** vtkToolbox
-SCHEDULED: <2024-04-08 lun>
 Ho compilato le funzioni da sorgente su tutti i sistemi ma non si
 riesce a procedere nell'installazione.  Forse posso provare con
 Windows.
@@ -3670,3 +3668,35 @@ readVTKmesh error: File /home/luca/Documents/Polimi/Thesis/output-slicer/trachea
 Aborting!
 #+end_example
 
+* 11.04.24
+** DONE Scrivere mail Chiara
+SCHEDULED: <2024-04-11 gio 15:00> DEADLINE: <2024-04-12 gio>
+Il contenuto della mail si basa sui tentativi dei giorni scorsi.
+
+#+begin_example
+Ciao Chiara, come stai?
+Ho provato i pacchetti che ha consigliato Davide.
+
+1. `Meshtool': strumento che permette la manipolazione di mesh in alcuni formati: per la mesh in input: a) vtk b) vtk_bin c) obj; per la mesh in output: a) vtk b) vtk_bin c) vtk_polydata d) obj.  Esistono varie funzioni e ho testato quelle che sembravano le più utili:
+- convert: Convert between different mesh formats.
+- extract data: Data defined on a mesh is extracted for a given submesh.
+- extract mesh: A submesh is extracted from a given mesh based on given element tags.
+- extract surface: Extract a sequence of surfaces defined by set operations on element tags.
+- extract volume: Extract elements inside a given box volume.
+
+Le ultime quattro funzioni non sono utili al nostro caso (ma ho comunque l'output del terminale che ne illustra l'utilizzo) anche perché sono richiesti dei file che non ho, quindi mi sono dedicato al test della prima funzione con un file in input con formato .vtk e uno di output con formato vtk_bin ma ha restituito un errore in quanto la mesh non era completa.
+
+2. `VTUFileHandler.jl': Framework scritto in Julia per effettuare il processing di simulazioni numeriche usando file .vtu.  Mediante la funzione `VTUFile()' sono riuscito ad importare il file .vtu e a decomprimere i suoi parametri ("horsefield_order", "radius" e "start_id") ma non riesco a modificare il contenuto di questo file o a crearne uno nuovo a partire dai dati decompressi.  Inoltre potrei lavorare solo da .vtu a .vtu quindi non saprei come potrebbe essermi utile. 
+
+3. `vtkToolbox': Toolbox che avevo già testato su Matlab ma che non ero riuscito ad installare (né su Linux né su Windows).  Questo è lo stesso toolbox che Davide è riuscito ad utilizzare per importare il file .vtu e generare il .mat.  Ho provato ad installarlo su entrambi i sistemi operativi nelle due modalità: da add-in manager di Matlab e compilandolo da sorgente con cmake e con VisualStudio (rispettivamente su Linux e Windows).  Non sono riuscito ad installarlo.
+
+Vorrei provare comunque a scrivere lo User Project per Chaste sulla base delle istruzioni del Tutorial per capire se fornisce dei messaggi di errore di qualche tipo dovuti al formato errato dei primi tratti delle vie aeree.  L'unica cosa che mi manca sono i file .stl relativi alla segmentazione lobare ma avrei bisogno di parlarti un attimo per quanto riguarda questa fase perchè 3DSlicer permette di fare la segmentazione con un suo tool ma ho bisogno della posizione dei punti fiduciari in corrispondenza delle fissure tra i lobi e non riesco a distinguere bene dalla TAC del neonato dove si trovino.
+#+end_example
+
+Mi ha risposto dandomi appuntamento Lunedì 15 Aprile.
+
+** Richiesto colloquio con Chiara
+SCHEDULED: <2024-04-15 lun 12:20-14:00>
+
+*** TODO Raccogliere le domande da porgli
+SCHEDULED: <2024-04-13 sab> DEADLINE: <2024-04-14 dom 21:00>

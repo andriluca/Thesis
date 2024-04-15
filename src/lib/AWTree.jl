@@ -32,18 +32,19 @@ D = Differential(t)
     @extend v, i = oneport = OnePort()
     @parameters begin
         Ra,    [description = "Resistance when air-filled"]
-        Rb,    [description = "Resistance when liquid-filled"]
+        Rb,    [description = "Resistance delta (liquid - air)"]
         V_FRC, [description = "Airway Volume at FRC"]
     end
     @variables begin
-        # Dopo l'uguale ho i valori di inizializzazione delle
-        # variabili
         ∫i(t) = 0,      [description = "Current integral"]
         # Dichiaro come variabile d'interesse anche la resistenza
         R(t) = Ra + Rb, [description = "Variable resistance"]
     end
     @equations begin
-        # Ra <= R <= Rl: suppongo che i valori Ra ed Rl siano estremi da non superare
+        # R_air <= R <= R_liquid: suppongo che i valori R_air ed
+        # R_liquid siano estremi da non superare.
+        # R_liquid = Ra + Rb
+        # R_air    = Ra
         R ~ min((Ra + Rb), max(Ra, (Ra + Rb * (1 - ∫i / V_FRC))))
         v ~ R * i
     end
@@ -53,7 +54,7 @@ end
     @extend v, i = oneport = OnePort()
     @parameters begin
         La,    [description = "Inductance when air-filled"]
-        Lb,    [description = "Inductance when liquid-filled"]
+        Lb,    [description = "Inductance delta (liquid - air)"]
         V_FRC, [description = "Airway Volume at FRC"]
     end
     @variables begin
@@ -63,7 +64,9 @@ end
         L(t)  = La + Lb, [description = "Variable inductance"]
     end
     @equations begin
-        # La <= L <= Ll
+        # L_air <= L <= L_liquid
+        # L_liquid = La + Lb
+        # L_air    = La
         L    ~ min((La + Lb), max(La, (La + Lb * (1 - ∫i / V_FRC))))
         # d/dt (i(t)) = 1 / L * v(t), equazione dell'induttore
         D(i) ~ (1 / L) * v

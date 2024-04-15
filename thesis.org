@@ -1,10 +1,53 @@
 #+title: <Titolo della tesi>
 #+author: Luca Andriotto
 
+* Esempi di Indice
+** Esempio 1 (Relatrice Pedrocchi)
+Considerando un [[https://www.politesi.polimi.it/retrieve/a81cb059-8b75-616b-e053-1605fe0a889a/2011_03_Scano.pdf][esempio su internet]] (del Politecnico).
 
-* Il linguaggio Julia
-È un linguaggio moderno, general purpose, con il quale posso
-modellizzare un circuito elettrico.  Ha delle prestazioni paragonabili
-a C e Fortran in quanto ciascuna istruzione viene compilata (JIT
-compiler).  Le macro rendono possibile l'impiego DSL (Domain Specific
-Language).
+- Sommario (Abstract)  :: In Italiano ed in Inglese
+- Stato dell'arte      :: Presentazione dell'argomento su cui si incardina la tesi.
+- Obiettivi della tesi :: 
+- Modello              :: 
+- Validazione          :: 
+- Conclusione          :: 
+- Bibliografia         :: 
+
+*** Stato dell'arte
+Presentazione dell'argomento su cui si incardina la tesi.  Questi
+capitoli iniziali servono al lettore per acquisire le nozioni
+terminologiche e critiche necessarie alla successiva comprensione
+
+** Esempio 2 (Relatore Dellacà, Correlatrice Veneroni)
+- Sommario (Abstract)                 :: "Riassunto" in Italiano ed in Inglese.
+- Stato dell'arte                     :: Presentazione dell'argomento su cui si incardina la tesi.
+- Introduction                        :: ???
+- Anatomy, Physiology and Control ... :: Contenuti teorici (stato dell'arte)
+- Techniques for Respiratory Func ... :: Metodi
+- The Experimental Set Up             :: Materiali
+- In Vitro and In Vivo Validation     :: Validazione
+- Application to the study of ...     :: Applicazioni
+- Conclusions and Future Developments :: Conclusioni e sviluppi futuri
+- References                          :: alias Bibliografia
+
+* Abstract e Sommario
+* Stato dell'arte                                               :Consigliato:
+Il consiglio di Chiara è di ridurre questa prima parte.
+** Cadence
+** Il linguaggio Julia                                         :Consigliato:
+È un linguaggio moderno, general purpose, con il quale posso anche
+modellizzare un equivalente elettrico (e.g. tramite l'utilizzo di
+pacchetti quali «ModelingToolkit.jl»).  Ha delle prestazioni
+paragonabili a C e Fortran in quanto ciascuna istruzione viene
+compilata (JIT compiler) solamente quando richiesto.  Le macro di
+Julia rendono possibile la generazione di costrutti sintattici
+specifici al caso d'uso: il metaprogramming. Ciò rende possibile
+l'impiego di un DSL (Domain Specific Language).
+
+*** «ModelingToolkit.jl»
+
+* Introduction
+* Materiale e metodi
+* Validazione
+* Conclusioni
+* Bibliografia
