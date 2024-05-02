@@ -3700,3 +3700,152 @@ SCHEDULED: <2024-04-15 lun 12:20-14:00>
 
 *** TODO Raccogliere le domande da porgli
 SCHEDULED: <2024-04-13 sab> DEADLINE: <2024-04-14 dom 21:00>
+
+* 15.05.24                                                        :Colloquio:
+In seguito al colloquio è stato concordato il fatto di iniziare a
+scrivere la tesi.  Alcuni documenti mi verranno inviati da Chiara
+prossimamente.  Nel frattempo vogliamo avere dei risultati includendo
+anche Diodo e/o Switch (come li avevamo considerati in precedenza).
+
+** TODO [#A] Rivedere i test16*
+
+* 16.04.24
+** Callbacks e integrale della corrente                          :Callbacks:
+Ho provato a rivedere alcune parti del codice.  Qui di seguito il tentativo.
+
+#+begin_src julia
+  using DifferentialEquations
+  using ModelingToolkit
+  using ModelingToolkitStandardLibrary.Blocks
+  using ModelingToolkitStandardLibrary.Electrical
+  using Plots
+
+  @parameters t
+  D = Differential(t)
+
+  @mtkmodel Res begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          R, [description = "Resistance value."]
+      end
+      @equations begin
+          v ~ R * i
+      end
+  end
+
+  # Qui un condensatore con capacità fissa che registra l'integrale
+  # della corrente che lo attraversa.
+  @mtkmodel Cap begin
+      @extend v, i = oneport = OnePort()
+      @variables begin
+          ∫i(t) = eps()
+      end
+      @parameters begin
+          C, [description = "Capacitance value."]
+      end
+      @equations begin
+          D(v) ~ i / C
+          D(∫i) ~ ifelse(∫i > 0, i, eps())
+      end
+  end
+
+  @mtkmodel System begin
+      @components begin
+          R1 = Res(R = 1)
+          C1 = Cap(C = 1)
+          src = Constant(k = 1)
+          gen = Voltage()
+          gnd = Ground()
+      end
+      @equations begin
+          connect(src.output, gen.V)
+          connect(gen.p, R1.p)
+          connect(R1.n, C1.p)
+          connect(C1.n, gen.n, gnd.g)
+      end
+      @continuous_events begin
+          # Prova delle callback.
+          # [C1.∫i ~ .25] => [C1.v ~ 0]
+          # Il seguente commentato non funziona perché si tiene in
+          # considerazione il valore corrente per entrambi i valori di i
+          # e ∫i.
+          # [C1.i * t ~ - C1.∫i] => [C1.∫i ~ 0]
+          # [C1.i ~ 0] => [C1.∫i ~ 0]
+      end
+  end
+
+  @mtkbuild system = System()
+  # u0 = [system.C1.v => 0, system.C1.i => 0]
+  prob = ODEProblem(system, [], (0, 10), [])
+  sol = solve(prob, Rodas4())
+  plot(sol, idxs = [system.C1.i, system.C1.v, system.C1.∫i])
+
+#+end_src
+
+Non capisco se si possa modificare l'osservabilità di una variabile,
+perché non si riesce a scrivere callbacks utilizzando tutte le
+variabili di sistema.  Questa sera il sito della documentazione non
+viene caricato correttamente.  Ritenterò domani.  L'unica cosa che ho
+scoperto è che la condition può comprendere tutte le variabili ma
+l'affect solo gli stati.
+
+** DONE Colloquio con Davide                                     :Colloquio:
+Deve ancora essere schedulato.
+
+* 17.04.24
+** Callbacks                                                     :Callbacks:
+Posso utilizzare anche i parametri appartenenti a diversi componenti
+(e.g. src.k per avere il valore in tensione del generatore).  Penso
+che prima avevo sbagliato a calcolare le resistenze e le induttanze
+variabili, nonché a calcolare il valore dell'integrale della corrente:
+
+#+begin_src julia
+  @mtkmodel Res begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Ra = 1, [description = "Resistance value."]
+          Rb = 40, [description = "Resistance value."]
+          V_FRC = 1
+      end
+      @variables begin
+          ∫i(t) = 0
+          R(t) = Ra + Rb
+      end
+      @equations begin
+          R ~ Ra + Rb * (1 - ∫i / V_FRC)
+          v ~ R * i
+          D(∫i) ~ ifelse((((∫i < 0) & (i < 0)) | (∫i >= V_FRC)),
+                         0,
+                         ifelse(∫i >= 0,
+                                i,
+                                i))
+      end
+  end
+#+end_src
+
+* 19.04.24
+** Switch
+Un'idea che potrei utilizzare sarebbe quella della derivata della
+corrente e della derivata della tensione di un OnePort.  In questo
+modo posso sfruttare le callbacks per cambiare il valore di tali
+derivate e ottenere i valori che voglio.
+
+* 23.04.24
+** TODO [#A] Importare file colloquio Chiara e Davide
+Colloquio con Davide e Chiara
+* 24.04.24
+** DONE [#A] Modificare l'equazione dello switch
+L'equazione da utilizzare è quella nel messaggio Whatsapp di Chiara
+(tra i preferiti)
+*** TODO [#A] Implementare triggers nello switch
+
+* 25.04.24
+** Modello morfometrico
+Proporrei la separazione dei due ordini di modello presenti in
+`AVTree.jl` per crearne due:
+- `LowOrderModels.jl`  :: Comprende i componenti singoli.
+- `HighOrderModels.jl` :: Comprende i moduli (Alveolus, Airway).
+
+** TODO Modello integratore di corrente
+È possibile creare un componente a basso livello che gestisca
+l'integrazione della corrente?

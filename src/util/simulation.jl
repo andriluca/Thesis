@@ -10,7 +10,9 @@
  ================================================================#
 
 ## genero un problema da risolvere nell'intervallo 0-10s.
-prob = ODEProblem(system, ps, tspan)
+# prob = ODEProblem(system, ps, tspan)
+prob = ODEProblem(system, [], tspan, [])
+
 # [
 #     # system.gen.frequency => resp_freq,
 #     # system.gen.amplitude => resp_ampl

@@ -45,7 +45,8 @@ D = Differential(t)
         # R_liquid siano estremi da non superare.
         # R_liquid = Ra + Rb
         # R_air    = Ra
-        R ~ min((Ra + Rb), max(Ra, (Ra + Rb * (1 - ∫i / V_FRC))))
+        # R ~ min((Ra + Rb), max(Ra, (Ra + Rb * (1 - ∫i / V_FRC))))
+        R ~ Ra + Rb * (1 - ∫i / V_FRC)
         v ~ R * i
     end
 end
@@ -67,9 +68,53 @@ end
         # L_air <= L <= L_liquid
         # L_liquid = La + Lb
         # L_air    = La
-        L    ~ min((La + Lb), max(La, (La + Lb * (1 - ∫i / V_FRC))))
+        # L    ~ min((La + Lb), max(La, (La + Lb * (1 - ∫i / V_FRC))))
+        L ~ La + Lb * (1 - ∫i / V_FRC)
         # d/dt (i(t)) = 1 / L * v(t), equazione dell'induttore
         D(i) ~ (1 / L) * v
+    end
+end
+
+exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
+
+@mtkmodel Diode begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        Ids     = 1e-6, [description = "Reverse-bias current"]
+        max_exp = 15,   [description = "Value after which linearization is applied"]
+        R       = 1e8,  [description = "Diode Resistance"]
+        Vth     = 1e-3, [description = "Threshold voltage"]
+        k       = 1e3,  [description = "Speed of exponential"]
+    end
+    @equations begin
+        i ~ Ids * (exlin(k * (v - Vth) / (Vth), max_exp) - 1) + (v / R)
+    end
+end
+
+@mtkmodel Switch begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        V_FRC, [description = "Airway Volume at FRC"]
+        Rclosed = 1e-6, [description = "Switch Resistance when Closed"]
+        Ropen = 2.5e5, [description = "Switch Resistance when Open"]
+        # Old value
+        # k = 1e3
+        k = 20e3
+        # TODO: implementare trigger_in
+        # TODO: implementare trigger_out
+    end
+    @variables begin
+        ∫i(t) = 0, [description = "Current integral"]
+        R(t) = 0,  [description = "Switch Resistance"]
+    end
+    @equations begin
+        # Bassa all'inizio, alta quando gli arriva il segnale dalla cella precedente, bassa poi quando diventa 1
+        # Trasformare in tan(x)
+        # Never used
+        # R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (1 + (∫i / V_FRC)) + 1))
+        # Equazione di Chiara
+        R ~ Rclosed + trigger_in * Ropen * tanh(k*t - 3) - trigger_out * Ropen * tanh(-k*t + 3)
+        v ~ R * i
     end
 end
 
