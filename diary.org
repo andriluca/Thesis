@@ -2940,7 +2940,7 @@ Il toolbox per MATLAB può lavorare con .vtp, .pvtp, .vtu e .pvtu.
 Ho anche trovato una libreria per Julia chiamato [[https://juliavtk.github.io/WriteVTK.jl/stable/][WriteVTK]].  Esiste
 anche una [[https://github.com/JuliaVTK/ReadVTK.jl][ReadVTK]].  Non ancora testato.
 
-** TODO Bootstrap di un test (Chaste)
+** DONE Bootstrap di un test (Chaste)
 Cerco la documentazione su come posso creare un nuovo test su Chaste.
 Su Chaste quest'operazione viene chiamata «creazione di un User
 Project».  Si veda [[https://chaste.github.io/docs/user-guides/user-projects/][questa]] documentazione.
@@ -3698,10 +3698,10 @@ Mi ha risposto dandomi appuntamento Lunedì 15 Aprile.
 ** Richiesto colloquio con Chiara
 SCHEDULED: <2024-04-15 lun 12:20-14:00>
 
-*** TODO Raccogliere le domande da porgli
+*** DONE Raccogliere le domande da porgli
 SCHEDULED: <2024-04-13 sab> DEADLINE: <2024-04-14 dom 21:00>
 
-* 15.05.24                                                        :Colloquio:
+* 15.04.24                                                        :Colloquio:
 In seguito al colloquio è stato concordato il fatto di iniziare a
 scrivere la tesi.  Alcuni documenti mi verranno inviati da Chiara
 prossimamente.  Nel frattempo vogliamo avere dei risultati includendo
@@ -3846,6 +3846,189 @@ Proporrei la separazione dei due ordini di modello presenti in
 - `LowOrderModels.jl`  :: Comprende i componenti singoli.
 - `HighOrderModels.jl` :: Comprende i moduli (Alveolus, Airway).
 
-** TODO Modello integratore di corrente
+** DONE Modello integratore di corrente
 È possibile creare un componente a basso livello che gestisca
-l'integrazione della corrente?
+l'integrazione della corrente?  Esiste un nodo `Integrator` in
+`continuous.jl` (un sorgente della libreria standard).  Posso
+utilizzare questo all'interno dei circuiti?
+
+#+begin_src julia
+  @mtkmodel Integrator begin
+      @components begin
+          what = SISO(y_start=0)
+          when = SISO(y_start=false)
+      end
+      @variables begin
+          x(t) = 0.0, [description = "State of Integrator"]
+      end
+      @parameters begin
+          V_FRC = 1, [description = "Volume at FRC."]
+      end
+      @equations begin
+          # u[1]    -> corrente.
+          # u[2]    -> trigger_in.
+          # y[1], x -> integrale della corrente.
+          # y[2]    -> trigger_out.
+
+          # Quando l'integrale 1) sta per essere negativo, 2) sta per
+          # superare V_FRC 3) trigger_in (alias per u[2]) è false,
+          # l'integrazione non viene effettuata.
+
+          D(x) ~ ifelse((((x < 0) & (what.u < 0)) | (x >= V_FRC) | (when.u == false)),
+                        0,
+                        what.u)
+
+          what.y ~ x
+          D(when.y) ~ 0
+      end
+
+      @continuous_events begin
+          [x ~ V_FRC] => [when.y ~ true]
+      end
+  end
+#+end_src
+
+* 02.05.24
+** Variabili booleane
+È possibile utilizzare delle variabili booleane all'interno dei
+componenti, in particolar modo nella macro `@equations` con ifelse. È
+possibile fare anche la derivata di una variabile booleana e
+utilizzare i continuous events, quindi anche le callbacks.
+* 06.05.24
+** TODO Provare a estrarre il vtp con Windows
+Ho testato la libreria `vtkToolbox` per MATLAB su Windows 11 ma,
+nonostante questa funzioni per il file .vtu, questa crasha quando devo
+importare un file .vtp appena esportato da Slicer.
+
+** TODO Riportare la struttura di `prova2.jl` nella libreria
+Ho creato dei files chiamati `Lx*_<nome>` dove x è un numero che
+indica il livello dei moduli (minore il livello, più alto il suo
+ordine). La logica che seguo è quella di una piramide. Il problema è
+che la simulazione del sistema risulta essere instabile in questo
+modo.  Devo cercare di capire perché.
+** TODO Implementazione diodo
+
+* 07.05.24
+** DONE Scrivere mail a Chiara
+#+begin_example
+Ciao Chiara, come stai?
+Ti aggiorno su quello che ho fatto.  Ho provato ad utilizzare `vtkToolbox` su Matlab e con il file `major_airways.vtu` (quello che vorremmo ottenere e compatibile con Chaste) l'importazione funzionava correttamente col metodo che ci aveva detto Davide.  Il problema però si verifica quando vado ad importare il file vtp generato da Slicer poiché la sua importazione causa il crash di Matlab.  Ho provato parecchie volte e con diverse versioni di Matlab e ho ottenuto lo stesso risultato ogni volta.  Ho quindi riguardato la codebase della libreria che sto scrivendo e l'ho organizzata in maniera gerarchica per avere in ogni file dei componenti di ordine via via superiore e ho implementato il codice di un integratore che opera una sola volta (per alveolo o via aerea) l'integrazione e gestisce il timing delle flag `trigger_in` e `trigger_out`.  Ho provato la formula che mi avevi inviato su Whatsapp e mi crea lo stesso dei problemi di stabilità nello switch ma posso ritentare con altri valori.  Ho quindi implementato una mia versione dello switch con questa equazione: R = Rlow + (trigger_in - trigger_out) * (Rhigh - Rlow) e sembra funzionare con qualche modulo modificando la dimensione del differenziale di tempo.  Il diodo ancora non riesco a farlo funzionare correttamente e volevo chiederti se avevi dei suggerimenti da propormi perché ho fatto un po' di tentativi ma non riesco a "bloccare" la corrente.
+#+end_example
+
+* 09.05.24
+** TODO Modificare lo script `cir2jl`
+Con la nuova stuttura modulare è necessario che questo script agisca
+per generare un file L1_lungs.  Questo file contiene componenti
+(alveoli e vie aeree) ed equazioni di due tipi: connect() per le
+connessioni tra moduli ed equazioni algebriche per gestire il timing
+dell'integrazione.  Nella radice dell'albero respiratorio ho che il
+trigger_in è true (l'integrazione comincia a t = 0).  È possibile
+ottimizzare lo script?  Innanzitutto devo invertire l'ordine degli
+input e output delle connessioni.  Nella creazione del modello di
+sistema devo eliminare qualsiasi riferimento ai parametri di
+simulazione.  Sempre in questa sezione devo modificare il
+connect(source.p, $2.in) utilizzando il pin di input.  Sembra più
+complesso di quanto pensassi: cerco i moduli che ho utilizzato nella
+sottorete e vedo di utilizzare lo script su quel file cir.  C'è un
+problema: dal file `Albero.cir` non si riesce a capire come collegare
+la rete.  Devo chiedere a Chiara.
+
+** DONE [#A] Chiedere a Chiara come ottenere informazioni sulla rete da file cir
+Prima di chiedere consultare il video che Chiara mi aveva mandato su
+Whatsapp.
+
+Penso di aver capito.  Data una via aerea, il cui nome è all'inizio
+della riga del cir, devo ricordarmi gli ultimi due parametri
+all'interno delle parentesi e per trovare quali altre vie sono
+connesse a questa via aerea devo fare il grep su tutto il documento di
+questi parametri ma invertiti di posizione.
+
+Devo:
+1) Estrarre la prima riga.
+   #+begin_src bash
+     row=$(head -1 Verilog/Albero_sottorete.cir | tr -d '\r()')
+   #+end_src
+
+2) Estrarre la 1ª colonna per il nome.
+   #+begin_src bash
+     name=$(echo $row | cut -d ' ' -f1)
+   #+end_src
+
+3) Considerare la 5ª colonna.
+   #+begin_src bash
+     output_node=$(echo $row | cut -d ' ' -f5)
+     pattern=$(echo "$output_node N")
+   #+end_src
+   
+4) Cercare le righe in cui la variabile è contenuta e stampo il primo elemento.
+   #+begin_src bash
+     inputs=$(grep "$pattern" Verilog/Albero_sottorete.cir | cut -d ' ' -f1)
+     connect_inputs=$(for i in $inputs; do echo "$i.in,"; done | tr '\n' ' ')
+     timings=$(for i in $inputs; do echo "$i.i1.trigger.u"; done)
+   #+end_src
+
+5) Costruisco la riga per il file.
+   #+begin_src bash
+     out_connect=$(echo "connect($nome.out, $connect_inputs)")
+     out_timings=$(for i in $timings; do echo "$i ~ $name.i1.trigger.y"; done)
+   #+end_src
+   
+** TODO [#A] Includo questo snippet in `cir2jl`
+Questo codice funziona
+
+#+begin_src bash
+  rm tmp;
+
+  tail -n +2 Verilog/Albero.cir > Verilog/Albero_tagliato.cir
+
+  while IFS= read -r line;
+  do
+      row=$(echo "$line" | tr -d '\r()');
+      name=$(echo $row | cut -d ' ' -f1)
+      output_node=$(echo $row | cut -d ' ' -f5)
+      pattern=$(echo "$output_node N")
+      inputs=$(grep "$pattern" Verilog/Albero_tagliato.cir | cut -d ' ' -f1)
+      connect_inputs=$(for i in $inputs; do echo "$i.in,"; done | tr '\n' ' ')
+      timings=$(for i in $inputs; do echo "$i.i1.trigger.u"; done)
+      [[ ! -z $connect_inputs ]] && echo "connect($name.out, $connect_inputs)" >> tmp
+      for i in $timings;
+      do
+          [[ ! -z $i ]] && echo "$i ~ $name.i1.trigger.y" >> tmp;
+      done
+  done < "Verilog/Albero_tagliato.cir"
+#+end_src
+
+* 10.05.24
+
+Prima di dedicarmi alla sezione dello script deputata alla generazione
+del codice dei moduli è necessario ultimare quella che stavo scrivendo
+ieri inserendo anche la connessione iniziale.
+
+#+begin_src bash
+  tail -n +2 Verilog/Albero_sottorete.cir > Verilog/Albero_tagliato.cir
+
+  echo "connect(in, $2)" > tmp
+  echo "$2.i1.trigger.u ~ $name.i1.trigger.y" >> tmp
+
+  while IFS= read -r line;
+  do
+      node_name=$(echo $line | awk '{print $1}')
+      output_node=$(echo $line | awk '{print $6}')
+      pattern=$(echo "$output_node N")
+      inputs=$(grep "$pattern" Verilog/Albero_tagliato.cir | cut -d ' ' -f1)
+      connect_inputs=$(for i in $inputs; do echo "$i.in"; done | tr '\n' ',' | sed "s/,$//")
+      timings=$(for i in $inputs; do echo "$i.i1.trigger.u"; done)
+
+      [[ ! -z $connect_inputs ]] && echo "connect($node_name.out, $connect_inputs)" >> tmp
+
+      for i in $timings;
+      do
+          [[ ! -z $i ]] && echo "$i ~ $node_name.i1.trigger.y" >> tmp;
+      done
+
+  done < "Verilog/Albero_tagliato.cir"
+#+end_src
+
+Non è stato necessario lavorare sul codice per generare i moduli
+perché era già stato scritto in precedenza.  Ho generato il file da
+`Albero.cir` e sto provando ad importarlo su Julia.
