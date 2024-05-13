@@ -10,6 +10,7 @@
 input=$1
 convdir="$HOME/Thesis/src/input/"
 
+# Se la cartella dove avviene la conversione non esiste, la creo.
 [[ ! -d $convdir ]] && mkdir $convdir
 
 # Controllo inserimento del file di input.
@@ -19,19 +20,31 @@ if [ $# -le 1 ]; then
 fi
 
 # Parsing delle connessioni
-tr -d '\r' < $input     \
-| cut -d'=' -f1         \
-| sed 's/ La//g;
-    s/[[:punct:]]//g;
-    s/ /.in,/;
-    s/Trig/I/g;'        \
-| cut -d ' ' -f1-2      \
-| sed 's/^/connect(/;
-    s/.$/.out)/;'       \
-| head -n -1            \
-| tail -n +2 > "$convdir/Connections.jl"
+tail -n +2 $input > "$convdir/Albero_tagliato.cir"
+
+echo "connect(in, $2.in)" > "$convdir/Connections.jl"
+echo "$2.i1.trigger.u ~ true" >> "$convdir/Connections.jl"
+
+while IFS= read -r line;
+do
+    node_name=$(echo $line | awk '{print $1}')
+    output_node=$(echo $line | awk '{print $6}')
+    pattern=$(echo "$output_node N")
+    inputs=$(grep "$pattern" "$convdir/Albero_tagliato.cir" | cut -d ' ' -f1)
+    connect_inputs=$(for i in $inputs; do echo "$i.in"; done | tr '\n' ',' | sed "s/,$//")
+    timings=$(for i in $inputs; do echo "$i.i1.trigger.u"; done)
+
+    [[ ! -z $connect_inputs ]] && echo "connect($node_name.out, $connect_inputs)" >> "$convdir/Connections.jl"
+
+    for i in $timings;
+    do
+        [[ ! -z $i ]] && echo "$i ~ $node_name.i1.trigger.y" >> "$convdir/Connections.jl";
+    done
+
+done < "$convdir/Albero_tagliato.cir"
 
 # Parsing dei moduli
+echo "in = Pin()" > "$convdir/Albero.jl"
 tr -d '\r' < $input     \
 | sed 's/(.*)/ = /g;
     s/zwall[_a-z]* /Airway(\n/g;
@@ -53,13 +66,13 @@ tr -d '\r' < $input     \
     s/[[:space:]]Rs=/,\n\tR_s      =/g;
     s/[[:space:]]Cs=/,\n\tC_s      =/g;
     /Vin_th/a)'         \
-| tail -n +2 > "$convdir/Albero.jl"
+| tail -n +2 >> "$convdir/Albero.jl"
 
 # Creazione del Modello di Sistema
-echo -e "@mtkmodel System begin\n@components begin\n# Sorgenti del segnale e ground.\ngen    = Square(smooth = 1e-3)\nsource = Voltage()\nground = Ground()" > "$convdir/System.jl"
-cat "$convdir/Albero.jl"          >> "$convdir/System.jl"
-echo -e "end\n@equations begin\nconnect(gen.output, source.V)\nconnect(source.p, $2.in)\nconnect(source.n, ground.g)" >> "$convdir/System.jl"
-cat "$convdir/Connections.jl"     >> "$convdir/System.jl"
-echo "$2.trigger_in ~ 1"          >> "$convdir/System.jl"
-sed "s/connect(//g;s/, / ~ /g;s/\./\.trigger_/g;s/)//g" $convdir/Connections.jl >> "$convdir/System.jl"
-echo -e "end\nend\n"              >> "$convdir/System.jl"
+echo -e "@mtkmodel Lungs begin\n@components begin\n" > "$convdir/System_prova.jl"
+cat "$convdir/Albero.jl"          >> "$convdir/System_prova.jl"
+echo -e "end\n@equations begin\n" >> "$convdir/System_prova.jl"
+cat "$convdir/Connections.jl"     >> "$convdir/System_prova.jl"
+echo -e "end\nend\n"              >> "$convdir/System_prova.jl"
+
+rm "$convdir/Albero_tagliato.cir" "$convdir/Connections.jl" "$convdir/Albero.jl"
