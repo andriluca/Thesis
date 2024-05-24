@@ -4032,3 +4032,56 @@ ieri inserendo anche la connessione iniziale.
 Non è stato necessario lavorare sul codice per generare i moduli
 perché era già stato scritto in precedenza.  Ho generato il file da
 `Albero.cir` e sto provando ad importarlo su Julia.
+
+* 13.05.24
+** Computazione remota
+Posso utilizzare un server remoto per effettuare la computazione.
+
+| Sistema      | Caratteristiche                 |
+|--------------+---------------------------------|
+| Produttore   | HP                              |
+| Processore   | AMD EPYC 7351 16-Core Processor |
+| RAM          | 16 GB                           |
+| Tipo sistema | 64bit                           |
+| OS           | Windows Server 2019 Standard    |
+
+Per ovvi motivi non posso condividere credenziali di accesso.  Posso
+utilizzarlo in orari serali/notturni.
+
+** Diodo
+Ci sono già stati in passato dei tentativi di implementazione di
+questo componente ma non hanno portato a buoni risultati. provo a
+ripensare la logica di questo componente a partire da un circuito i
+cui andamenti di corrente e tensione sono noti.
+
+Il comportamento che desidererei ottenere è quello di una resistenza
+che varia al variare della tensione ai suoi capi.  Quando la tensione
+è al di sotto di un valore di soglia, devo impedire il passaggio della
+corrente il più possibile.  Questo significa che la resistenza dovrà
+essere elevata per valori di tensione inferiori alla soglia.  Quando
+la tensione invece si avvicina a quella di threshold allora la
+corrente che dovrà scorrere deve necessariamente aumentare, il che
+significa una minore resistenza.
+
+#+begin_src julia
+  @mtkmodel Diode begin
+      @extend v, i = oneport = OnePort()
+      @parameters begin
+          Rlow = 1e-5
+          Rhigh = 1e5
+          threshold = .7
+      end
+      @variables begin
+          R(t) = Rhigh
+      end
+
+      @equations begin
+          R ~ ifelse(v < threshold,
+                     Rhigh,
+                     Rlow)
+          v ~ R * i
+      end
+  end
+#+end_src
+
+Questo codice crea problemi nel punto in cui la resistenza cambia.
