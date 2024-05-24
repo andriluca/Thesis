@@ -24,11 +24,11 @@ xlims_al = tspan
 xlims_aw = tspan
 
 al_volt_pl = plot(sol,
-                  idxs = [system.IAE.out.v,
-                          system.IAI.out.v,
-                          system.IBB.out.v,
-                          system.IAG.out.v,
-                          system.IBA.out.v,],
+                  idxs = [system.L.IAE.out.v,
+                          system.L.IAI.out.v,
+                          system.L.IBB.out.v,
+                          system.L.IAG.out.v,
+                          system.L.IBA.out.v,],
                   title = "Tensioni (Alveoli)",
                   xlabel = "t [s]", ylabel = "Tensione [V]",
                   label = ["Vout di IAE" "Vout di IAI" "Vout di IBB" "Vout di IAG" "Vout di IBA"],
@@ -39,11 +39,11 @@ al_volt_pl = plot(sol,
                   size = (600, 600))
 
 al_curr_pl = plot(sol,
-                  idxs = [system.IAE.c_ga.i,
-                          system.IAI.c_ga.i,
-                          system.IBB.c_ga.i,
-                          system.IAG.c_ga.i,
-                          system.IBA.c_ga.i,],
+                  idxs = [system.L.IAE.c_ga.i,
+                          system.L.IAI.c_ga.i,
+                          system.L.IBB.c_ga.i,
+                          system.L.IAG.c_ga.i,
+                          system.L.IBA.c_ga.i,],
                   title = "Correnti (Alveoli)",
                   xlabel = "t [s]", ylabel = "Corrente [A]",
                   label = ["Iout di IAE" "Iout di IAI" "Iout di IBB" "Iout di IAG" "Iout di IBA"],
@@ -54,10 +54,10 @@ al_curr_pl = plot(sol,
                   size = (800, 600))
 
 aw_volt_pl = plot(sol,
-                  idxs = [system.IAD.out.v,
-                          system.IAF.out.v,
-                          system.IAH.out.v,
-                          system.IBL.out.v],
+                  idxs = [system.L.IAD.out.v,
+                          system.L.IAF.out.v,
+                          system.L.IAH.out.v,
+                          system.L.IBL.out.v],
                   title = "Tensioni (Vie Respiratorie)",
                   xlabel = "t [s]", ylabel = "Tensione [V]",
                   label = ["Vout di IAD" "Vout di IAF" "Vout di IAH" "Vout di IBL"],
@@ -68,10 +68,10 @@ aw_volt_pl = plot(sol,
                   size = (800, 600))
 
 aw_curr_pl = plot(sol,
-                  idxs = [system.IAD.i_tube_1.i,
-                          system.IAF.i_tube_1.i,
-                          system.IAH.i_tube_1.i,
-                          system.IBL.i_tube_1.i],
+                  idxs = [system.L.IAD.i_tube_1.i,
+                          system.L.IAF.i_tube_1.i,
+                          system.L.IAH.i_tube_1.i,
+                          system.L.IBL.i_tube_1.i],
                   title = "Correnti (Vie Respiratorie)",
                   xlabel = "t [s]", ylabel = "Corrente [A]",
                   label = ["Iout di IAD" "Iout di IAF" "Iout di IAH" "Iout di IBL"],
@@ -87,9 +87,26 @@ tot_pl = plot(al_volt_pl, al_curr_pl, aw_volt_pl, aw_curr_pl,
               layout = (2, 2),
               size = (1920, 1080))
 
+# plot(sol, idxs = [system.L.IAD.out.v
+#                   system.L.IBL.out.v
+#                   system.L.IAH.out.v
+#                   system.L.IAF.out.v],
+#      xlims = (0, 6),
+#      ylims = (-1.5, 1.5))
+
+# plot(sol, idxs = [system.L.IBB.out.v
+#                   system.L.IBA.out.v
+#                   system.L.IAE.out.v
+#                   system.L.IAG.out.v
+#                   system.L.IAI.out.v],
+#      xlims = (0, 6),
+#      ylims = (-1.5, 1.5))
+
 #===============================================================
  SALVATAGGIO FIGURE
  ===============================================================#
 
 savefig(tot_pl,
         "$srcdir/output/ampl_$(resp_ampl)_tspan_$(tspan).png")
+
+display(tot_pl)

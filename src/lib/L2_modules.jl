@@ -1,12 +1,25 @@
-#===============================================================
- MODELLI SUPERIORI (alias ad alto livello)
- ===============================================================#
+#= _     ____      __  __           _       _
+  | |   |___ \ _  |  \/  | ___   __| |_   _| | ___  ___
+  | |     __) (_) | |\/| |/ _ \ / _` | | | | |/ _ \/ __|
+  | |___ / __/ _  | |  | | (_) | (_| | |_| | |  __/\__ \
+  |_____|_____(_) |_|  |_|\___/ \__,_|\__,_|_|\___||___/
+
+La complessità aumenta in questo livello, in quanto elementi semplici
+vengono connessi a creare veri e propri sottocircuiti che verranno
+ripetuti per ottenere la struttura polmonare.
+
+            /``````````````/\
+          /              / '  \           - Alveoli
+        /===============\   ''  \         - Vie Aeree
+       /     livello     \' ' ' /
+      /         2          ' '/
+     /=====================\/                                 =#
 
 # TODO: Ridefinire un po' di cose
 
 @mtkmodel Airway begin
     @parameters begin
-        # Diodo (sviluppo futuro)
+        # Diodo
         # Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra, [description = "Resistance when air-filled"]
@@ -21,14 +34,15 @@
         Lb, [description = "ΔL (liquid-air)"]
         # Volume a FRC
         V_FRC, [description = "Airway Volume at FRC"]
+        level = 1, [description = "Normalized air level (0 -> empty, 1 ->  full"]
     end
     @components begin
         # Pin
         in = Pin()
         out = Pin()
-        # Integratore
-        i1 = Integrator(V_FRC = V_FRC)
-        # Diodi (sviluppo futuro)
+        # Integratore di corrente
+        i1 = CurrentIntegrator(V_FRC = V_FRC, level = level)
+        # Diodo
         # D1       = Diode(Vth         = Vin_th)
         # Resistori
         r_sw = Resistor(R = R_sw)
@@ -41,9 +55,9 @@
         i_sw = Inductor(L = I_sw)
         i_tube = CIDInductor(La = 0.5 * La, Lb = 0.5 * Lb)
         i_tube_1 = CIDInductor(La = 0.5 * La, Lb = 0.5 * Lb)
-        # Switch (sviluppo futuro)
+        # Switch
         # Sw       = Switch(V_FRC      = ParentScope(V_FRC))
-        s1 = Switch()
+        # s1 = Switch()
         # Riferimenti
         ground = Ground()
     end
@@ -53,8 +67,7 @@
         # connect(in, D1.p, Sw.p)
         # connect(D1.n, Sw.n, r_tube.p)
         # connect(in, r_tube.p)
-        connect(in, s1.p)
-        connect(s1.n, r_tube.p)
+        connect(in, r_tube.p)
         connect(r_tube.n, i_tube.p)
         # connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
         connect(i_tube.n, c_g.p)
@@ -69,13 +82,13 @@
 
         # TODO: Dove collego l'integratore? Per ora lo collego alla
         # resistenza `r_tube`
-        i1.integ.u ~ in.i
-        r_tube.n∫i ~ i1.integ.y
-        r_tube_1.n∫i ~ i1.integ.y
-        i_tube.n∫i ~ i1.integ.y
-        i_tube_1.n∫i ~ i1.integ.y
-        s1.trigger_in ~ i1.trigger.u
-        s1.trigger_out ~ i1.trigger.y
+        i1.current ~ in.i
+        r_tube.n∫i ~ i1.n∫i
+        r_tube_1.n∫i ~ i1.n∫i
+        i_tube.n∫i ~ i1.n∫i
+        i_tube_1.n∫i ~ i1.n∫i
+        # s1.trigger_in ~ i1.trigger_in
+        # s1.trigger_out ~ i1.trigger_out
         # Sw.∫i          ~ ∫i
     end
 end
@@ -84,7 +97,7 @@ end
 
 @mtkmodel Alveolus begin
     @parameters begin
-        # Diodo (sviluppo futuro)
+        # Diodo
         # Vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra, [description = "Resistance when air-filled"]
@@ -101,15 +114,17 @@ end
         Lb, [description = "ΔL (liquid - air)"]
         # Volume a FRC
         V_FRC, [description = "Airway Volume at FRC"]
+        level = 1, [description = "Normalized air level (0 -> empty, 1 ->  full"]
     end
     @components begin
         # Pin
         in = Pin()
         out = Pin()
-        # Diodi (Sviluppo futuro)
+        # Integratore di corrente
+        i1 = CurrentIntegrator(V_FRC = V_FRC, level = level)
+        # Diodo
         # D1     = Diode(Vth         = Vin_th)
         # Resistori
-        i1 = Integrator(V_FRC = V_FRC)
         r_tube = CIDResistor(Ra = Ra, Rb = Rb)
         r_t = Resistor(R = R_t)
         r_s = Resistor(R = R_s)
@@ -122,7 +137,7 @@ end
         i_t = Inductor(L = I_t)
         # Switch
         # Sw     = Switch(V_FRC      = ParentScope(V_FRC))
-        s1 = Switch()
+        # s1 = Switch()
         # Riferimenti
         ground = Ground()
     end
@@ -130,8 +145,7 @@ end
         # Connessioni
         # connect(in, r_tube.p)
         # connect(in, r_tube.p)
-        connect(in, s1.p)
-        connect(s1.n, r_tube.p)
+        connect(in, r_tube.p)
         connect(r_tube.n, i_tube.p)
         # connect(i_tube.n, c_ga.p, i_t.p, out)
         connect(i_tube.n, c_ga.p)
@@ -145,10 +159,10 @@ end
         connect(c_s.n, ground.g)
         connect(r_s.n, ground.g)
         # Equazioni
-        i1.integ.u ~ r_tube.i
-        r_tube.n∫i ~ i1.integ.y
-        i_tube.n∫i ~ i1.integ.y
-        s1.trigger_in ~ i1.trigger.u
-        s1.trigger_out ~ i1.trigger.y
+        i1.current ~ r_tube.i
+        r_tube.n∫i ~ i1.n∫i
+        i_tube.n∫i ~ i1.n∫i
+        # s1.trigger_in ~ i1.trigger_in
+        # s1.trigger_out ~ i1.trigger_out
     end
 end

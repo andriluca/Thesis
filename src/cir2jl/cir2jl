@@ -23,7 +23,7 @@ fi
 tail -n +2 $input > "$convdir/Albero_tagliato.cir"
 
 echo "connect(in, $2.in)" > "$convdir/Connections.jl"
-echo "$2.i1.trigger.u ~ true" >> "$convdir/Connections.jl"
+echo "$2.i1.trigger_in ~ true" >> "$convdir/Connections.jl"
 
 while IFS= read -r line;
 do
@@ -32,13 +32,13 @@ do
     pattern=$(echo "$output_node N")
     inputs=$(grep "$pattern" "$convdir/Albero_tagliato.cir" | cut -d ' ' -f1)
     connect_inputs=$(for i in $inputs; do echo "$i.in"; done | tr '\n' ',' | sed "s/,$//")
-    timings=$(for i in $inputs; do echo "$i.i1.trigger.u"; done)
+    timings=$(for i in $inputs; do echo "$i.i1.trigger_in"; done)
 
     [[ ! -z $connect_inputs ]] && echo "connect($node_name.out, $connect_inputs)" >> "$convdir/Connections.jl"
 
     for i in $timings;
     do
-        [[ ! -z $i ]] && echo "$i ~ $node_name.i1.trigger.y" >> "$convdir/Connections.jl";
+        [[ ! -z $i ]] && echo "$i ~ $node_name.i1.trigger_out" >> "$convdir/Connections.jl";
     done
 
 done < "$convdir/Albero_tagliato.cir"
@@ -69,10 +69,10 @@ tr -d '\r' < $input     \
 | tail -n +2 >> "$convdir/Albero.jl"
 
 # Creazione del Modello di Sistema
-echo -e "@mtkmodel Lungs begin\n@components begin\n" > "$convdir/System_prova.jl"
-cat "$convdir/Albero.jl"          >> "$convdir/System_prova.jl"
-echo -e "end\n@equations begin\n" >> "$convdir/System_prova.jl"
-cat "$convdir/Connections.jl"     >> "$convdir/System_prova.jl"
-echo -e "end\nend\n"              >> "$convdir/System_prova.jl"
+echo -e "@mtkmodel Lungs begin\n@components begin\n" > "$convdir/System_prova1.jl"
+cat "$convdir/Albero.jl"          >> "$convdir/System_prova1.jl"
+echo -e "end\n@equations begin\n" >> "$convdir/System_prova1.jl"
+cat "$convdir/Connections.jl"     >> "$convdir/System_prova1.jl"
+echo -e "end\nend\n"              >> "$convdir/System_prova1.jl"
 
 rm "$convdir/Albero_tagliato.cir" "$convdir/Connections.jl" "$convdir/Albero.jl"

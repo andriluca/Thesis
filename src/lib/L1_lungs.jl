@@ -1,3 +1,22 @@
+#= _     _     _
+  | |   / |_  | |   _   _ _ __   __ _ ___
+  | |   | (_) | |  | | | | '_ \ / _` / __|
+  | |___| |_  | |__| |_| | | | | (_| \__ \
+  |_____|_(_) |_____\__,_|_| |_|\__, |___/
+                                |___/
+
+Questo livello è generato da uno script (`src/cir2jl`).  Sconsigliata
+la modifica diretta di questo file se non utilizzando lo script.
+Questo livello collega i vari sottocircuiti per creare il modello
+(passivo) del polmone.
+
+              /```````/ \                 - Polmoni
+            /=======/    \
+           / livello \ '  \
+          /     1     \   /
+         /=============\/                                      =#
+
+
 # TODO: Ripulire dalle cose che dipendono dal generatore
 # TODO: Rivedere script per generazione del modello
 
@@ -99,23 +118,23 @@
 
     @equations begin
         connect(in,      IAD.in)
-        IAD.i1.trigger.u ~ true
+        IAD.i1.trigger_in ~ true
         connect(IAD.out, IAF.in)
-        IAF.i1.trigger.u ~ IAD.i1.trigger.y
+        IAF.i1.trigger_in ~ IAD.i1.trigger_out
         connect(IAD.out, IAE.in)
-        IAE.i1.trigger.u ~ IAD.i1.trigger.y
+        IAE.i1.trigger_in ~ IAD.i1.trigger_out
         connect(IAF.out, IAH.in)
-        IAH.i1.trigger.u ~ IAF.i1.trigger.y
+        IAH.i1.trigger_in ~ IAF.i1.trigger_out
         connect(IAF.out, IAG.in)
-        IAG.i1.trigger.u ~ IAF.i1.trigger.y
+        IAG.i1.trigger_in ~ IAF.i1.trigger_out
         connect(IAH.out, IBL.in)
-        IBL.i1.trigger.u ~ IAH.i1.trigger.y
+        IBL.i1.trigger_in ~ IAH.i1.trigger_out
         connect(IAH.out, IAI.in)
-        IAI.i1.trigger.u ~ IAH.i1.trigger.y
+        IAI.i1.trigger_in ~ IAH.i1.trigger_out
         connect(IBL.out, IBB.in)
-        IBB.i1.trigger.u ~ IBL.i1.trigger.y
+        IBB.i1.trigger_in ~ IBL.i1.trigger_out
         connect(IBL.out, IBA.in)
-        IBA.i1.trigger.u ~ IBL.i1.trigger.y
+        IBA.i1.trigger_in ~ IBL.i1.trigger_out
     end
 end
 

@@ -1,6 +1,25 @@
-#===============================================================
- MODELLI INFERIORI (alias a basso livello)
- ===============================================================#
+#= _     _____     ____                                             _
+  | |   |___ /_   / ___|___  _ __ ___  _ __   ___  _ __   ___ _ __ | |_ ___
+  | |     |_ (_) | |   / _ \| '_ ` _ \| '_ \ / _ \| '_ \ / _ \ '_ \| __/ __|
+  | |___ ___) |  | |__| (_) | | | | | | |_) | (_) | | | |  __/ | | | |_\__ \
+  |_____|____(_)  \____\___/|_| |_| |_| .__/ \___/|_| |_|\___|_| |_|\__|___/
+                                      |_|
+
+Su questo livello esistono componenti elementari (e.g. resistenze,
+condensatori, ...) con lo scopo di costituire dei moduli.
+
+          /``````````````````````/\
+        /                      /  ' \     - Induttori
+      /                      /'   ' ' \   - Resistori
+    /=======================\  '   '  /   - Condensatori
+   /         livello         \   '  /     - Diodi
+  /             3             \'  /       - Interruttori
+ /=============================\/                             =#
+
+# Simboli per variabile temporale e differenziale (dt).
+@parameters t
+D = Differential(t)
+
 # TODO: Modificare il diodo
 
 # Componenti variabili
@@ -13,7 +32,7 @@
     @variables begin
         # Il valore di default altro non è che il valore
         # d'inizializzazione del sistema
-        n∫i(t) = 0, [description = "Current integral"]
+        n∫i(t) = 0, [description = "Normalized Current Integral."]
         L(t)  = La + Lb, [description = "Variable inductance"]
     end
     @equations begin
@@ -29,7 +48,7 @@ end
         Rb, [description = "Resistance delta (liquid - air)"]
     end
     @variables begin
-        n∫i(t) = 0, [description = "Current integral"]
+        n∫i(t) = 0, [description = "Normalized Current Integral."]
         # Dichiaro come variabile d'interesse anche la resistenza
         R(t) = Ra + Rb, [description = "Variable resistance"]
     end
@@ -41,7 +60,7 @@ end
 
 exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
 
-@mtkmodel Diode begin
+@mtkmodel old_Diode begin
     @extend v, i = oneport = OnePort()
     @parameters begin
         Ids     = 1e-6, [description = "Reverse-bias current"]
@@ -55,43 +74,45 @@ exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
     end
 end
 
-@mtkmodel Integrator begin
-    @components begin
-        integ = SISO(y_start = 0)
-        trigger = SISO(y_start = false)
+@mtkmodel Diode begin
+    @extend v, i = oneport = OnePort()
+    @parameters begin
+        vin_th = .7
     end
     @variables begin
-        ∫i(t) = 0.0, [description = "State of Integrator."]
-    end
-    @parameters begin
-        V_FRC = 1, [description = "Volume at FRC."]
+        trigger_in(t) = false
+        trigger_out(t) = false
     end
     @equations begin
-        # u[1]     -> corrente.
-        # u[2]     -> trigger_in.
-        # y[1], ∫i -> integrale della corrente.
-        # y[2]     -> trigger_out.
+        v ~ -(trigger_in) * (1 - trigger_out) * vin_th
+    end
+end
 
-        # Quando l'integrale 1) sta per essere negativo, 2) sta per
-        # superare V_FRC 3) trigger_in è false, l'integrazione non
-        # viene effettuata.
-
-        # Quando la corrente è negativa e l'integrale è negativo non devo integrare.
-        # Quando l'integrale supera la threshold devo smettere di integrare.
-        # Quando l'integrale è positivo o nullo posso integrare.
-        # (Quando la corrente è positiva integro a prescindere.)
-
-        D(∫i) ~ ifelse((((∫i < 0) & (integ.u < 0)) | (∫i >= V_FRC) | (trigger.u == false)),
-                       0,
-                       integ.u)
+@mtkmodel CurrentIntegrator begin
+    @parameters begin
+        V_FRC = 1, [description = "Volume at FRC."]
+        level = 1, [description = "Normalized Fill-up level (0 -> empty, 1 ->  full)."]
+    end
+    @variables begin
+        # Integrazione
+        current(t) = 0.0, [description = "Input current."]
+        n∫i(t) = 0.0, [description = "Output Normalized (by V_FRC) Current Integral.", output = true]
+        # Timing
+        trigger_in(t) = 0.0, [description = "Filling-up status of previous module."]
+        trigger_out(t) = 0.0, [description = "Filling-up status of current module.", output = true]
+    end
+    @equations begin
+        D(n∫i) ~ ifelse((((n∫i < 0) & (current < 0))  # Se n∫i sta per essere negativo,
+                         | (n∫i >= level)             # Se n∫i sta per superare la soglia di riempimento,
+                         | (trigger_in == false)),    # Se il precedente modulo non è stato riempito,
+                        0,                            # -> Non integrare.
+                        current / V_FRC)              # -> Integrare.
 
         # Normalizzo l'integrale per V_FRC.
-        integ.y ~ ∫i / V_FRC
-        D(trigger.y) ~ 0
+        D(trigger_out) ~ 0                            # Condizione necessaria per avere callback.
     end
-    
     @continuous_events begin
-        [∫i ~ V_FRC] => [trigger.y ~ true]
+        [n∫i ~ level] => [trigger_out ~ true]         # Al raggiungimento della soglia, alzare trigger_out.
     end
 end
 

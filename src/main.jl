@@ -5,22 +5,15 @@
 # |_| |_| |_|\__,_|_|_| |_(_)/ |_|
 #                          |__/   
 
-## Gestione delle dipendenze
+## Gestione delle dipendenze.
 using Pkg
 
 ## Definizione paths di interesse.
-repodir = "/home/luca/Thesis"
+repodir = "/home/luca/Thesis" # <- CHANGE IT!
 srcdir  = "$repodir/src"
 Pkg.activate(repodir)
 
-## Definizione parametri.
-### Generatore (di onda quadra "smussata", aka artan()).
-# resp_freq   = 1.0       # Hz
-resp_ampl   = 1.0        # V
-tspan       = (0, 4)      # s
-
-## Inclusione componenti inferiori (i.e. CIDResistor, CIDInductor) e
-## superiori (i.e. Airway, Alveolus).
+## Inclusione libreria del modello morfometrico.
 include("$srcdir/lib/AWTree.jl")
 
 ## (L'input (i.e. la struttura circuitale) viene generato eseguendo lo
@@ -28,11 +21,8 @@ include("$srcdir/lib/AWTree.jl")
 ## Importazione dell'input (i.e. modello dei componenti superiori e
 ## delle loro connessioni).
 
-include("$srcdir/input/System1.jl")
+# include("$srcdir/input/System1.jl")
 # include("$srcdir/input/System.jl")
-# Istanzio il modello di polmone.
-@mtkbuild system = System()
-# include("$srcdir/input/Parameters.jl")
 
 ## Esecuzione della simulazione.
 include("$srcdir/util/simulation.jl")
