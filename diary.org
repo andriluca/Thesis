@@ -2295,7 +2295,10 @@ il software non possa eseguire correttamente su Linux.  Devo eseguire
 quel software utilizzando VisualStudio 2019.
 
 ** DONE Installa VisualStudio 2019
-** TODO [#C] Compila AVATree da sorgente
+** [#C] Compila AVATree da sorgente
+Ho tentato in tutti i modi ma non è stato possibile in quanto
+compaiono molti errori in fase di compilazione, si veda la pagina del
+progetto su GitLab.
 
 * 11.01.24
 In questi giorni è comparso un [[https://github.com/SciML/ModelingToolkit.jl/issues/2421][issue su Github]] che vuole introdurre
@@ -2403,7 +2406,14 @@ Dovrei considerare una rete più piccola (solo 3 nodi) così da essere
 più in grado di comprendere a cosa è dovuto l'errore
 
 ** DONE Riguardare la documentazione di `ModelingToolkit`
-** TODO [#C] Comprendere le questioni legate alla licenza software che devo utilizzare
+** DONE [#C] Comprendere le questioni legate alla licenza software che devo utilizzare
+La licenza d'uso per Chaste è inclusa direttamente nello User Project
+implementato, si veda sul mio GitHub la repository
+`NewbornAirwayGeneration`.  Per quanto riguarda la licenza del
+software scritto in Julia, devo chiedere al Professore ma da quanto ho
+capito è un discorso che andrà fatto più avanti, in una fase più
+avanzata del progetto.
+
 ** DONE [#B] Importare la TAC neonatale (vedi CD in cartelletta)
 Importata in `~/Documents/CT/DICOM` (su arch) e `~/Documenti/CT/DICOM`
 (su Ubuntu).
@@ -2891,7 +2901,7 @@ diverse cose senza dover lasciare il sistema operativo che sto
 utilizzando.
 
 ** TODO Conversione skeletonizzazione
-*** TODO vtkToolbox (MATLAB)
+*** DONE vtkToolbox (MATLAB)
 Su arch ho scaricato ed installato (in un virtual environment) il tool
 `vedo`.  Provo ad utilizzare la libreria `[[https://it.mathworks.com/matlabcentral/fileexchange/94993-vtktoolbox][vtkToolbox]]` per MATLAB.
 L'installazione è avvenuta senza problemi (non è stato necessario
@@ -3707,7 +3717,7 @@ scrivere la tesi.  Alcuni documenti mi verranno inviati da Chiara
 prossimamente.  Nel frattempo vogliamo avere dei risultati includendo
 anche Diodo e/o Switch (come li avevamo considerati in precedenza).
 
-** TODO [#A] Rivedere i test16*
+** DONE [#A] Rivedere i test16*
 
 * 16.04.24
 ** Callbacks e integrale della corrente                          :Callbacks:
@@ -3837,7 +3847,7 @@ Colloquio con Davide e Chiara
 ** DONE [#A] Modificare l'equazione dello switch
 L'equazione da utilizzare è quella nel messaggio Whatsapp di Chiara
 (tra i preferiti)
-*** TODO [#A] Implementare triggers nello switch
+*** DONE [#A] Implementare triggers nello switch
 
 * 25.04.24
 ** Modello morfometrico
@@ -3900,7 +3910,7 @@ Ho testato la libreria `vtkToolbox` per MATLAB su Windows 11 ma,
 nonostante questa funzioni per il file .vtu, questa crasha quando devo
 importare un file .vtp appena esportato da Slicer.
 
-** TODO Riportare la struttura di `prova2.jl` nella libreria
+** DONE Riportare la struttura di `prova2.jl` nella libreria
 Ho creato dei files chiamati `Lx*_<nome>` dove x è un numero che
 indica il livello dei moduli (minore il livello, più alto il suo
 ordine). La logica che seguo è quella di una piramide. Il problema è
@@ -3973,7 +3983,7 @@ Devo:
      out_timings=$(for i in $timings; do echo "$i ~ $name.i1.trigger.y"; done)
    #+end_src
    
-** TODO [#A] Includo questo snippet in `cir2jl`
+** DONE [#A] Includo questo snippet in `cir2jl`
 Questo codice funziona
 
 #+begin_src bash
@@ -4085,3 +4095,44 @@ significa una minore resistenza.
 #+end_src
 
 Questo codice crea problemi nel punto in cui la resistenza cambia.
+
+* 27.05.24
+Francesca ha fornito una versione del file vtu dei primi tratti delle
+vie aeree.  Il prossimo step che devo provare a fare è quello di
+creare uno user project plasmato sul test chiamato
+`TestAirwayGenerationTutorial`.
+
+* 30.05.24
+In questi giorni ho letto la documentazione di Chaste e vi sono delle
+classi per manipolare le mesh.  `TetrahedralMesh`, in particolare, è
+quella che viene utilizzata da `TestAirwayGenerationTutorial`.
+`TetrahedralMesh` viene popolata tramite un metodo
+`.ConstructFromMeshReader`.  È possibile fare la stessa cosa ma senza
+utilizzare il vtu? quindi a partire da file `TestSubject002.node` e
+`TestSubject002.edge`?
+
+* 03.06.24
+Ho avuto contatti con un radiologo interno al FBF che potrebbe fornire
+dei dati anonimizzati di TC neonatale ma lui consiglia di utilizzare
+una tac di neonato a termine o di bambino.  Devo chiedere a Chiara se
+è necessaria una tac del genere o se non lo è.
+
+Devo dire a Francesca che ho trovato la classe `TrianglesMeshReader`
+con la quale riesco a leggere dei file `.node` e `.edge` tramite i
+quali posso esplicitare la mesh senza passare per il formato `vtu`.
+
+Devo dire a Chiara che il risultato dei Diodi non è quello che
+vorremmo ottenere in termini di corrente.  Posso mostrarle dei grafici
+di corrente e tensione col circuito semplice R-D-C.
+
+* 05.06.24
+Devo sistemare il test su Ubuntu prima di tutto ma per farlo devo
+sincronizzare la repository locale (NewbornAirwayGeneration) sul
+computer di Chiara con quella remota dedicata allo User Project.
+
+* 07.06.24
+Ho parlato con Chiara e Francesca.  Mi è stato detto che dobbiamo
+lavorare sui file testuali che Chaste vuole in input per generare
+l'albero respiratorio.
+
+* 09.06.24

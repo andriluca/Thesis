@@ -11,7 +11,8 @@
 
 # Questi sono i pacchetti per effettuare la generazione del modello.
 using ModelingToolkit
-using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step, Sine, SISO
+using ModelingToolkit: t_nounits as t, D_nounits as D
+using ModelingToolkitStandardLibrary.Blocks: Constant, Square, Step, Sine
 using ModelingToolkitStandardLibrary.Electrical
 
 #===============================================================
@@ -39,7 +40,7 @@ di quelli di ordine inferiore.
           /              / '  \
         /===============\   ''  \
        /     livello     \' ' ' /
-      /         2          ' '/``/\       - Livello 2: Moduli
+      /         2         \' '/``/\       - Livello 2: Moduli
      /=====================\/  /  ' \
       /                      /'   ' ' \
     /=======================\  '   '  /
@@ -77,7 +78,7 @@ ripetuti per ottenere la struttura polmonare.
           /              / '  \           - Alveoli
         /===============\   ''  \         - Vie Aeree
        /     livello     \' ' ' /                              
-      /         2          ' '/    
+      /         2         \' '/    
      /=====================\/                                 =#
 
 include("$srcdir/lib/L2_modules.jl")
@@ -99,7 +100,9 @@ Questo livello collega i vari sottocircuiti per creare il modello
          /=============\/                                      =#
 
 # TODO: Ridirigere l'output dello script `cir2jl` su `lib/L1_lungs.jl`
+
 include("$srcdir/input/System_prova1.jl")
+# include("$srcdir/lib/L1_lungs.jl")
 
 #===============================================================
  Livello 0: Componenti di simulazione

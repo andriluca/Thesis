@@ -4,23 +4,34 @@
   | |___ / __/ _  | |  | | (_) | (_| | |_| | |  __/\__ \
   |_____|_____(_) |_|  |_|\___/ \__,_|\__,_|_|\___||___/
 
+
+                '
+               / \
+              /   \
+             /     \
+            /       \
+           /    ↑    \
+          /   order   \
+         /             \
+        /               \
+       /=================\            _
+      /        lvl        \      _.-'` |________________////  - Alveoli
+     /          2          \      `'-._|                \\\\  - Vie Aeree
+    /=======================\
+   /            ↓            \
+  /           order           \
+ /=============================\
+
 La complessità aumenta in questo livello, in quanto elementi semplici
 vengono connessi a creare veri e propri sottocircuiti che verranno
-ripetuti per ottenere la struttura polmonare.
-
-            /``````````````/\
-          /              / '  \           - Alveoli
-        /===============\   ''  \         - Vie Aeree
-       /     livello     \' ' ' /
-      /         2          ' '/
-     /=====================\/                                 =#
+ripetuti per ottenere la struttura polmonare.                 =#
 
 # TODO: Ridefinire un po' di cose
 
 @mtkmodel Airway begin
     @parameters begin
         # Diodo
-        # Vin_th, [description = "Diode's Threshold"]
+        vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra, [description = "Resistance when air-filled"]
         Rb, [description = "ΔR (liquid - air)"]
@@ -43,7 +54,7 @@ ripetuti per ottenere la struttura polmonare.
         # Integratore di corrente
         i1 = CurrentIntegrator(V_FRC = V_FRC, level = level)
         # Diodo
-        # D1       = Diode(Vth         = Vin_th)
+        D1 = Diode(vin_th = vin_th)
         # Resistori
         r_sw = Resistor(R = R_sw)
         r_tube = CIDResistor(Ra = 0.5 * Ra, Rb = 0.5 * Rb)
@@ -67,7 +78,8 @@ ripetuti per ottenere la struttura polmonare.
         # connect(in, D1.p, Sw.p)
         # connect(D1.n, Sw.n, r_tube.p)
         # connect(in, r_tube.p)
-        connect(in, r_tube.p)
+        connect(in, D1.p)
+        connect(D1.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         # connect(i_tube.n, c_g.p, i_sw.p, r_tube_1.p)
         connect(i_tube.n, c_g.p)
@@ -87,6 +99,8 @@ ripetuti per ottenere la struttura polmonare.
         r_tube_1.n∫i ~ i1.n∫i
         i_tube.n∫i ~ i1.n∫i
         i_tube_1.n∫i ~ i1.n∫i
+        D1.trigger_in ~ i1.trigger_in
+        D1.trigger_out ~ i1.trigger_out
         # s1.trigger_in ~ i1.trigger_in
         # s1.trigger_out ~ i1.trigger_out
         # Sw.∫i          ~ ∫i
@@ -98,7 +112,7 @@ end
 @mtkmodel Alveolus begin
     @parameters begin
         # Diodo
-        # Vin_th, [description = "Diode's Threshold"]
+        vin_th, [description = "Diode's Threshold"]
         # Resistori
         Ra, [description = "Resistance when air-filled"]
         Rb, [description = "ΔR (liquid - air)"]
@@ -123,7 +137,7 @@ end
         # Integratore di corrente
         i1 = CurrentIntegrator(V_FRC = V_FRC, level = level)
         # Diodo
-        # D1     = Diode(Vth         = Vin_th)
+        D1 = Diode(vin_th = vin_th)
         # Resistori
         r_tube = CIDResistor(Ra = Ra, Rb = Rb)
         r_t = Resistor(R = R_t)
@@ -145,7 +159,8 @@ end
         # Connessioni
         # connect(in, r_tube.p)
         # connect(in, r_tube.p)
-        connect(in, r_tube.p)
+        connect(in, D1.p)
+        connect(D1.n, r_tube.p)
         connect(r_tube.n, i_tube.p)
         # connect(i_tube.n, c_ga.p, i_t.p, out)
         connect(i_tube.n, c_ga.p)
@@ -159,9 +174,11 @@ end
         connect(c_s.n, ground.g)
         connect(r_s.n, ground.g)
         # Equazioni
-        i1.current ~ r_tube.i
+        i1.current ~ in.i
         r_tube.n∫i ~ i1.n∫i
         i_tube.n∫i ~ i1.n∫i
+        D1.trigger_in ~ i1.trigger_in
+        D1.trigger_out ~ i1.trigger_out
         # s1.trigger_in ~ i1.trigger_in
         # s1.trigger_out ~ i1.trigger_out
     end

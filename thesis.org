@@ -1,5 +1,9 @@
 #+title: <Titolo della tesi>
 #+author: Luca Andriotto
+#+startup: overview
+
+La tesi sarà scritta in lingua inglese.  Il formato sarà articolo (?)
+sulle 30 pagine.
 
 * Esempi di Indice
 ** Esempio 1 (Relatrice Pedrocchi)
@@ -31,11 +35,66 @@ terminologiche e critiche necessarie alla successiva comprensione
 - References                          :: alias Bibliografia
 
 * Abstract e Sommario
+* Introduzione
+
+- Fragilità polmone neonatale
+- Differenze anatomiche tra neonato e adulto.
+- Albero bronchiale definizione etc. (penso anche ordini, branching etc).
+- Modello morfometrico definizione etc (?)
+- Modello polmone di agnello con capacità in parallelo.
+- Diametro trachea in funzione dell'eta gestazionale (grafico).
+
+Capitolo neonati
+Capitolo modello morfometrico
+
+Il progetto è suddiviso in due fasi:
+- Generativa
+- Simulativa
+
+Nella fase generativa, si è voluto generare un surrogato anatomico
+paziente-specifico di un neonato a partire da una TC.
+
+Nella fase simulativa, si è voluto implementare i parametri fisici
+calcolati nella precedente fase nel circuito equivalente che
+rappresenta il modello morfometrico del polmone.
+
 * Stato dell'arte                                               :Consigliato:
 Il consiglio di Chiara è di ridurre questa prima parte.
-** Cadence
-** Il linguaggio Julia                                         :Consigliato:
-È un linguaggio moderno, general purpose, con il quale posso anche
+
+* Materiale e metodi
+Enfasi sull'open-source e sull'importanza nell'ambito della ricerca
+scientifica.
+
+Visione d'insieme (diagramma con flusso dell'informazione). Questo
+diagramma mostra a partire dagli input che ho avuto (TC) tutto l'iter
+del dato.
+
+Qui ha detto poi Chiara che conviene inserire delle informazioni
+riguardanti i modelli matematici utilizzati.
+
+** Generazione surrogato anatomico
+*** 3D Slicer + Chaste (+ ParaView)
+**** 3D Slicer
+Utilizzato per la segmentazione dei primi tratti delle vie aeree
+
+**** Chaste
+Libreria C++ utilizzata per scrivere il test necessario alla
+generazione del surrogato anatomico di vie aeree neonatali.
+
+**** ParaView
+Strumento utilizzato per la visualizzazione del surrogato
+dell'anatomia risultante.
+
+*** AVATree
+Strumento sviluppato per Microsoft Windows da compilare da sorgente
+mediante l'utilizzo di VisualStudio 2019 ma presentava parecchi
+problemi di compilazione.
+
+** Modello per simulazione
+*** Cadence
+*** (Open)Modelica
+*** Il linguaggio Julia                                        :Consigliato:
+È un linguaggio moderno, general purpose, con il quale è possibile
 modellizzare un equivalente elettrico (e.g. tramite l'utilizzo di
 pacchetti quali «ModelingToolkit.jl»).  Ha delle prestazioni
 paragonabili a C e Fortran in quanto ciascuna istruzione viene
@@ -44,10 +103,24 @@ Julia rendono possibile la generazione di costrutti sintattici
 specifici al caso d'uso: il metaprogramming. Ciò rende possibile
 l'impiego di un DSL (Domain Specific Language).
 
-*** «ModelingToolkit.jl»
+**** Pacchetti utilizzati
+***** «Pkg.jl»
+Gestione delle dipendenze necessarie alla simulazione.
 
-* Introduction
-* Materiale e metodi
-* Validazione
+***** «ModelingToolkit.jl»
+****** Callback functions
+La loro importanza nel superare le non-linearità (e non derivabilità)
+del modello.
+
+***** «DifferentialEquations.jl»
+**** Excursus su macro e metaprogramming (?)
+
+* Validazione e risultati
+- Disegno anatomia albero.
+- Grafici: un gradino "sopra" (10) le soglie e uno "sotto" (8) (xlims
+  = (.995, 1.09)).
+
+Grafici relativi al numero di generazioni (?)
+
 * Conclusioni
 * Bibliografia

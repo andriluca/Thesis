@@ -23,7 +23,7 @@ fi
 tail -n +2 $input > "$convdir/Albero_tagliato.cir"
 
 echo "connect(in, $2.in)" > "$convdir/Connections.jl"
-echo "$2.i1.trigger_in ~ true" >> "$convdir/Connections.jl"
+echo "$2.i1.trigger_in ~ trigger_in" >> "$convdir/Connections.jl"
 
 while IFS= read -r line;
 do
@@ -59,20 +59,21 @@ tr -d '\r' < $input     \
     s/[[:space:]]Cws=/,\n\tC_sw     =/g;
     s/[[:space:]]Chargeth=/,\n\tV_FRC    =/g;
     s/[[:space:]]Ccap=/,\n\tC_g      =/g;
-    s/[[:space:]]Vin_th=/,\n\t# Vin_th   =/g;
+    s/[[:space:]]Vin_th=/,\n\tvin_th   =/g;
     s/[[:space:]]Lti=/,\n\tI_t      =/g;
     s/[[:space:]]Rti=/,\n\tR_t      =/g;
     s/[[:space:]]Cti=/,\n\tC_t      =/g;
     s/[[:space:]]Rs=/,\n\tR_s      =/g;
     s/[[:space:]]Cs=/,\n\tC_s      =/g;
-    /Vin_th/a)'         \
+    /vin_th/a)'         \
 | tail -n +2 >> "$convdir/Albero.jl"
 
 # Creazione del Modello di Sistema
-echo -e "@mtkmodel Lungs begin\n@components begin\n" > "$convdir/System_prova1.jl"
+echo -e "#= _     _     _\n  | |   / |_  | |   _   _ _ __   __ _ ___\n  | |   | (_) | |  | | | | '_ \ / _\` / __|\n  | |___| |_  | |__| |_| | | | | (_| \__ \\ \n  |_____|_(_) |_____\__,_|_| |_|\__, |___/\n                                |___/\n\n                '                \n               / \ \n              /   \ \n             /  ↑  \ \n            / order \ \n           /         \ \n          /===========\               _\n         /     lvl     \         _.-'\` |________________////  - Polmoni\n        /       1       \         \`'-._|                \\\\\\\\\\\\\\\\ \n       /=================\ \n      /                   \ \n     /          ↓          \ \n    /         order         \ \n   /                         \ \n  /                           \  \n /=============================\ \n\n Questo livello è generato da uno script (\`src/cir2jl\`).  Sconsigliata\nla modifica diretta di questo file se non utilizzando lo script.\nQuesto livello collega i vari sottocircuiti per creare il modello\n(passivo) del polmone.                                         =#\n" > "$convdir/System_prova1.jl"
+echo -e "@mtkmodel Lungs begin\n@variables begin\ntrigger_in(t) = false, [description = \"True when start current integrating.\"]\nend\n\n@components begin" >> "$convdir/System_prova1.jl"
 cat "$convdir/Albero.jl"          >> "$convdir/System_prova1.jl"
-echo -e "end\n@equations begin\n" >> "$convdir/System_prova1.jl"
+echo -e "end\n\n@equations begin\n" >> "$convdir/System_prova1.jl"
 cat "$convdir/Connections.jl"     >> "$convdir/System_prova1.jl"
-echo -e "end\nend\n"              >> "$convdir/System_prova1.jl"
+echo -e "\nend\n\nend\n"              >> "$convdir/System_prova1.jl"
 
 rm "$convdir/Albero_tagliato.cir" "$convdir/Connections.jl" "$convdir/Albero.jl"

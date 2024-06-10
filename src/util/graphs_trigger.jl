@@ -19,9 +19,11 @@ theme(:solarized)
 
 ## Limiti su x
 ### Alveoli
-xlims_al = (0, .1)
+# xlims_al = (0, .1)
+xlims_al = tspan
 ### Airways
-xlims_aw = (0, .1)
+# xlims_aw = (0, .1)
+xlims_aw = tspan
 
 ## Limiti su y
 ### Alveoli

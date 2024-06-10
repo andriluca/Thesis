@@ -5,20 +5,26 @@
   |_____|____(_)  \____\___/|_| |_| |_| .__/ \___/|_| |_|\___|_| |_|\__|___/
                                       |_|
 
+                '
+               / \
+              /   \
+             /     \
+            /       \
+           /         \
+          /           \
+         /      ↑      \
+        /     order     \
+       /                 \
+      /                   \
+     /                     \
+    /=======================\           _                       - Induttori
+   /           lvl           \     _.-'` |________________////  - Resistori
+  /             3             \     `'-._|                \\\\  - Condensatori
+ /=============================\                                - Diodi
+                                                                - Interruttori
+
 Su questo livello esistono componenti elementari (e.g. resistenze,
-condensatori, ...) con lo scopo di costituire dei moduli.
-
-          /``````````````````````/\
-        /                      /  ' \     - Induttori
-      /                      /'   ' ' \   - Resistori
-    /=======================\  '   '  /   - Condensatori
-   /         livello         \   '  /     - Diodi
-  /             3             \'  /       - Interruttori
- /=============================\/                             =#
-
-# Simboli per variabile temporale e differenziale (dt).
-@parameters t
-D = Differential(t)
+condensatori, ...) con lo scopo di costituire dei moduli.       =#
 
 # TODO: Modificare il diodo
 
@@ -66,11 +72,11 @@ exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
         Ids     = 1e-6, [description = "Reverse-bias current"]
         max_exp = 15, [description = "Value after which linearization is applied"]
         R       = 1e8, [description = "Diode Resistance"]
-        Vth     = 1e-3, [description = "Threshold voltage"]
+        vin_th  = 1e-3, [description = "Threshold voltage"]
         k       = 1e3, [description = "Speed of exponential"]
     end
     @equations begin
-        i ~ Ids * (exlin(k * (v - Vth) / (Vth), max_exp) - 1) + (v / R)
+        i ~ Ids * (exlin(k * (v - vin_th) / (vin_th), max_exp) - 1) + (v / R)
     end
 end
 
@@ -84,7 +90,8 @@ end
         trigger_out(t) = false
     end
     @equations begin
-        v ~ -(trigger_in) * (1 - trigger_out) * vin_th
+        # v ~ -(trigger_in) * (1 - trigger_out) * vin_th
+        v ~ (trigger_in) * (1 - trigger_out) * vin_th
     end
 end
 

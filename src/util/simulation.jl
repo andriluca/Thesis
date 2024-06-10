@@ -18,18 +18,17 @@ using DifferentialEquations, OrdinaryDiffEq
 
 ## genero un problema da risolvere nell'intervallo 0-10s.
 # prob = ODEProblem(system, ps, tspan)
-tspan       = (0, 4)      # s
 prob = ODEProblem(system, [], tspan, [])
 
 ## modifico le tolleranze della soluzione.
 sol = solve(prob,
 #            reltol = 1.0e-7,
-            abstol = 1.0e-7,
+            # abstol = 1.0e-7,
             # Rodas4(),
             # Rodas5(),
             # QBDF1(),
             # QNDF1(),
             # FBDF(),
             Rodas4P2(),
-            dtmax = 1.0e-5
+            # dtmax = 1.0e-5
             )
