@@ -1,55 +1,44 @@
-%------------------------------------------------------------------------------
+% A LaTeX template for ARTICLE version of the MSc Thesis submissions to 
+% Politecnico di Milano (PoliMi) - School of Industrial and Information Engineering
+%
+% S. Bonetti, A. Gruttadauria, G. Mescolini, A. Zingaro
+% e-mail: template-tesi-ingind@polimi.it
+%
+% Last Revision: October 2021
+%
+% Copyright 2021 Politecnico di Milano, Italy. Inc. NC-BY
+
+\documentclass[11pt,a4paper]{article} 
+
+% ------------------------------------------------------------------------------
 %	REQUIRED PACKAGES AND  CONFIGURATIONS
 %------------------------------------------------------------------------------
-
-% CONFIGURATIONS
-\usepackage{parskip}       % For paragraph layout
-\usepackage{setspace}      % For using single or double spacing
-\usepackage{emptypage}     % To insert empty pages
-\usepackage{multicol}      % To write in multiple columns (executive summary)
-\setlength\columnsep{15pt} % Column separation in executive summary
-\setlength\parindent{0pt}  % Indentation
-\raggedbottom
-
 % PACKAGES FOR TITLES
 \usepackage{titlesec}
-% \titlespacing{\section}{left spacing}{before spacing}{after spacing}
-\titlespacing{\section}{0pt}{3.3ex}{2ex}
-\titlespacing{\subsection}{0pt}{3.3ex}{1.65ex}
-\titlespacing{\subsubsection}{0pt}{3.3ex}{1ex}
 \usepackage{color}
 
 % PACKAGES FOR LANGUAGE AND FONT
-\usepackage[english]{babel} % The document is in English
-\usepackage[utf8]{inputenc} % UTF8 encoding
-\usepackage[T1]{fontenc}    % Font encoding
-\usepackage[11pt]{moresize} % Big fonts
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc} % Font encoding
 
 % PACKAGES FOR IMAGES
 \usepackage{graphicx}
-\usepackage{transparent}            % Enables transparent images
-\usepackage{eso-pic}                % For the background picture on the title page
-\usepackage{subfig}                 % Numbered and caption subfigures using \subfloat.
-\usepackage{tikz}                   % A package for high-quality hand-made figures.
-\usetikzlibrary{}
-\graphicspath{{./Images/}}          % Directory of the images
-\usepackage{caption}                % Coloured captions
-\usepackage{xcolor}                 % Coloured captions
-\usepackage{amsthm,thmtools,xcolor} % Coloured "Theorem"
-\usepackage{float}
+\graphicspath{{Images/}}
+\usepackage{eso-pic} % For the background picture on the title page
+\usepackage{subfig} % Numbered and caption subfigures using \subfloat
+\usepackage{caption} % Coloured captions
+\usepackage{transparent}
 
 % STANDARD MATH PACKAGES
 \usepackage{amsmath}
 \usepackage{amsthm}
-\usepackage{amssymb}
-\usepackage{amsfonts}
 \usepackage{bm}
-\usepackage[overload]{empheq} % For braced-style systems of equations.
-\usepackage{fix-cm}           % To override original LaTeX restrictions on sizes
+\usepackage[overload]{empheq}  % For braced-style systems of equations
 
 % PACKAGES FOR TABLES
 \usepackage{tabularx}
-\usepackage{longtable} % Tables that can span several pages
+\usepackage{longtable} % tables that can span several pages
 \usepackage{colortbl}
 
 % PACKAGES FOR ALGORITHMS (PSEUDO-CODE)
@@ -57,44 +46,69 @@
 \usepackage{algorithmic}
 
 % PACKAGES FOR REFERENCES & BIBLIOGRAPHY
-\usepackage[colorlinks=true,
-  linkcolor=black,
-  anchorcolor=black,
-  citecolor=black,
-  filecolor=black,
-  menucolor=black,
-  runcolor=black,
-  urlcolor=black]{hyperref} % Adds clickable links at references
+\usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref} % Adds clickable links at references
 \usepackage{cleveref}
-% \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
-\usepackage[backend=biber,
-            style=ieee]{biblatex}
-\addbibresource{Thesis_bibliography.bib} % The references information are stored in the file named "Thesis_bibliography.bib"
-% \bibliographystyle{abbrvnat} % You may use a different style adapted to your field
+\usepackage[backend=biber,style=numeric]{biblatex}
+\usepackage{csquotes}
+\addbibresource{Thesis_bibliography.bib}
+
+% PACKAGES FOR THE APPENDIX
+\usepackage{appendix}
+
+% PACKAGES FOR ITEMIZE & ENUMERATES 
+\usepackage{enumitem}
 
 % OTHER PACKAGES
-\usepackage{pdfpages} % To include a pdf file
-\usepackage{afterpage}
-\usepackage{lipsum}   % DUMMY PACKAGE
-\usepackage{fancyhdr} % For the headers
-\fancyhf{}
+\usepackage{amsthm,thmtools,xcolor} % Coloured "Theorem"
+\usepackage{comment} % Comment part of code
+\usepackage{fancyhdr} % Fancy headers and footers
+\usepackage{lipsum} % Insert dummy text
+\usepackage{tcolorbox} % Create coloured boxes (e.g. the one for the key-words)
 
-% Input of configuration file. Do not change config.tex file unless you really know what you are doing.
-\input{Configuration_Files/config}
-
-%----------------------------------------------------------------------------
+%-------------------------------------------------------------------------
 %	NEW COMMANDS DEFINED
-%----------------------------------------------------------------------------
-
-% EXAMPLES OF NEW COMMANDS
+%-------------------------------------------------------------------------
+% EXAMPLES OF NEW COMMANDS -> here you see how to define new commands
 \newcommand{\bea}{\begin{eqnarray}} % Shortcut for equation arrays
 \newcommand{\eea}{\end{eqnarray}}
-\newcommand{\e}[1]{\times 10^{#1}}   % Powers of 10 notation
+\newcommand{\e}[1]{\times 10^{#1}}  % Powers of 10 notation
+\newcommand{\mathbbm}[1]{\text{\usefont{U}{bbm}{m}{n}#1}} % From mathbbm.sty
+\newcommand{\pdev}[2]{\frac{\partial#1}{\partial#2}}
+% NB: you can also override some existing commands with the keyword \renewcommand
 
 %----------------------------------------------------------------------------
 %	ADD YOUR PACKAGES (be careful of package interaction)
 %----------------------------------------------------------------------------
+\usepackage{siunitx}
+\usepackage[siunitx]{circuitikz}
+\usepackage{tikz}
+\ctikzset{bipoles/length=1.0cm}
 
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
 %----------------------------------------------------------------------------
+
+
+% Do not change Configuration_Files/config.tex file unless you really know what you are doing. 
+% This file ends the configuration procedures (e.g. customizing commands, definition of new commands)
+\input{Configuration_Files/config}
+
+% Insert here the info that will be displayed into your Title page 
+% -> title of your work
+\renewcommand{\title}{<Title of my Thesis>}
+% -> author name and surname
+\renewcommand{\author}{Luca Andriotto}
+% -> MSc course
+\newcommand{\course}{Biomedical Engineering - Ingegneria Biomedica}
+% -> advisor name and surname
+\newcommand{\advisor}{Prof. Raffaele Dellacà}
+% IF AND ONLY IF you need to modify the co-supervisors you also have to modify the file Configuration_Files/title_page.tex (ONLY where it is marked)
+\newcommand{\firstcoadvisor}{Prof.ssa Chiara Veneroni} % insert if any otherwise comment
+\newcommand{\secondcoadvisor}{} % insert if any otherwise comment
+% -> author ID
+\newcommand{\ID}{928454}
+% -> academic year
+\newcommand{\YEAR}{2023-2024}
+% -> abstract (only in English)
+\input{Abstracts/en}
+

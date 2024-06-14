@@ -2,30 +2,31 @@
 %% http://bibdesk.sourceforge.net/
 % Encoding: UTF-8
 
+%% Some examples
 @article{knuth74,
-    author = {Knuth, Donald E.},
-    title = {Computer Programming As an Art},
-    journal = {Commun. ACM},
-    year = {1974},
-    pages = {667--673},
-    numpages = {7},
+    author    = {Knuth, Donald E.},
+    title     = {Computer Programming As an Art},
+    journal   = {Commun. ACM},
+    year      = {1974},
+    pages     = {667--673},
+    numpages  = {7},
     publisher = {ACM},
-    address = {New York, NY, USA}
+    address   = {New York, NY, USA}
 }
 
 @article{knuth92,
-    author = {Knuth, Donald E.},
-    title = {Two notes on notation},
+    author  = {Knuth, Donald E.},
+    title   = {Two notes on notation},
     journal = {Amer. Math. Monthly},
-    volume = {99},
-    year = {1992},
-    pages = {403--422}
+    volume  = {99},
+    year    = {1992},
+    pages   = {403--422}
 }
 
 @book{lamport94,
-    title = {LaTeX: A Document Preparation System},
-    author = {Lamport, Leslie},
-    year = {1994},
+    title     = {LaTeX: A Document Preparation System},
+    author    = {Lamport, Leslie},
+    year      = {1994},
     publisher = {Pearson Education India}
 }
 
@@ -202,18 +203,18 @@
 }
 
 @article{oetiker1995not,
-  title={The not so short introduction to LATEX2$\varepsilon$},
-  author={Oetiker, Tobias and Partl, Hubert and Hyna, Irene and Schlegl, Elisabeth},
-  journal={Electronic document available at http://www. tex. ac. uk/tex-archive/info/lshort},
-  year={1995},
-  publisher={Citeseer}
+  title     = {The not so short introduction to LATEX2$\varepsilon$},
+  author    = {Oetiker, Tobias and Partl, Hubert and Hyna, Irene and Schlegl, Elisabeth},
+  journal   = {Electronic document available at http://www. tex. ac. uk/tex-archive/info/lshort},
+  year      = {1995},
+  publisher = {Citeseer}
 }
 
 @book{kottwitz2015latex,
-  title={LaTeX Cookbook},
-  author={Kottwitz, Stefan},
-  year={2015},
-  publisher={Packt Publishing Ltd}
+  title     = {LaTeX Cookbook},
+  author    = {Kottwitz, Stefan},
+  year      = {2015},
+  publisher = {Packt Publishing Ltd}
 }
 
 @misc{bibtex,
@@ -223,12 +224,59 @@
   year         = {2017}
 }
 
-@article{rackauckas2017differentialequations,
-  title={Differential{E}quations.jl--a performant and feature-rich ecosystem for solving differential equations in {J}ulia},
-  author={Rackauckas, Christopher and Nie, Qing},
-  journal={Journal of Open Research Software},
-  volume={5},
-  number={1},
-  year={2017},
-  publisher={Ubiquity Press}
+
+%% Simulation-related.
+@article{rackauckas2017,
+  title     = {Differential{E}quations.jl--a performant and feature-rich ecosystem for solving differential equations in {J}ulia},
+  author    = {Rackauckas, Christopher and Nie, Qing},
+  journal   = {Journal of Open Research Software},
+  volume    = {5},
+  number    = {1},
+  year      = {2017},
+  publisher = {Ubiquity Press}
 }
+
+@misc{ma2021,
+      title         = {ModelingToolkit: A Composable Graph Transformation System For Equation-Based Modeling},
+      author        = {Yingbo Ma and Shashi Gowda and Ranjan Anantharaman and Chris Laughman and Viral Shah and Chris Rackauckas},
+      year          = {2021},
+      eprint        = {2103.05244},
+      archivePrefix = {arXiv},
+      primaryClass  = {cs.MS}
+}
+
+%% Anatomical surrogate-related.
+
+%%% Chaste
+@article{mirams2013,
+    doi       = {10.1371/journal.pcbi.1002970},
+    author    = {Mirams, Gary R. AND Arthurs,
+    Christopher J. AND Bernabeu,
+    Miguel O. AND Bordas,
+    Rafel AND Cooper,
+    Jonathan AND Corrias,
+    Alberto AND Davit,
+    Yohan AND Dunn,
+    Sara-Jane AND Fletcher,
+    Alexander G. AND Harvey,
+    Daniel G. AND Marsh,
+    Megan E. AND Osborne,
+    James M. AND Pathmanathan,
+    Pras AND Pitt-Francis,
+    Joe AND Southern,
+    James AND Zemzemi,
+    Nejib AND Gavaghan,
+    David J.},
+    journal   = {PLOS Computational Biology},
+    publisher = {Public Library of Science},
+    title     = {Chaste: An Open Source C++ Library for Computational Physiology and Biology},
+    year      = {2013},
+    month     = {03},
+    volume    = {9},
+    url       = {https://doi.org/10.1371/journal.pcbi.1002970},
+    pages     = {1-8},
+    abstract  = {Chaste — Cancer, Heart And Soft Tissue Environment — is an open source C++ library for the computational simulation of mathematical models developed for physiology and biology. Code development has been driven by two initial applications: cardiac electrophysiology and cancer development. A large number of cardiac electrophysiology studies have been enabled and performed, including high-performance computational investigations of defibrillation on realistic human cardiac geometries. New models for the initiation and growth of tumours have been developed. In particular, cell-based simulations have provided novel insight into the role of stem cells in the colorectal crypt. Chaste is constantly evolving and is now being applied to a far wider range of problems. The code provides modules for handling common scientific computing components, such as meshes and solvers for ordinary and partial differential equations (ODEs/PDEs). Re-use of these components avoids the need for researchers to ‘re-invent the wheel’ with each new project, accelerating the rate of progress in new applications. Chaste is developed using industrially-derived techniques, in particular test-driven development, to ensure code quality, re-use and reliability. In this article we provide examples that illustrate the types of problems Chaste can be used to solve, which can be run on a desktop computer. We highlight some scientific studies that have used or are using Chaste, and the insights they have provided. The source code, both for specific releases and the development version, is available to download under an open source Berkeley Software Distribution (BSD) licence at http://www.cs.ox.ac.uk/chaste, together with details of a mailing list and links to documentation and tutorials.},
+    number = {3},
+}
+
+%%% Algorithm for anatomical surrogate generation.

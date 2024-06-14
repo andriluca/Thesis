@@ -23,3 +23,9 @@
 /ltximg/
 /src/lib/@/
 /.dir-local.el
+/Latex/Thesis.out
+/Latex/Thesis.run.xml
+/Latex/auto/
+/Latex/styles/
+/Latex/Chapters/01.log
+/Latex/Abstracts/it.log
