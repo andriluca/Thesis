@@ -4135,4 +4135,34 @@ Ho parlato con Chiara e Francesca.  Mi è stato detto che dobbiamo
 lavorare sui file testuali che Chaste vuole in input per generare
 l'albero respiratorio.
 
-* 09.06.24
+* 10.06.24
+Devo mandare una mail a Chiara per capire che tipo di TC vuole per
+fare una valutazione con diverse età gestazionali.  Se le interessa
+quella di un neonato a termine oppure bambino.  La risposta è stata
+neonato a termine e prematuro.
+
+Per quanto riguarda la scrittura, devo scaricare i documenti inviatimi
+da Chiara, convertirli in PDF e metterli in una cartella che si
+sincronizza tra vari dispositivi (`~/Papers` ad esempio).
+
+* 11.06.24
+** DONE Prova Chaste
+Prova Chaste con i file in `Downloads` su questo pc (partizione
+Ubuntu).
+* 12.06.24
+Sono stati modificati i file di Francesca e ho ottenuto un primo
+risultato paziente-specifico.  Questa è la prima volta che ottengo un
+risultato del genere.  Ho salvato i file nella Repo.
+
+Siccome i primi tratti dell'albero respiratorio non erano completi ho
+riscritto il file `airways.edge` a mano per effettuare manualmente il
+collegamento tra un nodo e l'altro.
+
+* 13.06.24
+Ho mostrato i risultati relativi all'anatomia a Chiara e sembrano fare
+al caso nostro.  Per ora tengo in considerazione quelli che ho già
+generato ma sarà necessario in futuro aggiornare i parametri di
+generazione.  Dall'output è possibile ricavare importanti dati
+relativi alla rete complessiva, alla geometria ecc.
+
+Posso cominciare intanto a scrivere la tesi! 😊
