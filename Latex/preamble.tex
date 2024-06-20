@@ -82,7 +82,13 @@
 \usepackage{siunitx}
 \usepackage[siunitx]{circuitikz}
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, backgrounds, fit}
 \ctikzset{bipoles/length=1.0cm}
+\usepackage[autoload=true,
+theme=grayscale-plain]{jlcode}
+
+% To use with LuaLatex or XeTeX
+% \usepackage{fontspec}
 
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
@@ -93,9 +99,42 @@
 % This file ends the configuration procedures (e.g. customizing commands, definition of new commands)
 \input{Configuration_Files/config}
 
+\lstdefinestyle{juliacode}{
+  language=Julia, 
+  showstringspaces=false,
+  numbers=left,
+  % stepnumber=1,
+  numberstyle=\tiny,
+  stepnumber=2,
+  % numbersep=10pt,
+  % Comment the following three lines to remove colors
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  identifierstyle=\color{purple!80},
+  columns=fullflexible,
+  keepspaces=true
+}
+
+\lstnewenvironment{juliacode}{\lstset{style=juliacode}}{}
+
+%% To use with LuaLatex or XeTeX
+% \newfontfamily \JuliaMono {JuliaMono-Light.ttf}[
+%     Path      = ./,
+%     Extension = .ttf
+%     ]
+% \newfontface \JuliaMonoLight{JuliaMono-Light}
+% \setmonofont{JuliaMono-Light}[ Contextuals=Alternate ]
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=2cm, text width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process}   = [rectangle, minimum width=2cm, text width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+% \tikzstyle{process}   = [rectangle, draw=black, text width=3cm, fill=orange!30]
+\tikzstyle{decision}  = [diamond, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{image}     = [minimum width=1cm, minimum height=1cm, text centered]
+\tikzstyle{arrow}     = [thick,->,>=stealth]
+
 % Insert here the info that will be displayed into your Title page 
 % -> title of your work
-\renewcommand{\title}{<Title of my Thesis>}
+\renewcommand{\title}{Simulating Aeration at Birth: building an Open-Source Newborn Lung Model}
 % -> author name and surname
 \renewcommand{\author}{Luca Andriotto}
 % -> MSc course
@@ -112,3 +151,9 @@
 % -> abstract (only in English)
 \input{Abstracts/en}
 
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Thesis"
+%%% TeX-engine: luatex
+%%% End:

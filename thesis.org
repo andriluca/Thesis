@@ -35,7 +35,7 @@ terminologiche e critiche necessarie alla successiva comprensione
 - References                          :: alias Bibliografia
 
 * Abstract e Sommario
-* Introduzione
+* Introduzione (stato dell'arte)
 
 - Fragilità polmone neonatale
 - Differenze anatomiche tra neonato e adulto.
@@ -47,6 +47,8 @@ terminologiche e critiche necessarie alla successiva comprensione
 Capitolo neonati
 Capitolo modello morfometrico
 
+** Mie idee per la scrittura
+Inizialmente avevo pensato alle seguenti considerazioni.
 Il progetto è suddiviso in due fasi:
 - Generativa
 - Simulativa
@@ -58,12 +60,15 @@ Nella fase simulativa, si è voluto implementare i parametri fisici
 calcolati nella precedente fase nel circuito equivalente che
 rappresenta il modello morfometrico del polmone.
 
+Dopo aver parlato con Chiara, abbiamo rielaborato le idee che si
+trovano ad inizio sezione.
+
 * Stato dell'arte                                               :Consigliato:
 Il consiglio di Chiara è di ridurre questa prima parte.
 
 * Materiale e metodi
-Enfasi sull'open-source e sull'importanza nell'ambito della ricerca
-scientifica.
+Prima del colloquio con Chiara.  Enfasi sull'open-source e
+sull'importanza nell'ambito della ricerca scientifica.
 
 Visione d'insieme (diagramma con flusso dell'informazione). Questo
 diagramma mostra a partire dagli input che ho avuto (TC) tutto l'iter
@@ -116,7 +121,8 @@ del modello.
 **** Excursus su macro e metaprogramming (?)
 
 * Validazione e risultati
-- Disegno anatomia albero.
+- Disegno surrogato anatomico dell'albero respiratorio.  (output da
+  ParaView).
 - Grafici: un gradino "sopra" (10) le soglie e uno "sotto" (8) (xlims
   = (.995, 1.09)).
 
@@ -124,3 +130,21 @@ Grafici relativi al numero di generazioni (?)
 
 * Conclusioni
 * Bibliografia
+Tutti i riferimenti a Julia, ModelingToolkit, DifferentialEquations
+
+* INDICE DOPO AVER PARLATO CON CHIARA
+** Metodi
+*** Accenno a Julia
+**** Callback per gestire non linearita nel `Generatore di tensione` per modellizzare la pressione capillare
+*** Chaste
+** Modello morfometrico
+*** TAC, estrazione dei raggi e centerline
+*** Generazione della parte statistica
+Aggiungere figura del polmone in 3D.
+** Modello meccanico
+*** Descrizione dei blocchi
+**** R, L, C, D(?)
+*** Test del modello sulla sottorete
+Definizione della sottorete con diagramma ad albero.
+
+
