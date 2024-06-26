@@ -1,0 +1,60 @@
+\begin{figure}[H]\centering
+  \begin{circuitikz}[scale=.9]
+    % Circuit
+    %% Main branch
+    %%% Input Node
+    \draw (1.5,0)
+    node[ocirc] (circuit_IN) {}
+    to[short, ] ++(1,0) coordinate(R_IN)
+    ;
+    
+    %% Main branch
+    \draw (R_IN)
+    to[short] ++(.5,0)
+    to[resistor, l=$R(n) / 2$] ++(1,0)
+    to[inductor, l=$I(n) / 2$] ++(3,0) coordinate (C_g_IN)
+    to[short] ++(1.5,0) coordinate (SW_IN)
+    to[resistor, l=$R(n) / 2$] ++(3,0)
+    to[inductor, l=$I(n) / 2$] ++(1,0)
+    to[short, -*] ++(1,0) coordinate(circuit_OUT)
+    ;
+
+    %%% C_g branch
+    \draw (C_g_IN)
+    to[polar capacitor, invert, l_=$C_{\text{g}}(n)$, *-] ++(0,-3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+    %%% Zw branch
+    \draw (SW_IN)
+    to[twoport, t={$Z_{w}(n)$},bipoles/twoport/height=1.2, *-] ++(0, -3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+    \draw (circuit_OUT)
+    -- ++(0, .5)
+    to ++(1.88,0)
+    node[draw, anchor=west, thick] {$Z(n-1)$};
+    
+    \draw (circuit_OUT)
+    -- ++(0, -.5)
+    to ++(1,0)
+    node[draw, anchor=west, thick] {$Z(n-1-\Delta$)};
+
+    % Nodes
+    %% IN
+    \draw[->, >=stealth, thick] (0,0) -- (circuit_IN) node[midway, above] {Z(n)};
+  \end{circuitikz}
+  \caption{Impedance ($Z$) of a given order ($n$) of a single airway
+    generation is calculated via an acoustic transmission line
+    analysis, which accounts for shunting into gas compression in the
+    tube ($C_{\text{g}}(n)$) and into nonrigid airway walls
+    ($Z_{\text{w}}$)\cite{lutchen1997}.}
+  \label{fig:airway_impedance}
+
+\end{figure}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Thesis"
+%%% End:

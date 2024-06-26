@@ -2,37 +2,8 @@
 #+author: Luca Andriotto
 #+startup: overview
 
-La tesi sarà scritta in lingua inglese.  Il formato sarà articolo (?)
+La tesi sarà scritta in lingua inglese.  Il formato sarà articolo
 sulle 30 pagine.
-
-* Esempi di Indice
-** Esempio 1 (Relatrice Pedrocchi)
-Considerando un [[https://www.politesi.polimi.it/retrieve/a81cb059-8b75-616b-e053-1605fe0a889a/2011_03_Scano.pdf][esempio su internet]] (del Politecnico).
-
-- Sommario (Abstract)  :: In Italiano ed in Inglese
-- Stato dell'arte      :: Presentazione dell'argomento su cui si incardina la tesi.
-- Obiettivi della tesi :: 
-- Modello              :: 
-- Validazione          :: 
-- Conclusione          :: 
-- Bibliografia         :: 
-
-*** Stato dell'arte
-Presentazione dell'argomento su cui si incardina la tesi.  Questi
-capitoli iniziali servono al lettore per acquisire le nozioni
-terminologiche e critiche necessarie alla successiva comprensione
-
-** Esempio 2 (Relatore Dellacà, Correlatrice Veneroni)
-- Sommario (Abstract)                 :: "Riassunto" in Italiano ed in Inglese.
-- Stato dell'arte                     :: Presentazione dell'argomento su cui si incardina la tesi.
-- Introduction                        :: ???
-- Anatomy, Physiology and Control ... :: Contenuti teorici (stato dell'arte)
-- Techniques for Respiratory Func ... :: Metodi
-- The Experimental Set Up             :: Materiali
-- In Vitro and In Vivo Validation     :: Validazione
-- Application to the study of ...     :: Applicazioni
-- Conclusions and Future Developments :: Conclusioni e sviluppi futuri
-- References                          :: alias Bibliografia
 
 * Abstract e Sommario
 * Introduzione (stato dell'arte)
@@ -46,6 +17,87 @@ terminologiche e critiche necessarie alla successiva comprensione
 
 Capitolo neonati
 Capitolo modello morfometrico
+
+Alla nascita, i neonati affrontano un cambiamento fondamentale: il
+passaggio dalla respirazione intrauterina allo scambio
+gassoso. Durante la gestazione, le vie aeree del feto sono riempite da
+un liquido chiamato fluido polmonare fetale. La presenza di questo
+liquido è essenziale per il corretto sviluppo delle dimensioni delle
+vie aeree. Tuttavia, lo scambio gassoso può avvenire solo se le vie
+aeree sono liberate da questo fluido per permettere l'ingresso
+dell'aria. L'assorbimento del liquido inizia qualche giorno prima
+della nascita grazie a processi chimici che coinvolgono i canali del
+sodio. Inoltre, la compressione toracica durante il parto vaginale
+aiuta a espellere il liquido attraverso la bocca e il naso. Recenti
+studi hanno dimostrato che la pressione transpulmonare svolge un ruolo
+determinante in questo processo.
+
+La percentuale di complicazioni durante il processo di aerazione per
+un neonato a termine è molto bassa; ma è completamente diversa per un
+neonato pretermine, definito come un neonato nato prima delle 37
+settimane di gestazione, quando il periodo normale di gravidanza è di
+circa 40 settimane. Le complicazioni sono dovute all'immaturità del
+sistema respiratorio del neonato, che include la mancanza di
+surfattante, una sostanza che riduce la tensione superficiale e
+previene il collasso alveolare. L'applicazione di una pressione
+all'apertura delle vie aeree aiuta i neonati pretermine a rimuovere il
+liquido e ad aprire gli alveoli chiusi. Una volta reclutati gli
+alveoli, è necessaria meno pressione per mantenerli aperti e ventilare
+il polmone. L'applicazione di manovre di reclutamento alla nascita ha
+il vantaggio di consentire l'inizio della ventilazione in un polmone
+più reclutato, con una minore necessità di pressione, una
+distribuzione più omogenea del volume polmonare e meno stress sui
+tessuti. Tuttavia, un polmone carente di surfattante può subire danni
+anche con poche insufflazioni a volumi che sarebbero probabilmente
+innocui in altre circostanze. Pertanto, progettare una strategia
+protettiva per reclutare il polmone senza causare danni potrebbe avere
+un grande impatto sull'esito clinico dei neonati.
+
+Nonostante l'attenzione crescente nella ricerca di una manovra di
+reclutamento adeguata per i neonati pretermine, prima della
+ventilazione meccanica, non esiste una strategia medica comune. Le
+strategie sperimentali vengono testate sugli animali, ma le difficoltà
+nel condurre le misurazioni comportano problemi sia etici che
+invasivi. I modelli in silico del polmone adulto hanno fornito
+avanzamenti nella comprensione della fisiopatologia e nella diagnosi
+delle patologie degli adulti. Allo stesso modo, gli studi di
+simulazione potrebbero offrire una migliore comprensione di come le
+diverse strategie di reclutamento influenzano il polmone durante la
+prima aerazione alla nascita. Tuttavia, i modelli in silico dei
+polmoni dei neonati sono limitati alla descrizione della prima
+generazione dell'albero bronchiale e non sono adeguati per simulare i
+cambiamenti fisiologici che avvengono alla nascita.
+
+L'obiettivo di questo studio è lo sviluppo di un modello morfometrico in silico del polmone del neonato per studiare il processo di aerazione alla nascita. Abbiamo iniziato da un modello morfometrico anatomicamente coerente del polmone adulto descritto in letteratura. Questo modello descrive le proprietà anatomiche e meccaniche dell'albero bronchiale e può essere risolto nel dominio della frequenza. Il polmone del neonato non è una miniatura di quello dell'adulto. Esistono diverse differenze tra il sistema respiratorio del neonato e quello dell'adulto. Pertanto, abbiamo modificato sia le caratteristiche anatomiche che le proprietà meccaniche dei tessuti per adattare il modello alla descrizione del polmone del neonato. Successivamente, il modello è stato modificato per consentire la risoluzione nel dominio del tempo. In particolare, l'equivalente elettrico delle proprietà dei tessuti è stato modificato e l'impatto di questi cambiamenti sul comportamento del modello è stato testato. Infine, sia il modello che gli analoghi elettrici sono stati modificati per consentire la simulazione dei cambiamenti che avvengono durante l'aerazione polmonare alla nascita, che includono la modifica dei valori di resistenza e induttanza che compongono l'analogo delle vie aeree, a causa della loro dipendenza dalla viscosità o densità del fluido che passa attraverso (aria o liquido polmonare fetale). Inoltre, il liquido fetale è incomprimibile, mentre l'aria no, comportando un elemento extra nell'equivalente elettrico dell'aria, essendo la comprimibilità del gas associata a una compliance. Inoltre, il collasso anatomico delle vie aeree deve essere preso in considerazione durante il progressivo passaggio del liquido alla periferia, poiché crea la presenza di un'interfaccia aria-liquido che genera una tensione superficiale che deve essere superata prima che il fluido possa muoversi. Successivamente, il diametro delle vie aeree può aumentare con l'aumento del volume polmonare.
+
+Una prima implementazione è stata fatta nel software Lt-spice (Analog
+Devices Inc., USA), permettendo di ottenere test preliminari sulle
+prestazioni del modello. Tuttavia, a causa dell'elevato carico
+computazionale della simulazione, la versione finale completa è stata
+realizzata con Cadence (Cadence Design Systems Inc., USA) in
+collaborazione con il dipartimento di elettronica del Politecnico di
+Milano. Il modello sviluppato è coerente con i dati della letteratura
+che descrivono sia la geometria che le proprietà meccaniche del
+polmone pretermine. Permette la simulazione dell'aerazione nel dominio
+del tempo e può essere utilizzato per confrontare diverse strategie di
+aerazione.
+
+Il Capitolo 1 illustra le caratteristiche del polmone e tratta delle differenze tra quello dell'adulto e del neonato. Il Capitolo 2 presenta una panoramica dell'aerazione e dei trattamenti clinici. Il Capitolo 3 introduce i modelli polmonari ed elettrici sviluppati in letteratura. Particolare attenzione è data alla descrizione del modello morfometrico. Vengono introdotti i concetti principali dei rami padre e figlio dell'albero bronchiale, la notazione di generazione e ordine, e i modelli asimmetrici e simmetrici (Weibel e Horsfield) dell'albero bronchiale. Il Capitolo 4 presenta il modello morfometrico utilizzato in questo studio. È basato su un albero bronchiale di 50401 rami, le cui dimensioni anatomiche sono state generate stocasticamente per riflettere le proprietà del polmone adulto, e include le connessioni delle vie aeree tra loro. Inoltre, il capitolo presenta una descrizione dettagliata delle modifiche dei parametri anatomici del modello morfometrico, giustificate da articoli scientifici che presentano valori di diametro e lunghezza delle vie aeree per i neonati, e dei modelli elettrici scelti per la realizzazione delle vie aeree conduttive e delle unità terminali.
+
+Alla fine del capitolo, vengono presentate le implementazioni del
+modello in silico in Lt-spice (Analog Devices Inc., USA) e Cadence
+(Cadence Design Systems Inc., USA). Il Capitolo 5 riporta i risultati
+delle simulazioni. Innanzitutto, vengono presentati i test preliminari
+effettuati con Lt-spice, confrontando i risultati di diverse
+configurazioni anatomiche ed elettriche proposte durante il
+progetto. Successivamente, viene effettuata la simulazione finale in
+Cadence, mostrando gli effetti dell'applicazione di un'inflazione
+sostenuta sul processo di aerazione. Infatti, viene analizzato il
+progresso del liquido fetale dalla trachea alla periferia. In
+conclusione, abbiamo sviluppato un modello morfometrico del polmone
+del neonato, che permette la simulazione dell'aerazione nel dominio
+del tempo e può essere utilizzato per confrontare diverse strategie di
+aerazione.
 
 ** Mie idee per la scrittura
 Inizialmente avevo pensato alle seguenti considerazioni.
@@ -146,5 +198,245 @@ Aggiungere figura del polmone in 3D.
 **** R, L, C, D(?)
 *** Test del modello sulla sottorete
 Definizione della sottorete con diagramma ad albero.
+* INDICE DOPE AVER PARLATO CON CHIARA (21.06)
+** Abstract
+Ci incollo i primi due paragrafi dell'introduzione.
 
+** Introduzione
+*** Parte discorsiva che mi ha inviato Chiara 
+"Mathematical models of the adult respiratory system have been
+extensively applied to study the respiratory function.
+
+Morphometric models Understanding Lung morphometry, anatomy and
+biomechanical properties impact lung fuction (Da *introNORA1*).
+
+Morphometric 3D airway tree models that retains distributions of
+airways properties that were described in human adult lungs. Linked to
+mechanical properties to predict function from structure and to
+explore the imanging functional models.
+ 
+Differently, the infant lung models were limited to XXX and *Regional gas transport in the heterogeneous lung during ventilation Jacob Herrmann,1*.
+
+Mathematical models developed for adults must be adapted to be used
+for newborn lung. Infants lungs are not adult lung in miniature but
+present different branches proportions, costituents of the airways,
+(Merckus et al.) morfometrical (Horsfield), compisiont differences
+(Hislop) that must be considered."
+**** Rielaborazione ChatGPt
+"I modelli matematici sviluppati per i polmoni degli adulti non
+possono essere semplicemente ridotti in scala per adattarsi ai polmoni
+dei neonati. Infatti, i polmoni dei neonati non sono semplicemente una
+versione in miniatura dei polmoni degli adulti, ma presentano
+differenze significative in termini di proporzioni dei rami
+bronchiali, costituenti delle vie aeree, caratteristiche morfometriche
+e composizione. Queste differenze devono essere prese in
+considerazione quando si sviluppano o si adattano modelli matematici
+per rappresentare accuratamente il funzionamento dei polmoni dei
+neonati. Ecco una spiegazione dettagliata dei punti chiave:
+
+1. Proporzioni dei rami bronchiali: La struttura dei polmoni dei
+   neonati presenta proporzioni diverse rispetto a quella degli
+   adulti. Le diramazioni delle vie aeree possono avere dimensioni e
+   disposizioni differenti.
+2. Costituenti delle vie aeree: I componenti dei polmoni, come il
+   tessuto e le cellule, possono variare tra neonati e adulti.
+3. Caratteristiche morfometriche: Gli studi morfometrici, che
+   analizzano la forma e la struttura dei polmoni, mostrano che ci
+   sono differenze tra neonati e adulti che devono essere considerate
+   nei modelli.
+4. Composizione: Ci sono differenze nella composizione del tessuto
+   polmonare tra neonati e adulti che influenzano come i polmoni
+   funzionano e rispondono alle terapie.
+
+Queste considerazioni sono essenziali per sviluppare modelli accurati
+e utili per studiare la funzione polmonare nei neonati, specialmente
+in contesti clinici come la ventilazione oscillatoria."
+*** Domande per Chiara
+- Cos'è introNORA?
+- Dovrei riprendere un po' il sommario di Elisa con però anche le
+citazioni adeguate, dato che è un'introduzione.  Quali sono queste
+citazioni?
+
+*** Cosa inserire nell'introduzione
+Per ora faccio solo la parte discorsiva (vedi sopra) che abbiamo
+detto.  Copiare per ora quella di Elisa (mani2020) evidenziandola in
+modo da sapere che è copiata e la parte in aggiunta inviata da Chiara.
+Questo per far sapere a Raffaele la struttura a grandi linee.
+
+Finisce necessariamente con l'aim. (scarica mail).
+
+** Capitolo sul polmone dei neonati (lascia perdere per ora)
+** Anatomical models
+- quello di agnello
+- un altro
+
+** Mechanical model of airways and acini (cambiare `alveoli`) (paper in chat Lutchen). (no zsoft e cartilagine)
+
+Forse già nel draft di Chiara c'era già qualcosa che potevo mettere
+qui.  Descrivere in breve la struttura circuitale che poi implemento
+(copia dei circuiti). (Lutchen).
+
+Lutchen descrive l'impedenza della singola generazione delle vie aeree
+e l'impedenza terminale.  Forse nella tesi di Elisa dev'esserci
+scritto qualocosa.
+
+** Model development (ex methods)
+
+*** Data Pipeline
+Parto dalla *Data pipeline* (che descrive i vari pezzi) e poi ad uno ad
+uno li descrivo.
+
+*** Anatomical model
+Al posto di `Chaste & morphometric model` potrei scrivere
+nell'immagine `airway tree development` e poi sotto descrivo di aver
+fatto una ricerca dei software per implementare questa cosa e ho
+trovato Chaste che mi permetteva di avere delle classi open-source
+disponibili e quindi ho scelto di partire da questa.
+
+*** Mechanical model
+Al posto di `Julia...` invece posso scrivere `implementazione del
+modello meccanico` e parto poi dicendo che per implementare un modello
+meccanico ho bisogno di un solver per equazioni differenziali e ho
+visto che questo era uno dei software migliori e quindi il programma è
+stato fatto in Julia.
+
+La scelta del metodi è indipendente e correlata al processo logico che
+è stato fatto per realizzare il progetto nella sua interezza.  Bisogna
+far capire di aver compreso qual è il contesto in cui si lavora, lo
+scopo e la logica che sta dietro.
+
+Al posto di chaste descrivo il modello anatomico e poi dico di essere
+arrivato su chaste.  L'importante è la descrizione della pipeline e
+non i metodi utilizzati.
+
+Prendi il paper di airwaygeneration2015 e vedi la parte del
+funzionamento (metodi).
+
+** Preliminary simulation results
+Qui mettiamo Albero e risultati.
+
+** Discussion and conclusion
+Per ora la lascio vuota. O meglio per il 24 ci incollo l'introduzione.
+
+** Paper da scaricare
+- Relationship between heterogeneous changes in airway morphometry and lung resistance and elastance (lutchen)
+* SBOBINATA (21.06)
+** Dalla email
+
+Mathematical models of the adult respiratory system have been
+extensively applied to study the respiratory function. Morphometric
+models Understanding Lung morphometry, anatomy and biomechanical
+properties impact lung fuction (Da introNORA1).  Morphometric 3 D
+airway tree models that retains distributions of airways properties
+that were described in human adult lungs. Linked to mechanical
+properties to predict function from structure and to explore the
+imanging functional models.
+ 
+Differently, the infant lung models were limited to XXX and Regional
+gas transport in the heterogeneous lung during oscillatory ventilation
+Jacob Herrmann,1.  Mathematical models devoleped for adults must be
+adapted to be used for newborn lung. Infants lungs are not adult lung
+in miniature but present different branches proportions, costituents
+of the airways, (merckus et al) morfometrical (Horsfiled), compisiont
+differences (Hislop) that must be considered.
+
+** Consigli pratici
+È questione di stile e non di contenuti.  Dobbiamo far capire di più
+la parte progettuale che ci sta dietro.  La parte implementativa va
+bene così com'è ma dobbiamo aggiungere appunto delle cose sulla parte
+progettuale (disegno delle specifiche, definizione degli step che
+dobbiamo fare).
+
+La parte teorica va nell'introduzione (tesi di Elisa, Mani20).
+
+Quando Chiara è di fretta: per vedere se fila la struttura e devo
+scrivere più o meno quello che lei ha scritto nel sommario faccio
+copia ed incolla di questo (in un altro colore così da ricordarmi che
+è totalmente copiato), arrivo in fondo alla struttura, controllo che
+tutto torni e poi dopo quella parte in un colore diverso viene
+riadattata/rielaborata in modo tale che non sia copiata.  Per intanto
+riempo i campi.  Una volta che i campi sono pieni riesco a dare più
+semplicemente un'idea di come sarà la tesi e se dobbiamo correggere il
+tiro su qualcosa lo si può fare facilmente.  L'importante è costruire
+la struttura della tesi, poi riparafrasare è secondario.
+
+** Introduzione
+(Da sommario)
+- Prima parte sui neonati prematuri
+- Applicazione delle vie aeree per "pulire il fluido"
+- Definizione di strategie protettive
+
+Difficile fare degli studi in-vivo (sui neonati) mentre negli adulti
+sono stati fatti diversi studi con i modelli che hanno portato dei
+messaggi clinici utili ma nei bambini manca l'equivalente per fare lo
+stesso alla nascita.
+
+Dovrei fare un capitoletto in mezzo in cui dico che in un lavoro
+precedente (tesi di Elisa, che è da citare) sono stati fatti alcuni
+studi in cui un albero respiratorio adulto è stato riscalato.
+
+- un lavoro precendente ha riscalato (normalmente) il modello
+  ANATOMICO adulto sul neonato. Ha il *Vantaggio* di rispettare sia le
+  dimensioni della trachea che quelle dei bronchioli terminali. Però
+  non garantisce che le caratteristiche morfometriche dell'intero
+  albero siano rispettate.
+
+Dovrei riprendere un po' il sommario di Elisa con però anche le
+citazioni adeguate, dato che è un'introduzione.  È da citare il lavoro
+di Elisa.
+
+Sugli adulti fanno anche degli studi in cui si personalizzano i
+modelli.  Sul neonato è un'applicazione ancora lontana ma sicuramente
+è un vantaggio dell'approccio che stiamo utilizzando.  Noi partiamo
+dalla CT del singolo neonato e poi costruiamo l'albero con determinate
+caratteristiche.
+
+Modelli del neonato citati dai ragazzi della triennale:
+1. Agnello
+2. modello di iacob, che ha preso lo "stesso modello" (?) e lo ha
+   riscalato per averlo nel bambino.
+
+Un lavoro precedente di tesi ha riscalato il modello anatomico
+dell'adulto sul neonato (riscalando la trachea e, proporzionalmente,
+tutte le vie aeree per avere una coerenza dei dati presenti in
+letteratura, specialmente relative agli acini terminali).  Esistono
+delle caratteristiche che potrebbero essere controllate se rispettano
+o non rispettano le caratteristiche del neonato.  Però non garantisce
+che le caratteristiche morfometriche dell'intero albero siano
+rispettate (vero anche per la mia tesi).
+
+A differenza di quello di Elisa il mio è più adattabile in quanto è
+possibile cambiare i parametri di generazione delle vie aeree (delle
+equazioni con cui andiamo ad assegnare i diametri e a far crescere
+l'albero) e possiamo avvicinarci più facilmente alle caratteristiche
+morfometriche che già conosciamo.  Questa parte non è ovviamente stata
+ancora fatta ma rientra negli sviluppi futuri.  Potremmo citare il
+paper di `airwaygeneration2015` (bordas2015) per identificare le
+equazioni per variare i diametri.
+
+Modello (morfometrico) asimmetrico: che seguono la struttura
+dell'albero.
+
+
+Introduzione del modello meccanico ...
+
+- MECCANICO .. tesi di elisa: risolvibile in time-domain .. Prima
+  prova di implementazione in è stata fatta in CADENCE, vantaggio di
+  XX , parallelismo.. velocità (si riferisce ad un articolo di cadence
+  che dovrò andare a consultare perchè non ricordo).  Limitazioni:
+  pensato per la simulazione di elementi elettronici, quindi esiste
+  una difficoltà ad implementare componenti tempo-varianti che si
+  discostano da quelli elettrotecnici standard ecc + licenza software
+  (proprietary).
+
+AIM:
+1) Generare un modello partendo da tac del neonato in modo da poter
+   ottimizzare la generazione delle vie aeree per rispettare le
+   caratteristiche morfometriche alle diverse età.
+2) Inoltre, modello meccanico open-source che permette la simulazione
+   delle proprietà meccaniche + liquido (pressione capillare associata
+   all’interfaccia).
+
+** Discussion:
++ personalizzato similmente a quello che si fa in adulto.
 

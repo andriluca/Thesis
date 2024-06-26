@@ -1,0 +1,64 @@
+% 4. Mechanical model of airways and acini
+\section{Mechanical model of airways and acini}
+
+% (cambiare `alveoli`) (paper in chat Lutchen). (no zsoft e
+% cartilagine)
+
+% Scrivere in breve la struttura circuitale che poi implemento
+% (copia).
+
+% L'equivalente elettrico delle proprietà dei tessuti è stato modificato
+% per poter testare l'impatto delle modifiche fisiologiche durante il
+% processo di aereazione.
+
+The electrical equivalent of tissues properties is modified to test
+the physiological change impact on aeration process.
+
+% Inoltre, il liquido fetale è incomprimibile, l'aria invece non lo è,
+% comportando la presenza di un elemento aggiuntivo nell'equivalente
+% elettrico dell'aria, in quanto la compressibilità del gas è
+% modellizzata attraverso una capacità. In aggiunta, bisogna tener conto
+% del collasso delle vie aeree, perché durante il processo di aerazione
+% si crea un'interfaccia aria-liquido, che a sua volta dà origine a una
+% tensione superficiale, la quale deve essere superata per permettere lo
+% spostamento del fluido nell'albero bronchiale.  Una volta superata, i
+% diametri si possono ingrandire facendo aumentare il volume polmonare.
+
+Moreover, fetal fluid is incompressible, whereas air is not. This
+introduces an additional element in the electrical equivalent of air,
+as the compressibility of the gas is modeled through a
+capacitance. Additionally, it is necessary to consider the collapse of
+the airways. During the aeration process, an air-liquid interface is
+created, which in turn generates surface tension that must be overcome
+to allow fluid movement within the bronchial tree. Once this surface
+tension is overcome, the diameters can expand, leading to an increase
+in lung volume.
+
+\textcite{lutchen1997} have developed a mechanical lung model in
+frequency-domain, describing airways and alveoli modules as displayed
+in \cref{fig:airway_impedance} and \cref{fig:alveolus_impedance},
+respectively.
+
+% Circuiti copiato da lutchen1997. 
+\input{Images/equivalent_airway_impedance.tex}
+\input{Images/equivalent_alveolus_impedance.tex}
+
+\textcite{mani2020} has defined a mechanical model in time-domain starting
+from the modules here described and properly changed.
+
+A first implementation has been performed on «CADENCE» platform.  This
+has the advantage of parallelism and speed.  There are also some
+drawbacks to this approach: this framework is designed to simulate
+standard electrical components and it is not well-suited to develop
+time- and current integral-dependent components.  Furthermore license
+is proprietary and machine specific.  This limits the accessibility of
+of model design process.
+
+% Posso dire che l'alveolo è stato modificato (vedi Veneroni2024) a
+% partire dall'alveolo mostrato da lutchen1997 perché non risolvibile
+% nel dominio del tempo.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Thesis"
+%%% End:

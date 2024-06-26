@@ -1,10 +1,65 @@
-\section{Results and Validations}
-\label{sec:results_and_validations}
+% 3. Anatomical Models
+%   3.1. Existing Infant Lungs Models
+\section{Anatomical Models}
+% - quello di agnello (al-jumaily2011)
+% - un altro (herrmann2016)
 
-% - Disegno surrogato anatomico dell'albero respiratorio.  (output da
-%   ParaView).
-% - Grafici: un gradino "sopra" (10) le soglie e uno "sotto" (8) (xlims
-%   = (.995, 1.09)).
+% I modelli matematici sviluppati per i polmoni degli adulti non possono
+% essere semplicemente ridotti in scala per adattarsi ai polmoni dei
+% neonati. Infatti, i polmoni dei neonati non sono semplicemente una
+% versione in miniatura dei polmoni degli adulti, ma presentano
+% differenze significative in termini di proporzioni dei rami
+% bronchiali, costituenti delle vie aeree, caratteristiche morfometriche
+% e composizione. Queste differenze devono essere prese in
+% considerazione quando si sviluppano o si adattano modelli matematici
+% per rappresentare accuratamente il funzionamento dei polmoni dei
+% neonati. La struttura dei polmoni dei neonati presenta proporzioni
+% diverse rispetto a quella degli adulti. Le diramazioni delle vie aeree
+% possono avere dimensioni e disposizioni differenti.  I componenti dei
+% polmoni, come il tessuto e le cellule, possono variare tra neonati e
+% adulti.  Gli studi morfometrici, che analizzano la forma e la
+% struttura dei polmoni, mostrano che ci sono differenze tra neonati e
+% adulti che devono essere considerate nei modelli.  Ci sono differenze
+% nella composizione del tessuto polmonare tra neonati e adulti che
+% influenzano come i polmoni funzionano e rispondono alle terapie.
 
-% Grafici relativi al numero di generazioni (?)
+Mathematical models developed for adult lungs cannot simply be scaled
+down to fit the lungs of newborns. In fact, newborn lungs are not
+simply one miniature version of adult lungs, but they present
+significant differences in terms of bronchial branch proportions,
+constituents of the airways\cite{merkus1996}, morphometric
+characteristics\cite{horsfield1987} and
+composition\cite{hislop1989}. These differences must be taken into
+account when developing or adapting mathematical models to accurately
+represent the functioning of the lungs of the newborns. The structure
+of the lungs of newborns presents proportions different than that of
+adults. The branches of the airways they can have different sizes and
+arrangements. The components of lungs, like tissue and cells, can vary
+between newborns and adults. Morphometric studies, which analyze the
+shape and the structure of the lungs, show that there are differences
+between newborns and adults that need to be considered in the
+models. There are differences in the composition of lung tissue
+between newborns and adults who influence how the lungs function and
+respond to therapies.
 
+%% Citare qui i riferimenti che ha fatto chiara nella call del 21.06
+
+Past work\cite{mani2020} considered an adult lung model linearly
+scaled to match newborn anatomical features.  The advantage of this
+approach is that it respects the dimensions of trachea and
+bronchioles. It doesn't guarantee that the morphometric
+characteristics of the entire airway tree are respected.  In this
+work, there are few airway generation parameters that can in fact be
+adapted, in order to better approximate the target morphometric
+characteristics.
+
+\subsection{Existing Infant Lungs Models}
+
+% Modello ovino (al-jumaily2011) e di Jacob (herrmann2016).
+In literature, there exist models based on the
+ovine\cite{al-jumaily2011} and canine\cite{herrmann2016} anatomy.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Thesis"
+%%% End:

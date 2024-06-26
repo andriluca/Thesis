@@ -15,24 +15,34 @@
 % TOC
 %-----------------------------------------------------------------------------
 
-% 2. Metodi
-%   2.1. Accenno a Julia
-%     2.1.1. Ruolo delle callback nella gestione della non linearità
-%   2.2. Chaste
-% 3. Modello morfometrico
-%   3.1. TC, estrazione dei raggi e della centerline
-%   3.2. Generazione parte statistica, i.e. del surrogato anatomico.
-% 4. Modello meccanico
-%   4.1 Descrizione dei blocchi
-%   4.2 Test del modello sulla sottorete
-  
+% 1. Introduction
+% 2. Capitolo sul Polmone dei Neonati (non visibile)
+% 3. Anatomical Models
+%   3.1. Existing Infant Lungs Models
+% 4. Mechanical model of airways and acini
+% 5. Model Development
+%   5.1. Airway Tree
+%     5.1.1. CT Image Processing: Lung Segmentation, Centerline and Radii Extraction
+%     5.1.2. Generation of the Statistical Portion
+%   5.2. Mechanical Simulator
+%     5.2.1. Blocks Description
+%     5.2.2. Callbacks' Role in State Variables Discontinuity Handling
+%     5.2.3. Model Testing on A Subtree
+% 6. Results and Validations  
+%   6.1. Anatomical Surrogate
+%   6.2. Mechanical Simulation
+% 7. Discussion and Conclusion
+
 % -----------------------------------------------------------------------------
 % CHAPTERS
 %-----------------------------------------------------------------------------
 \input{Chapters/01}
-\input{Chapters/02}
-% \input{Chapters/03}
-% \input{Chapters/04}
+% \input{Chapters/02}
+\input{Chapters/03}
+\input{Chapters/04}
+\input{Chapters/05}
+\input{Chapters/06}
+\input{Chapters/07}
 
 %-----------------------------------------------------------------------------
 % BIBLIOGRAPHY
@@ -62,7 +72,7 @@
 %-----------------------------------------------------------------------------
 % ACKNOWLEDGEMENTS
 %-----------------------------------------------------------------------------
-\input{Chapters/acknowledgements.tex}
+% \input{Chapters/acknowledgements.tex}
 
 \end{document}
 

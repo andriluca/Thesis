@@ -1,6 +1,170 @@
+% 1. Introduction
 \section{Introduction}
 \label{sec:introduction}
-WIP.
+
+% Da sommario di Elisa
+% - Prima parte sui neonati prematuri
+% - Applicazione delle vie aeree per "pulire il fluido"
+% - Definizione di strategie protettive
+
+% % A cosa serve il liquido polmonare neonatale
+% Durante la gravidanza le vie aeree del feto sono piene di liquido, il
+% quale è definito liquido polmonare fetale, la cui presenza è
+% fondamentale per lo sviluppo della larghezza delle vie aeree. Ne
+% consegue che alla nascita il sistema respiratorio si debba svuotare di
+% tale liquido per poter permettere l'entrata e l'uscita di aria,
+% necessaria alla respirazione (processo di aerazione). Il
+% riassorbimento inizia già qualche giorno prima del parto grazie a
+% processi chimici dei canali sodio, e poi durante il parto naturale vi
+% è fuoriuscita di liquido da bocca e naso grazie alla compressione del
+% torace a cui viene sottoposto il neonato.
+
+% % Differenza nell'areazione tra bambino a termine e pretermine.
+% Se un bambino nasce a termine la percentuale di complicazione nel
+% processo di aerazione è molto bassa. Totalmente differente è il caso
+% di un bambino pretermine, ovvero di un bambino che nasce prima delle
+% 37 settimane di gestazione a fronte delle 40 per una normale
+% gravidanza.
+
+% % Pressione positiva come trattamento
+% L'applicazione di una pressione all'entrata delle vie aeree aiuta i
+% bambini pretermine a rimuovere il fluido, e ad aprire gli alveoli
+% chiusi. Una volta che gli alveoli sono stati reclutati serve meno
+% pressione per mantenerli aperti e ventilare il polmone. Per tale
+% ragione, effettuare strategie di reclutamento alla nascita ha il
+% vantaggio di permettere l'inizio della ventilazione in un polmone più
+% reclutato, l'utilizzo di pressioni ridotte, ottenendo così
+% un'aerazione più omogenea del polmone e riducendo lo stress applicato
+% ai tessuti. È importante sottolineare però, cha alla nascita il
+% polmone è più delicato e quindi maggiormente esposto a danni, anche se
+% vengono adottate procedure di ventilazione di routine.  Sviluppare
+% quindi strategie protettive di reclutamento alla nascita potrebbe
+% portare miglioramenti significativi in questo ambito.
+
+% Anche se le manovre di reclutamento hanno acquistato maggiore
+% interesse nell'ambito della ventilazione dei pretermine, non esiste
+% ancora una strategia comune a livello medico. Procedure sperimentali
+% vengono testate sugli animali, presentando difficoltà nell'ottenere
+% dei risultati sia per l'invasività delle procedure sia per i problemi
+% etici collegati. Modellizzazioni in silico del polmone adulto sono
+% state utili per capire la patofisiologia e compiere diagnosi. Quindi,
+% lo stesso approccio potrebbe aiutare ad analizzare le diverse
+% strategie di reclutamento e il loro impatto sul polmone durante la
+% prima aereazione alla nascita. Tuttavia, i modelli polmonari di
+% neonati in-silico sono limitati alla descrizione fino alla prima
+% generazione dell'albero bronchiale e, non si dimostrano quindi
+% adeguati a simulare i cambiamenti fisiologici che avvengono alla
+% nascita. 
+
+% % Muovi in anatomical [primo]
+
+% Queste considerazioni sono essenziali per sviluppare modelli accurati
+% e utili per studiare la funzione polmonare nei neonati, specialmente
+% in contesti clinici come la ventilazione oscillatoria.
+
+% Perciò si è dovuto opportunamente modificare sia le caratteristiche
+% anatomiche che quelle meccaniche dei tessuti per ottenere una
+% modellizzazione coerente al caso del neonato nel dominio del
+% tempo.
+
+% % Spostare in mechanical (?) [primo]
+
+% Quindi, sia il modello morfometrico che quello elettrico sono stati
+% modificati per implementare i cambiamenti che avvengono alla nascita,
+% i quali includono la modifica dei valori delle resistenze e induttanze
+% che compongono i modelli elettrici delle vie aeree, in quanto
+% dipendenti dalla viscosità e dalla densità del mezzo che li attraversa
+% (aria o liquido polmonare fetale).
+
+% % Muovi in mechanical [secondo]
+
+% % Muovi in mechanical (?)
+% Dei primi tentativi sono stati effettuati con «LTspice» e «CADENCE».
+% Utilizzando strategie open-source per il modello, le licenze di
+% software proprietario non sono più necessarie, rendendo il processo di
+% sviluppo più accessibile.
+
+% Il modello è stato sviluppato coerentemente con i dati presenti nella
+% letteratura sia per quanto riguarda la geometria dell'albero sia per
+% le caratteristiche meccaniche dei suoi tessuti, ottenendo simulazioni
+% del processo di aerazione nel dominio del tempo, che permettono di
+% confrontare diverse strategie di ventilazione.
+
+% % Aim
+% Lo scopo di questo studio è lo sviluppo di un modello in silico del
+% polmone dei neonati per analizzare il processo di aerazione alla
+% nascita.
+
+During pregnancy, the fetal airways are filled with a fluid known as
+fetal lung fluid, which is essential for the development of airway
+width. Consequently, at birth, the respiratory system must expel this
+fluid to allow air to enter and exit, a process necessary for
+breathing (aeration). Fluid reabsorption begins a few days before
+birth through chemical processes involving sodium channels, and during
+natural childbirth, fluid is expelled from the mouth and nose due to
+the compression of the neonate's chest. In full-term infants, the
+likelihood of complications during aeration is very low. However, the
+scenario is vastly different for preterm infants, who are born before
+37 weeks of gestation compared to the typical 40 weeks of a normal
+pregnancy.
+
+Applying pressure at the entrance of the airways helps preterm infants
+remove the fluid and open the closed alveoli. Once the alveoli are
+recruited, less pressure is needed to keep them open and ventilate the
+lung. Thus, employing recruitment strategies at birth has the
+advantage of initiating ventilation in a more recruited lung, using
+lower pressures, achieving more homogeneous lung aeration, and
+reducing the stress applied to the tissues. It is important to note,
+however, that at birth, the lung is more delicate and thus more
+susceptible to damage, even with routine ventilation
+procedures. Therefore, developing protective recruitment strategies at
+birth could lead to significant improvements in this area.
+
+Although recruitment maneuvers have gained more interest in preterm
+ventilation, there is still no common medical strategy. Experimental
+procedures are tested on animals, presenting challenges in obtaining
+results due to the invasiveness of the procedures and associated
+ethical issues\cite{al-jumaily2011,herrmann2016}. In silico modeling
+of the adult lung has been useful for understanding pathophysiology
+and making diagnoses. Thus, the same approach could help analyze
+various recruitment strategies and their impact on the lung during
+initial aeration at birth. However, in silico models of neonatal lungs
+are limited to describing up to the first generation of the bronchial
+tree and are therefore inadequate for simulating the physiological
+changes that occur at birth.
+
+These considerations are essential for developing accurate and useful
+models for studying lung function in neonates, especially in clinical
+contexts such as oscillatory ventilation. Consequently, both the
+anatomical and mechanical characteristics of the tissues needed to be
+appropriately modified to achieve a consistent model for the neonatal
+case in the time domain. Therefore, both the morphometric and
+electrical models were modified to implement the changes occurring at
+birth, including the adjustment of resistance and inductance values in
+the electrical models of the airways, as these depend on the viscosity
+and density of the medium passing through them (air or fetal lung
+fluid).
+
+Initial attempts were made with "LTspice" and "CADENCE." Using
+open-source strategies for the model eliminates the need for
+proprietary software licenses, making the development process more
+accessible. The model was developed in line with data from the
+literature regarding both the geometry of the bronchial tree and the
+mechanical characteristics of its tissues, resulting in time-domain
+simulations of the aeration process, which allow for comparison of
+different ventilation strategies\cite{mani2020}.
+
+
+Aims of this projects are:
+\begin{description}
+\item Generate a model from neonatal CT scans to optimize the
+  generation of airways, ensuring they adhere to the morphometric
+  characteristics at various ages.
+\item Develop an open-source mechanical model that allows for the
+  simulation of mechanical properties along with fluid dynamics
+  (capillary pressure associated with the interface).
+\end{description}
+
 
 % Commenti
 % - Fragilità polmone neonatale
@@ -40,6 +204,7 @@ WIP.
 % Riferimenti: `ModelloMorfometricoTriennale`,
 % `ModelloMorfometricoTriennaleTesi`,
 % `ModelloMorfometricoTriennaleBib/`
+
 
 %%% Local Variables:
 %%% mode: LaTeX

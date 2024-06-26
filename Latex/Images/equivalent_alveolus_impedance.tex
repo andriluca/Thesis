@@ -1,0 +1,46 @@
+\begin{figure}[H]\centering
+  \begin{circuitikz}[scale=.9]
+    % Circuit
+    %% Main branch
+    %%% Input Node
+    \draw (1.5,0)
+    node[ocirc] (circuit_IN) {}
+    to[short, ] ++(1,0) coordinate(Z_IN)
+    to[twoport, t=$Z_{2}$] ++(2,0) coordinate(C_g_IN)
+    ;
+    
+    %% Main branch
+    % \draw (Z_IN)
+    % to[twoport, t=$Z_{2}$] ++(2,0) coordinate(C_g_IN)
+    % ;
+
+    %%% C_g branch
+    \draw (C_g_IN)
+    to[polar capacitor, invert, l_=$C_{\text{g}}(n)$, *-] ++(0,-3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+    %%% Zw branch
+    \draw (C_g_IN)
+    to[inductor, l=$I_{\text{t,i}}$] ++(2, 0)
+    to[twoport, t={$\dfrac{G - j\cdot H}{\omega^\alpha}$},bipoles/twoport/width=2.0, bipoles/twoport/height=1.2] ++(3, 0)
+    to[short] ++(0, -3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+  \end{circuitikz}
+  \caption{An alveolar-tissue element is attached to the terminal
+    airways in the tree. There is gas compression corresponding to
+    volume of the alveolus ($C_{\text{g}}$) and the tissue element is
+    viscoelastic containing a tissue damping ($G$) coupled to
+    elastance ($H$) to ensure a constant tissue hysteresis. R:
+    resistance; $\Delta$: recursion index, $j$: imaginary unit,
+    $I_{\text{t,i}}$: tissue inertance\cite{lutchen1997}.}
+  \label{fig:alveolus_impedance}
+
+\end{figure}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Thesis"
+%%% End:
