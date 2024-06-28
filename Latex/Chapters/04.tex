@@ -1,11 +1,26 @@
-% 4. Mechanical model of airways and acini
-\section{Mechanical model of airways and acini}
+% 4. Mechanical Model of Airways and Acini
+\section{Mechanical Model of Airways and Acini}
 
-% (cambiare `alveoli`) (paper in chat Lutchen). (no zsoft e
+% (cambiare `acini`) (paper in chat Lutchen). (no zsoft e
 % cartilagine)
 
 % Scrivere in breve la struttura circuitale che poi implemento
 % (copia).
+
+% La struttura circuitale è descritta in lutchen1997 in marrone.
+
+The adult airway can be likened to a transmission line (see
+\cref{fig:airway_impedance}), with resistors, capacitors and inductors
+having constant values.  These components form a circuit as
+illustrated.  Moreover, tissues properties ($Z_{\text{w}}$) are
+incorporated.  \Cref{fig:airway_impedance,fig:acinus_impedance} are
+modules connected according to the structure of newborn airway, which
+is comparable to that depicted in
+\Cref{fig:albero_dicotomico_anatomical}.  $Z(n)$ represents the parent
+branch as a function of the Horsfield order, while $Z(n-1)$ and
+$Z(n-1-\Delta)$ denote the two daughters branches.  $Z(2)$ represents
+the terminal airway.  Each airway has a parent branch (excluding the
+trachea) and two daughter branches (excluding the acini).
 
 % L'equivalente elettrico delle proprietà dei tessuti è stato modificato
 % per poter testare l'impatto delle modifiche fisiologiche durante il
@@ -24,28 +39,52 @@ the physiological change impact on aeration process.
 % spostamento del fluido nell'albero bronchiale.  Una volta superata, i
 % diametri si possono ingrandire facendo aumentare il volume polmonare.
 
-Moreover, fetal fluid is incompressible, whereas air is not. This
+Air-fluid interface modulates the values of resistances and
+inductances in both the modules types.
+
+Moreover, this fluid is incompressible, whereas air is not. This
 introduces an additional element in the electrical equivalent of air,
 as the compressibility of the gas is modeled through a
-capacitance. Additionally, it is necessary to consider the collapse of
-the airways. During the aeration process, an air-liquid interface is
-created, which in turn generates surface tension that must be overcome
-to allow fluid movement within the bronchial tree. Once this surface
-tension is overcome, the diameters can expand, leading to an increase
-in lung volume.
+capacitance.
+
+% Additionally, it is necessary to consider the collapse of
+% the airways.
+
+During the aeration process, an air-liquid interface is created, which
+in turn generates surface tension that must be overcome to allow fluid
+movement within the bronchial tree. Once this surface tension is
+overcome, the diameters can expand, leading to an increase in lung
+volume.
 
 \textcite{lutchen1997} have developed a mechanical lung model in
-frequency-domain, describing airways and alveoli modules as displayed
-in \cref{fig:airway_impedance} and \cref{fig:alveolus_impedance},
+frequency-domain, describing airways and acini modules as displayed
+in \cref{fig:airway_impedance} and \cref{fig:acinus_impedance},
 respectively.
 
 % Circuiti copiato da lutchen1997. 
 \input{Images/equivalent_airway_impedance.tex}
-\input{Images/equivalent_alveolus_impedance.tex}
+\input{Images/equivalent_acinus_impedance.tex}
 
-\textcite{mani2020} has defined a mechanical model in time-domain starting
-from the modules here described and properly changed.
+In this thesis, as well as in \cite{mani2020}, a mechanical model is
+defined in time-domain starting from the modules described in this
+section and properly adapted.
 
+% AGGIUNTA MODIFICA, COMPLETARE
+% -> la parte sul fluido è stata inserita sopra
+% -> la parte del diodo è stata inserita sotto.
+
+% In questo punto devo inserire la spiegazione del modello in cui si
+% inserisce anche il diodo, oltre al liquido. proprio perché mani2020
+% è stata la prima ad inserirlo.
+
+% liquido .. diodo
+
+Capillary pressure is due to air-fluid interface in the airway tree.
+It was taken into account and modeled as a diode component: opening
+threshold voltage is correspondent to aforementioned capillary
+pressure for a generic airway.
+
+% Da spostare in implementation? 
 A first implementation has been performed on «CADENCE» platform.  This
 has the advantage of parallelism and speed.  There are also some
 drawbacks to this approach: this framework is designed to simulate

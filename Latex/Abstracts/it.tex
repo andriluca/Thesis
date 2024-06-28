@@ -1,31 +1,64 @@
 \section*{Abstract in lingua italiana}
-Durante la gravidanza, le vie aeree del feto sono riempite di un
-liquido noto come liquido polmonare fetale, essenziale per lo sviluppo
+% Riassunto prima parte introduzione.
+Durante la gravidanza, le vie aeree fetali sono riempite con un
+liquido noto come fluido polmonare fetale, essenziale per lo sviluppo
 della larghezza delle vie aeree. Di conseguenza, alla nascita, il
 sistema respiratorio deve espellere questo liquido per permettere
-l'entrata e l'uscita dell'aria, un processo necessario per la
-respirazione (aerazione). Il riassorbimento del liquido inizia qualche
-giorno prima del parto attraverso processi chimici che coinvolgono i
-canali del sodio e, durante il parto naturale, il liquido viene
-espulso dalla bocca e dal naso grazie alla compressione del torace del
+l'aerazione. L'assorbimento del liquido inizia pochi giorni prima
+della nascita. Durante il parto naturale, il liquido viene espulso
+dalla bocca e dal naso a causa della compressione del torace del
 neonato. Nei neonati a termine, la probabilità di complicazioni
-durante l'aerazione è molto bassa. Tuttavia, lo scenario è molto
-diverso per i neonati pretermine, che nascono prima delle 37 settimane
-di gestazione rispetto alle tipiche 40 settimane di una gravidanza
-normale.  Sebbene le manovre di reclutamento abbiano suscitato un
-maggiore interesse nella ventilazione dei pretermine, non esiste
-ancora una strategia medica comune. Le procedure sperimentali vengono
-testate sugli animali, presentando sfide nel ottenere risultati a
-causa dell'invasività delle procedure e dei problemi etici
-associati. La modellizzazione in silico del polmone adulto è stata
-utile per comprendere la patofisiologia e fare diagnosi. Pertanto, lo
-stesso approccio potrebbe aiutare ad analizzare le diverse strategie
-di reclutamento e il loro impatto sul polmone durante l'aerazione
-iniziale alla nascita. Tuttavia, i modelli in silico dei polmoni
-neonatali sono limitati alla descrizione fino alla prima generazione
-dell'albero bronchiale e, pertanto, non sono adeguati a simulare i
-cambiamenti fisiologici che avvengono alla nascita.  \vspace{15pt}
+durante l'aerazione è molto bassa. Tuttavia, lo scenario è
+notevolmente diverso per i neonati pretermine.
+% Riscrivo l'aim così com'è.
+Gli obiettivi di questo progetto sono:
+\begin{description}
+\item Generare un modello a partire dalle scansioni TC neonatali per
+  ottimizzare la generazione delle vie aeree, assicurando che
+  aderiscano alle caratteristiche morfometriche a diverse età.
+\item Sviluppare un modello meccanico open-source che consenta la
+  simulazione delle proprietà meccaniche insieme alla dinamica dei
+  fluidi.
+\end{description}
+% Riassunto prima parte conclusioni.
+Utilizzando una scansione TC di un neonato, abbiamo estratto la linea
+centrale delle principali vie aeree e le superfici dei
+lobi. Successivamente, abbiamo ricostruito l'anatomia delle vie aeree
+mancanti utilizzando un algoritmo statistico originariamente proposto
+per i polmoni degli adulti, che abbiamo adattato per il polmone del
+neonato. Questo algoritmo ha assegnato i diametri delle vie aeree in
+base alle proporzioni misurate nel polmone del neonato. Abbiamo
+implementato un analogo meccanico delle vie aeree e degli acini in
+Julia. Questo modello tiene conto dei cambiamenti relativi
+all'aerazione alla nascita, permettendo la simulazione del flusso del
+liquido fetale verso la periferia mentre l'aria entra nelle vie aeree.
 
+% Durante la gravidanza, le vie aeree del feto sono riempite di un
+% liquido noto come liquido polmonare fetale, essenziale per lo sviluppo
+% della larghezza delle vie aeree. Di conseguenza, alla nascita, il
+% sistema respiratorio deve espellere questo liquido per permettere
+% l'entrata e l'uscita dell'aria, un processo necessario per la
+% respirazione (aerazione). Il riassorbimento del liquido inizia qualche
+% giorno prima del parto attraverso processi chimici che coinvolgono i
+% canali del sodio e, durante il parto naturale, il liquido viene
+% espulso dalla bocca e dal naso grazie alla compressione del torace del
+% neonato. Nei neonati a termine, la probabilità di complicazioni
+% durante l'aerazione è molto bassa. Tuttavia, lo scenario è molto
+% diverso per i neonati pretermine, che nascono prima delle 37 settimane
+% di gestazione rispetto alle tipiche 40 settimane di una gravidanza
+% normale.  Sebbene le manovre di reclutamento abbiano suscitato un
+% maggiore interesse nella ventilazione dei pretermine, non esiste
+% ancora una strategia medica comune. Le procedure sperimentali vengono
+% testate sugli animali, presentando sfide nel ottenere risultati a
+% causa dell'invasività delle procedure e dei problemi etici
+% associati. La modellizzazione in silico del polmone adulto è stata
+% utile per comprendere la patofisiologia e fare diagnosi. Pertanto, lo
+% stesso approccio potrebbe aiutare ad analizzare le diverse strategie
+% di reclutamento e il loro impatto sul polmone durante l'aerazione
+% iniziale alla nascita. Tuttavia, i modelli in silico dei polmoni
+% neonatali sono limitati alla descrizione fino alla prima generazione
+% dell'albero bronchiale e, pertanto, non sono adeguati a simulare i
+% cambiamenti fisiologici che avvengono alla nascita.  \vspace{15pt}
 % Vedi sommario di Mani20.
 
 \begin{tcolorbox}[arc=0pt, boxrule=0pt, colback=bluePoli!60, width=\textwidth, colupper=white]

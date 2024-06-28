@@ -1,0 +1,55 @@
+digraph G {
+    edge [color=gray, arrowhead=vee];
+    node [fontsize=12];
+    rankdir=LR;
+
+    // Airways definitions
+    IAD [shape=box,
+	 color=lightblue,
+	 style=filled,
+	 ];
+    IAF [shape=box
+	 color=lightblue,
+	 style=filled,
+	 ];
+    IAH [shape=box
+	 color=lightblue,
+	 style=filled,
+	 ];
+    IBL [shape=box
+	 color=lightblue,
+	 style=filled,
+	 ];
+
+    // Alveoli definitions
+    IAI [shape=ellipse,
+	 color=lightgreen,
+	 style=filled,
+	 ]
+    IAG [shape=ellipse,
+	 color=lightgreen,
+	 style=filled,
+	 ]
+    IAE [shape=ellipse,
+	 color=lightgreen,
+	 style=filled,
+	 ]
+    IBA [shape=ellipse,
+	 color=lightgreen,
+	 style=filled,
+	 ]
+    IBB [shape=ellipse,
+	 color=lightgreen,
+	 style=filled,
+	 ];
+
+    node1 [label="Generator",
+	   shape=plaintext,
+	   ];
+
+    node1 -> IAD -> IAF -> IAH -> IBL -> IBB;
+    IAH -> IAI;
+    IAF -> IAG;
+    IAD -> IAE;
+    IBL -> IBA;
+}

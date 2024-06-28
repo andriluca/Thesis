@@ -6,7 +6,7 @@
     \draw (1.5,0)
     node[ocirc] (circuit_IN) {}
     to[short, ] ++(1,0) coordinate(Z_IN)
-    to[twoport, t=$Z_{2}$] ++(2,0) coordinate(C_g_IN)
+    to[twoport, bipoles/twoport/width=1.0, t=$Z(2)$] ++(2,0) coordinate(C_g_IN)
     ;
     
     %% Main branch
@@ -31,12 +31,12 @@
   \end{circuitikz}
   \caption{An alveolar-tissue element is attached to the terminal
     airways in the tree. There is gas compression corresponding to
-    volume of the alveolus ($C_{\text{g}}$) and the tissue element is
+    volume of the acinus ($C_{\text{g}}$) and the tissue element is
     viscoelastic containing a tissue damping ($G$) coupled to
-    elastance ($H$) to ensure a constant tissue hysteresis. R:
-    resistance; $\Delta$: recursion index, $j$: imaginary unit,
-    $I_{\text{t,i}}$: tissue inertance\cite{lutchen1997}.}
-  \label{fig:alveolus_impedance}
+    elastance ($H$) to ensure a constant tissue hysteresis. $j$:
+    imaginary unit, $I_{\text{t,i}}$: tissue
+    inertance\cite{lutchen1997}.}
+  \label{fig:acinus_impedance}
 
 \end{figure}
 

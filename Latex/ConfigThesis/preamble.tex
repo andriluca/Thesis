@@ -50,7 +50,7 @@
 \usepackage{cleveref}
 \usepackage[backend=biber,style=numeric]{biblatex}
 \usepackage{csquotes}
-\addbibresource{Thesis_bibliography.bib}
+\addbibresource{bibliography.bib}
 
 % PACKAGES FOR THE APPENDIX
 \usepackage{appendix}
@@ -79,6 +79,7 @@
 %----------------------------------------------------------------------------
 %	ADD YOUR PACKAGES (be careful of package interaction)
 %----------------------------------------------------------------------------
+\usepackage{multirow}
 \usepackage{siunitx}
 \usepackage[siunitx]{circuitikz}
 \usepackage{tikz}
@@ -94,10 +95,9 @@ theme=grayscale-plain]{jlcode}
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
 %----------------------------------------------------------------------------
 
-
 % Do not change Configuration_Files/config.tex file unless you really know what you are doing. 
 % This file ends the configuration procedures (e.g. customizing commands, definition of new commands)
-\input{Configuration_Files/config}
+\input{ConfigThesis/config}
 
 \lstdefinestyle{juliacode}{
   language=Julia, 
@@ -132,6 +132,9 @@ theme=grayscale-plain]{jlcode}
 \tikzstyle{image}     = [minimum width=1cm, minimum height=1cm, text centered]
 \tikzstyle{arrow}     = [thick,->,>=stealth]
 
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
 % Insert here the info that will be displayed into your Title page 
 % -> title of your work
 \renewcommand{\title}{Simulating Aeration at Birth: building an Open-Source Newborn Lung Model}
@@ -140,7 +143,7 @@ theme=grayscale-plain]{jlcode}
 % -> MSc course
 \newcommand{\course}{Biomedical Engineering - Ingegneria Biomedica}
 % -> advisor name and surname
-\newcommand{\advisor}{Prof. Raffaele Dellacà}
+\newcommand{\advisor}{Prof. Raffaele Dellaca'}
 % IF AND ONLY IF you need to modify the co-supervisors you also have to modify the file Configuration_Files/title_page.tex (ONLY where it is marked)
 \newcommand{\firstcoadvisor}{Dr. Chiara Veneroni} % insert if any otherwise comment
 \newcommand{\secondcoadvisor}{} % insert if any otherwise comment
@@ -154,6 +157,6 @@ theme=grayscale-plain]{jlcode}
 
 %%% Local Variables:
 %%% mode: LaTeX
-%%% TeX-master: "Thesis"
+%%% TeX-master: "../Thesis"
 %%% TeX-engine: luatex
 %%% End:

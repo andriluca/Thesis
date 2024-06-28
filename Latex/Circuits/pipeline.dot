@@ -1,0 +1,34 @@
+digraph G {
+
+    rankdir=LR;
+    CT_acquisition [shape=box
+		    color=lightblue,
+		    style=filled,
+		    label="CT\nacquisition"
+		    ]
+
+    lobes_segmentation [shape=box
+			color=lightblue,
+			style=filled,
+			label="Lobes\nsegmentation"
+			]
+    airways_segmentation [shape=box
+			  color=lightblue,
+			  style=filled,
+			  label="Airways\nsegmentation"
+			  ]
+    centerline_extraction [shape=box
+			  color=lightblue,
+			  style=filled,
+			  label="Centerline\nextraction"
+			  ]
+    surrogate_generation [shape=box
+			  color=lightblue,
+			  style=filled,
+			  label="Anatomical surrogate\ngeneration"
+			  ]
+
+    CT_acquisition -> lobes_segmentation -> surrogate_generation
+    CT_acquisition -> airways_segmentation -> centerline_extraction -> surrogate_generation
+    
+}

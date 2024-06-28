@@ -2,99 +2,6 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% Da sommario di Elisa
-% - Prima parte sui neonati prematuri
-% - Applicazione delle vie aeree per "pulire il fluido"
-% - Definizione di strategie protettive
-
-% % A cosa serve il liquido polmonare neonatale
-% Durante la gravidanza le vie aeree del feto sono piene di liquido, il
-% quale è definito liquido polmonare fetale, la cui presenza è
-% fondamentale per lo sviluppo della larghezza delle vie aeree. Ne
-% consegue che alla nascita il sistema respiratorio si debba svuotare di
-% tale liquido per poter permettere l'entrata e l'uscita di aria,
-% necessaria alla respirazione (processo di aerazione). Il
-% riassorbimento inizia già qualche giorno prima del parto grazie a
-% processi chimici dei canali sodio, e poi durante il parto naturale vi
-% è fuoriuscita di liquido da bocca e naso grazie alla compressione del
-% torace a cui viene sottoposto il neonato.
-
-% % Differenza nell'areazione tra bambino a termine e pretermine.
-% Se un bambino nasce a termine la percentuale di complicazione nel
-% processo di aerazione è molto bassa. Totalmente differente è il caso
-% di un bambino pretermine, ovvero di un bambino che nasce prima delle
-% 37 settimane di gestazione a fronte delle 40 per una normale
-% gravidanza.
-
-% % Pressione positiva come trattamento
-% L'applicazione di una pressione all'entrata delle vie aeree aiuta i
-% bambini pretermine a rimuovere il fluido, e ad aprire gli alveoli
-% chiusi. Una volta che gli alveoli sono stati reclutati serve meno
-% pressione per mantenerli aperti e ventilare il polmone. Per tale
-% ragione, effettuare strategie di reclutamento alla nascita ha il
-% vantaggio di permettere l'inizio della ventilazione in un polmone più
-% reclutato, l'utilizzo di pressioni ridotte, ottenendo così
-% un'aerazione più omogenea del polmone e riducendo lo stress applicato
-% ai tessuti. È importante sottolineare però, cha alla nascita il
-% polmone è più delicato e quindi maggiormente esposto a danni, anche se
-% vengono adottate procedure di ventilazione di routine.  Sviluppare
-% quindi strategie protettive di reclutamento alla nascita potrebbe
-% portare miglioramenti significativi in questo ambito.
-
-% Anche se le manovre di reclutamento hanno acquistato maggiore
-% interesse nell'ambito della ventilazione dei pretermine, non esiste
-% ancora una strategia comune a livello medico. Procedure sperimentali
-% vengono testate sugli animali, presentando difficoltà nell'ottenere
-% dei risultati sia per l'invasività delle procedure sia per i problemi
-% etici collegati. Modellizzazioni in silico del polmone adulto sono
-% state utili per capire la patofisiologia e compiere diagnosi. Quindi,
-% lo stesso approccio potrebbe aiutare ad analizzare le diverse
-% strategie di reclutamento e il loro impatto sul polmone durante la
-% prima aereazione alla nascita. Tuttavia, i modelli polmonari di
-% neonati in-silico sono limitati alla descrizione fino alla prima
-% generazione dell'albero bronchiale e, non si dimostrano quindi
-% adeguati a simulare i cambiamenti fisiologici che avvengono alla
-% nascita. 
-
-% % Muovi in anatomical [primo]
-
-% Queste considerazioni sono essenziali per sviluppare modelli accurati
-% e utili per studiare la funzione polmonare nei neonati, specialmente
-% in contesti clinici come la ventilazione oscillatoria.
-
-% Perciò si è dovuto opportunamente modificare sia le caratteristiche
-% anatomiche che quelle meccaniche dei tessuti per ottenere una
-% modellizzazione coerente al caso del neonato nel dominio del
-% tempo.
-
-% % Spostare in mechanical (?) [primo]
-
-% Quindi, sia il modello morfometrico che quello elettrico sono stati
-% modificati per implementare i cambiamenti che avvengono alla nascita,
-% i quali includono la modifica dei valori delle resistenze e induttanze
-% che compongono i modelli elettrici delle vie aeree, in quanto
-% dipendenti dalla viscosità e dalla densità del mezzo che li attraversa
-% (aria o liquido polmonare fetale).
-
-% % Muovi in mechanical [secondo]
-
-% % Muovi in mechanical (?)
-% Dei primi tentativi sono stati effettuati con «LTspice» e «CADENCE».
-% Utilizzando strategie open-source per il modello, le licenze di
-% software proprietario non sono più necessarie, rendendo il processo di
-% sviluppo più accessibile.
-
-% Il modello è stato sviluppato coerentemente con i dati presenti nella
-% letteratura sia per quanto riguarda la geometria dell'albero sia per
-% le caratteristiche meccaniche dei suoi tessuti, ottenendo simulazioni
-% del processo di aerazione nel dominio del tempo, che permettono di
-% confrontare diverse strategie di ventilazione.
-
-% % Aim
-% Lo scopo di questo studio è lo sviluppo di un modello in silico del
-% polmone dei neonati per analizzare il processo di aerazione alla
-% nascita.
-
 During pregnancy, the fetal airways are filled with a fluid known as
 fetal lung fluid, which is essential for the development of airway
 width. Consequently, at birth, the respiratory system must expel this
@@ -109,7 +16,7 @@ scenario is vastly different for preterm infants, who are born before
 pregnancy.
 
 Applying pressure at the entrance of the airways helps preterm infants
-remove the fluid and open the closed alveoli. Once the alveoli are
+remove the fluid and open the closed acini. Once the acini are
 recruited, less pressure is needed to keep them open and ventilate the
 lung. Thus, employing recruitment strategies at birth has the
 advantage of initiating ventilation in a more recruited lung, using
@@ -124,35 +31,41 @@ Although recruitment maneuvers have gained more interest in preterm
 ventilation, there is still no common medical strategy. Experimental
 procedures are tested on animals, presenting challenges in obtaining
 results due to the invasiveness of the procedures and associated
-ethical issues\cite{al-jumaily2011,herrmann2016}. In silico modeling
+ethical issues\cite{al-jumaily2011, herrmann2016}. In silico modeling
 of the adult lung has been useful for understanding pathophysiology
 and making diagnoses. Thus, the same approach could help analyze
 various recruitment strategies and their impact on the lung during
 initial aeration at birth. However, in silico models of neonatal lungs
 are limited to describing up to the first generation of the bronchial
-tree and are therefore inadequate for simulating the physiological
-changes that occur at birth.
+tree resulting inadequate for simulating the physiological changes
+that occur at birth.  Anatomical models of the adult lung were scaled
+to match the newborns one. However, there are differences between
+airway length and diameter proportion between infants and
+adults\cite{horsfield1987}. Moreover, the immature lung structure
+results in different mechanical properties\cite{merkus1996}.
 
-These considerations are essential for developing accurate and useful
-models for studying lung function in neonates, especially in clinical
-contexts such as oscillatory ventilation. Consequently, both the
-anatomical and mechanical characteristics of the tissues needed to be
-appropriately modified to achieve a consistent model for the neonatal
-case in the time domain. Therefore, both the morphometric and
-electrical models were modified to implement the changes occurring at
-birth, including the adjustment of resistance and inductance values in
-the electrical models of the airways, as these depend on the viscosity
-and density of the medium passing through them (air or fetal lung
-fluid).
+% AGGIUNTA MODIFICA, COMPLETARE
+Alternatively, anatomical properties .. scaled r.
 
-Initial attempts were made with "LTspice" and "CADENCE." Using
-open-source strategies for the model eliminates the need for
+Consequently, both the anatomical and mechanical characteristics of
+the tissues must be appropriately modified to achieve a consistent
+model for the neonatal case in the time domain.  Finally, to implement
+the changes occurring at birth, the mechanical properties of each
+airway must change when the fetal fluid is replaced by air.
+
+A previous thesis work developed an in silico model able to simulate
+the mechanical changes occurring in the airways during aeration at
+birth in the time domain. However, the anatomical structure was scaled
+for the adult one, and the mechanical model was implemented in
+"CADENCE.", a platform optimised for the analysis of integrated
+circuits. The use of «CADENCE» platform results in limitations related
+to the need for proprietary software licenses and difficulties in
+implementing time-varying phenomena not easily described by standard
+electronic components.
+
+Using open-source strategies for the model eliminates the need for
 proprietary software licenses, making the development process more
-accessible. The model was developed in line with data from the
-literature regarding both the geometry of the bronchial tree and the
-mechanical characteristics of its tissues, resulting in time-domain
-simulations of the aeration process, which allow for comparison of
-different ventilation strategies\cite{mani2020}.
+accessible\cite{mani2020}.
 
 
 Aims of this projects are:
@@ -162,49 +75,9 @@ Aims of this projects are:
   characteristics at various ages.
 \item Develop an open-source mechanical model that allows for the
   simulation of mechanical properties along with fluid dynamics
-  (capillary pressure associated with the interface).
+  \cite[][Ch. 1.9 - 1.11]{mani2020} (capillary pressure associated
+  with the air-fluid interface).
 \end{description}
-
-
-% Commenti
-% - Fragilità polmone neonatale
-% - Differenze anatomiche tra neonato e adulto.
-% - Albero bronchiale definizione etc. (penso anche ordini, branching etc).
-% - Modello morfometrico definizione etc (?)
-% - Modello polmone di agnello con capacità in parallelo.
-% - Diametro trachea in funzione dell'eta gestazionale (grafico).
-
-% \subsection{Premature newborns}
-% \label{subsec:premature_newborns}
-
-% Commenti
-% Differenze tra sistema respiratorio nell'adulto e nel neonato e nel
-% neonato prematuro.  (Slide 4 di [1]).
-
-% \subsection{Morphometric Model}
-% \label{subsec:morphometric_model}
-% I am referring to \Cref{subsec:premature_newborns}
-
-% \subsubsection{A brief definition}
-% \label{subsubsec:morphometric_model_definition}
-
-% Commenti
-% Un'idea per questa definizione la si ritrova in
-% `ModelloMorfometricoTriennale`.
-
-% Commenti
-% A morphometric model can be thought as a mathematical model composed
-% by fixed parameters having both a physical and a geometrical (?)
-% meaning.
-
-% \subsubsection{Its structure}
-
-% Slide 3 di [1]
-
-% Riferimenti: `ModelloMorfometricoTriennale`,
-% `ModelloMorfometricoTriennaleTesi`,
-% `ModelloMorfometricoTriennaleBib/`
-
 
 %%% Local Variables:
 %%% mode: LaTeX
