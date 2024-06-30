@@ -1,0 +1,76 @@
+\begin{figure*}[]
+  \centering
+  \scalebox{.75}{
+    \begin{tikzpicture}[]
+      % Nodes
+      %% Chaste & Morphometric Model
+      \node (ct_acquisition)           [startstop] {CT Acquisition};
+      %%% Upper branch
+      \node (lobes_segmentation)       [process, right of=ct_acquisition, xshift=8.25cm, yshift=+1cm]      {Lobes segmentation};
+      \node (airways_segmentation)     [process, below of=lobes_segmentation, xshift=-2.5cm, yshift=-1cm]  {Airways segmentation};
+      \node (centreline_extraction)    [process, below of=lobes_segmentation, xshift=+2.5cm, yshift=-1cm]  {Centreline extraction};
+      \node (anatomical_generation)    [process, minimum width=5cm, text width=5cm, right of=ct_acquisition, xshift=16.5cm]                  {Algorithmic Generation of Distal Airway Centrelines};
+      %% Julia & Mechanical Model
+      \node (airways_model)            [startstop, below of=ct_acquisition, yshift=-5cm]               {Airways model};
+      \node (acini_model)              [startstop, below of=airways_model, yshift=-1cm]                  {Acini model};
+      \node (model_instantiation)      [process, below of=airways_segmentation, yshift=-5cm]                     {Mechanical model instantiation};
+      \node (DAE_solution)             [process, below of=centreline_extraction, yshift=-5cm]               {DAE System solution};
+      \node (tracheal_pressure)        [startstop, above of=DAE_solution, yshift=2.5cm]                      {Tracheal pressure waveform};
+      \node (simulations)              [startstop, below of=anatomical_generation, yshift=-6cm]                   {Simulations results};
+      \node (phi_length)               [startstop, minimum width=5cm, text width=4.5cm, above of=model_instantiation, yshift=2.5cm]                 {Diameters, length, father airway of each airway};
+      
+      
+      % % Arrows
+      \draw [arrow] (ct_acquisition.east)                              -- ++(1.5,0) coordinate(tmp)     |- (airways_segmentation.west);
+      \draw [arrow] (airways_segmentation)                             -- (centreline_extraction);
+      \draw [arrow] (centreline_extraction.east)                       -- ++(.5,0) coordinate(tmp1)    |- (anatomical_generation.west);
+      \draw [arrow] (model_instantiation)                              -- (DAE_solution);
+      \draw [arrow] (DAE_solution)                                     -- (simulations);
+      \draw [arrow] (tmp)                                              |-   (lobes_segmentation.west);
+      \draw [arrow] (lobes_segmentation)                               --   (tmp1|-lobes_segmentation) |- (anatomical_generation.west);
+      \draw [arrow] (phi_length.south)  -- (model_instantiation.north);
+      \draw [arrow] (acini_model.east) -- ++(1.5,0)  |- (model_instantiation.west);
+      \draw [arrow] (tracheal_pressure.south) -- (DAE_solution.north);
+      \draw [arrow] (airways_model.east) -- ++(1.5,0)  |- (model_instantiation.west);
+      \draw [dashed, thick, ->,>=stealth] (12.5,-1.775) -- ++(0,-.50)                   -| (phi_length.north);
+
+      
+      % % Frame around a part of the flowchart
+      \begin{pgfonlayer}{background}
+        \node[rounded corners=3mm,
+        draw=blue,
+        thick, dashed,
+        % fit=(airways_segmentation)(centreline_extraction)(img_lobes_segmentation)(img_anatomical_generation),
+        fit=(airways_segmentation)(centreline_extraction)(lobes_segmentation)(anatomical_generation),
+        fill=cyan!5,
+        inner sep=7pt,
+        label={[anchor=south]above:\textsc{\textcolor{blue}{Morphometric model}}}] {};
+      \end{pgfonlayer}
+      \begin{pgfonlayer}{background}
+        \node[rounded corners=3mm,
+        draw=red,
+        thick, dashed,
+        fit=(airways_model)(acini_model)(model_instantiation)(DAE_solution),
+        fill=magenta!5,
+        inner sep=7pt,
+        label={[anchor=north]below:\textsc{\textcolor{red}{Mechanical model}}}] {};
+      \end{pgfonlayer}
+    \end{tikzpicture}
+  }
+  \caption{Data pipeline.  The process begins with a
+    \emph{patient-specific image} (i.e. CT) of a premature newborn.
+    The extracted data, comprising \emph{two segmentations}, are then
+    processed to obtain an anatomical surrogate of the airway tree.
+    This is necessary due to scanner resolution not allowing for the
+    discrimination and localization of small branches.  From the
+    resulting morphometric model, the \emph{mechanical parameters} can
+    be derived, which are essential for generating an accurate
+    simulation model.  Finally, a numerical solver for differential
+    equations provides the final output.}
+  \label{fig:data_pipeline}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Executive"
+%%% End:

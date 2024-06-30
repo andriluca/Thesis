@@ -3,35 +3,35 @@
 % Riassunto prima parte conclusioni.
 
 \renewcommand{\abstract}{
-% Riassunto prima parte introduzione.
-During pregnancy, the fetal airways are filled with a fluid known as
-fetal lung fluid, which is essential for the development of airway
-width. Consequently, at birth, the respiratory system must expel this
-fluid to allow aeration. Fluid reabsorption begins a few days before
-birth. During natural childbirth, fluid is expelled from the mouth and
-nose due to the compression of the neonate's chest. In full-term
-infants, the likelihood of complications during aeration is very
-low. However, the scenario is vastly different for preterm infants.
-% Riscrivo l'aim così com'è.
-Aims of this projects are:
-\begin{description}
-\item Generate a model from neonatal CT scans to optimize the
-  generation of airways, ensuring they adhere to the morphometric
-  characteristics at various ages.
-\item Develop an open-source mechanical model that allows for the
-  simulation of mechanical properties along with fluid dynamics.
-\end{description}
+  % Riassunto prima parte introduzione.
+  During pregnancy, the fetal airways are filled with a fluid known as
+  fetal lung fluid, which is essential for the development of
+  airways. Consequently, at birth, the respiratory system must expel
+  this fluid to allow aeration.  Preterm infants may not be able to
+  adequately achieve lung aeration at birth autonomously. The
+  application of a positive pressure waveform at the airway opening
+  can support them. However, the best pressure strategy for promoting
+  lung aeration without damaging the fragile lung is still
+  unknown. Model simulation can help in the definition of such a
+  strategy.
+  % Riscrivo l'aim così com'è.
+  Aims of this projects are: 1) Generate a model from neonatal CT
+  scans to optimize the generation of airways, ensuring they adhere to
+  the morphometric characteristics at various ages.  2) Develop an
+  open-source mechanical model that allows for the simulation of
+  mechanical properties along with fluid dynamics.
 % Riassunto prima parte conclusioni.
-Using a CT scan of a newborn infant, we extracted the centreline of
-major airways and the lobe surfaces.  We then reconstructed the
-anatomy of the missing airways using a statistical algorithm
-originally proposed for adult lungs, which we adapted for the newborn
-lung. This algorithm assigned airway diameters based on proportions
-measured in the newborn lung.  We implemented a mechanical analog of
-the airway and acini in Julia. This model accounts for changes related
-to aeration at birth, allowing the simulation of the flow of fetal
-fluid towards the periphery as air enters the airways.
-}
+  Using a CT scan of a newborn infant, we extracted the centreline of
+  major airways and the lobe surfaces.  We then reconstructed the
+  anatomy of the missing airways using a statistical algorithm
+  originally proposed for adult lungs, which we adapted for the
+  newborn lung. This algorithm assigned airway diameters based on
+  proportions measured in the newborn lung.  We implemented a
+  mechanical analog of the airway and acini in Julia, a free and open
+  source programming language allowing to construct modularly complex
+  ODE systems and to solve them. This model accounts for changes
+  related to aeration at birth, allowing the simulation of the flow of
+  fetal fluid towards the periphery as air enters the airways.  }
 
 % \renewcommand{\abstract}{During pregnancy, the fetal airways are
 % filled with a fluid known as fetal lung fluid, which is essential for

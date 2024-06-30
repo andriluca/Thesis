@@ -1,0 +1,27 @@
+\begin{figure}[H]\centering
+  \begin{tikzpicture}[node distance=1.3cm]
+    \node (GEN) [rectangle, rounded corners, draw=black, , fill=green!25] {Generator};
+    \node (IAD) [airway, below of=GEN]                                    {\textsc{IAD}};
+    \node (IAF) [airway, below of=IAD]                                    {\textsc{IAF}};
+    \node (IAH) [airway, below of=IAF]                                    {\textsc{IAH}};
+    \node (IBL) [airway, below of=IAH]                                    {\textsc{IBL}};
+    \node (IAE) [acinus, left of=IAD, xshift=-.25cm, yshift=-1.3cm]       {\textsc{IAE}};
+    \node (IAG) [acinus, right of=IAF, xshift=.25cm, yshift=-1.3cm]       {\textsc{IAG}};
+    \node (IAI) [acinus, left of=IAH, xshift=-.25cm, yshift=-1.3cm]       {\textsc{IAI}};
+    \node (IBA) [acinus, right of=IBL, xshift=.25cm, yshift=-1.3cm]       {\textsc{IBA}};
+    \node (IBB) [acinus, left of=IBL, xshift=-.25cm, yshift=-1.3cm]       {\textsc{IBB}};
+
+    \draw [arrow1] (GEN) -- (IAD);
+    \draw [arrow1] (IAD) -- (IAF);
+    \draw [arrow1] (IAF) -- (IAH);
+    \draw [arrow1] (IAH) -- (IBL);
+    \draw [arrow1] (IAD) -- (IAE);
+    \draw [arrow1] (IAF) -- (IAG);
+    \draw [arrow1] (IAH) -- (IAI);
+    \draw [arrow1] (IBL) -- (IBA);
+    \draw [arrow1] (IBL) -- (IBB);
+  \end{tikzpicture}
+  \caption{The simulated subtree. Airways are represented in red,
+    acini in yellow.}
+  \label{fig:subtree_development}
+\end{figure}

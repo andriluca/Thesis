@@ -2,12 +2,14 @@
 %   5.1. Anatomical Model
 %     5.1.1. CT Image Processing: Lung Segmentation, Centreline and Radii Extraction
 %     5.1.2. Algorithmic Generation of the Distal Airway Centreline
-%   5.2. Mechanical Simulator Model
+%   5.2. Mechanical Model
 %     5.2.1. Programming Language --- Model Designing & Instantiating
 %     5.2.1.1  Callbacks' Role in State Variables Discontinuity Handling
 %     5.2.3. Model Testing
 
 \section{Model Development}
+\label{sec:model_development}
+
 % Mettere enfasi sulla ricerca dei metodi perché Julia e non altro.
 
 % Visione d'insieme (diagramma con flusso dell'informazione, data
@@ -18,34 +20,35 @@
 % riguardanti i modelli matematici utilizzati.
 
 This chapter describes the methods used to develop an open-source, 3D
-morphometrical neonatal lung model that allows simulations of lung
+morphometric neonatal lung model that allows simulations of lung
 aeration at birth.
 
 An anatomically coherent 3D lung model is combined with a mechanical
 model of the airways and acini, able to simulate changes in the
 mechanical properties of the airways when the lung fluid is replaced
-by air entering the lung.
+by air entering the lungs.
 
 The sequence for model development is reported in
-\Cref{fig:data_pipeline}. We extract a 3D surface mesh of lung lobes
+\cref{fig:data_pipeline}. We extracted a 3D surface mesh of lung lobes
 and airway centrelines from a lung CT of a newborn. We implemented a
 statistical method, previously described for adult lung models, able
 to generate distal airways that were not visible on the CT. We adapted
 the method for the newborn lung.
 
 We implemented a mechanical model of the airways and acini whose
-parameters are dependent on the airway length and diameters and the
+parameters are dependent on the airway's lengths and diameters and the
 presence of fetal fluid, fetal fluid-air interface, or air in the
 airway. We exploited an open-source solver for differential equations
 to simulate the network.
 
 \begin{figure}[H]\centering
   \include{Images/pipeline.tex}
+  % \include{Images/pipeline_v1.tex}
   \caption{Data pipeline.  The process begins with a
     \emph{patient-specific image} (i.e. CT) of a premature newborn.
     The extracted data, comprising \emph{two segmentations}, are then
     processed to obtain an anatomical surrogate of the airway tree.
-    This is necessary due to scanner resolution not allowing for the
+    This is necessary because scanner resolution does not allow for the
     discrimination and localization of small branches.  From the
     resulting morphometric model, the \emph{mechanical parameters} can
     be derived, which are essential for generating an accurate
@@ -59,7 +62,7 @@ to simulate the network.
 \label{subsec:airway_development}
 % Per Chiara: Inserisco definizione di modello morfometrico?
 Morphology generation process is required as it is not possible to
-obtain high generations (aka small airways) by means of standard
+obtain high generations (aka small airways) using standard
 high-resolution CT\cite{bordas2015}.
 
 There are different open-source platforms available for generating
@@ -67,11 +70,11 @@ adult morphometric models.  In particular:
 
 \begin{enumerate}
 \item AVATree (Windows-only)
-\item Chaste (crossplatform) library
+\item Chaste (cross-platform) library
 \end{enumerate}
 
 Due to problems related to «AVATree» source code compilation for
-Windows with «VisualStudio», Chaste library is selected for this
+Windows with «Visual Studio», Chaste library is selected for this
 project.
 
 Chaste is a C++ open-source (BSD licensed) library developed by Oxford
@@ -79,7 +82,7 @@ University.  It has multiple use cases across various biomedical
 fields, with an emphasis on cardiac electrophysiology and cancer
 development\cite{mirams2013}.  It can be integrated into a C++ program
 or used via «User Project» (i.e. \texttt{ctest}).  Specifically, the
-``AirwayGenerationTutorial'' is considered as a first codebase and
+``AirwayGenerationTutorial'' is considered as a first code base and
 properly adapted to match newborn
 parameters\cite{airwaygeneration2024}.
 
@@ -87,8 +90,8 @@ The required input consists of two pieces of information:
 \begin{itemize}
 \item A \emph{mesh of centreline points}.  This mesh is provided in
   TetGen format, comprising ``airways.node'' and ``airways.edge''
-  files. The first file lists centreline points coordinates,
-  respective sampled airways radius and a boolean value to indicate if
+  files. The first file lists centreline point coordinates,
+  respective sampled airways radius, and a boolean value to indicate if
   the point is generative. The second one contains all the connections
   between pairs of points.
 \item Four (or five) \emph{lobes segmentations} in STL format.  These
@@ -119,14 +122,14 @@ Two extensions are installed:
 \label{subsubsec:statistical_generation}
 
 The Chaste User Project reads the input files
-(see \Cref{subsec:airway_development}), and begins growing the
+(see \cref{subsec:airway_development}), and begins growing the
 anatomical surrogate from the points labeled as «generative».  The
 algorithm operating under the hood is a modified version of the one
 described in \cite{tawhai2000,bordas2015}.  The generated output is
 available in various formats:
 
 \begin{itemize}
-\item vtu: Unstructured Grid (base64 encoded) format used by VTK
+\item VTU: Unstructured Grid (base64 encoded) format used by VTK
   library.  It can be displayed by ParaView, an open-source viewer.
 \item node and edge: TetGen format.  Such files are better suited for
   further processing.
@@ -138,16 +141,16 @@ available in various formats:
 % AGGIUNTA MODIFICA, COMPLETARE
 % prima. -> SPOSTO LA FRASE IN SOTTOSEZIONE PARENTE.
 This process is required as it is not possible to obtain high
-generations (aka small airways) by means of standard high-resolution
+generations (aka small airways) using standard high-resolution
 CT\cite{bordas2015}.
 
 The algorithm is based on a modified version of \textcite{tawhai2000}.
 % {1} va spiegato qui, poi descriviamo l'algoritmo
 A uniform grid of seed points is created within each segmented lobar
 surface. Seed points approximately correspond to terminal bronchioles.
-Spacing of the seed point grid is set so that the mean volume around
-each of such points corresponded to the acinar volume (for adult being
-$187\text{mm}^3$, for 5 weeks old newborn $5.3\text{mm}^3$).
+The spacing of the seed point grid is set so that the mean volume around
+each of such points corresponds to the acinar volume (for adults being
+$187\text{mm}^3$, for 5-weeks old newborns $5.3\text{mm}^3$).
 % AGGIUNTA MODIFICA, COMPLETARE
 % -> AGGIUNTO VALORE PER NEONATO 5W (da dove è stato recuperato?)
 
@@ -156,7 +159,7 @@ segmented airway centrelines.  These points are referred to as growth
 apices.
 
 An \emph{adaptive threshold} on the distance between the seed points
-and growth apices is required to prevent spurious long airways being
+and growth apices is required to prevent spurious long airways from being
 generated in the last few generations.  \Cref{eq:airway_threshold}
 describes such threshold:
 
@@ -178,10 +181,10 @@ With these definitions, the \textbf{growing algorithm} is described as
 such:
 
 \begin{enumerate}
-\item \emph{Each seed point is associated to the closest growth apex
-    within its lobe}.  Seed point having a distance with respect to a
+\item \emph{Each seed point is associated with the closest growth apex
+    within its lobe}.  The seed point having a distance to a
   growth apex greater than the aforementioned adaptive threshold is
-  not associated to that distal end.  If all distal ends are further
+  not associated with that distal end.  If all distal ends are further
   than the threshold from the seed point, the seed point remains
   unlabeled.
 \item \emph{Calculation of the centroid of points assigned to each
@@ -191,14 +194,14 @@ such:
 \item \emph{Centroids of each of the new point sets are calculated.}
 \item \emph{For each set of points a new airway is generated} starting
   at the distal end and extending 40\% of the distance towards the
-  centroid of the point set.  This value is arbitrary but kept as for
-  adults.  It must be optimised in future developments.
+  centroid of the point set.  This value is arbitrarily chosen for adults but kept for
+  newborns.  It must be optimized in future developments.
 \item \emph{Generated branches are checked to determine whether it is
     terminal}.  Branches whose length is less than $2\text{mm}$ (for
   adults, to be changed with $.12\text{mm}$ for newborns) are
-  considered terminal.  Also branches whose point set contains just a
-  single point solely are considered terminal points.  For all
-  terminal branches their associated seed point is discarded from the
+  considered terminal.  Also, branches whose point set contains just a
+  single point are considered terminal points.  For all
+  terminal branches, their associated seed point is discarded from the
   global set.
 \item \emph{Iterate} until no seed point is available.
 \end{enumerate}
@@ -206,7 +209,7 @@ such:
 % DA DOVE VIENE FUORI .12 MM?
 % sarebbe interessante capire come cambiare quel 2mm.
 
-\textbf{Diameters} are computed by means of \Cref{eq:lumen_diameter}.
+\textbf{Diameters} are computed by means of \cref{eq:lumen_diameter}.
 
 \begin{equation}
   \log D(x) = (x - N)\log(R_{\text{d}} H) + \log(D_{\text{N}})
@@ -215,7 +218,7 @@ such:
 
 Where:
 \begin{description}
-\item $D$ is the aiway diameter.
+\item $D$ is the airway diameter.
 \item $x$ is the current Horsfield order.
 \item $N$ is the maximum Horsfield order.
 \item $D_{\text{N}}$ is the maximum diameter.
@@ -225,33 +228,33 @@ Where:
   the code is named ``DiameterRatio''.
 \end{description}
   
-\subsection{Mechanical Simulator Model}
+\subsection{Mechanical Model}
 \label{subsec:simulator_development}
 
 In order to perform simulation it is required to use an efficient
-differential equation solver.  «DifferentialEquations.jl» wraps all
-available solvers (even C and Fortran ones) and it is very efficient
-\cite{diffeqdocs2024,rackauckas2017}.
+differential equation solver.  «\texttt{DifferentialEquations.jl}»
+wraps all available solvers (even C and FORTRAN ones) and it is very
+efficient \cite{diffeqdocs2024,rackauckas2017}.
 
 Julia is a free, open-source (MIT licensed), fast, scientific and
 numerical computing-oriented programming language.  Its computational
-efficiency is comparable to that of statically-typed languages like C
-or Fortran.  Moreover, its high-level code expressivity rivals that of
-languages like Python, R and MATLAB\cite{juliadocs2024}.
+efficiency is comparable to statically typed languages like C
+or FORTRAN.  Moreover, its high-level code expressiveness rivals that of
+languages like Python, R, and MATLAB\cite{juliadocs2024}.
 
 Two key features, inspired by the \emph{Lisp Language}, are
 highlighted here.
 
 \begin{description}
 \item \emph{Metaprogramming}: Code is treated as any other Julia data
-  structure, thus can be dynamically generated and manipulated at
+  structure and, thus can be dynamically generated and manipulated at
   runtime.
 \item \emph{Macros}: They help instantiate the generated code in the
   body of a program.
 \end{description}
 
 Their importance is closely tied to the concept of Domain-Specific
-Languages (aka DSLs).  These dialects are composed by abstractions
+Languages (aka DSLs).  These dialects are composed of abstractions
 that can be properly exploited to solve particular problems
 (e.g. modeling complex systems, solving differential equations).
 
@@ -264,12 +267,12 @@ saving the required package names and commits into `Project.toml' and
 \subsubsection{Programming Language --- Model Designing \& Instantiating}
 \label{subsubsec:modelingtoolkit}
 
-This Julia package encompasses all the tools necessary for model
-design.  «\texttt{ModelingToolkit.jl}» is equation-driven, requiring
-each system to be described by Differential-Algebraic Equations
-(i.e. DAEs) for subsequent solving\cite{ma2021}. Its built-in DSL
-optimizes every stage of modeling, from prototyping components to
-instantiating the complete system.
+«\texttt{ModelingToolkit.jl}» encompasses all the tools necessary for
+model design.  This Julia package is equation-driven, requiring each
+system to be described by Differential-Algebraic Equations (i.e. DAEs)
+for subsequent solving\cite{ma2021}. Its built-in DSL optimizes every
+stage of modeling, from prototyping components to instantiating the
+complete system.
 
 An acausal paradigm can be adopted, allowing users to reason in terms
 of \emph{components}\cite{mtkdocs2024}. This modularity facilitates
@@ -309,7 +312,7 @@ characteristics.  Each generated system can then be composed into more
 complex ones, using the internal \jlinl{@components} macro, thereby
 implementing the hierarchical structure mentioned earlier.
 
-After describing the highest-order system, Julia compiler requires its
+After describing the highest-order system, the Julia compiler requires its
 instantiation before any simulation can be performed.  This is
 accomplished using \jlinl{@mtkbuild} macro, which minimizes the number
 of equations that need to be solved.
@@ -318,15 +321,15 @@ Code modularity is directly reflected in the electrical equivalent
 circuit.  Specifically, by encapsulating systems with the internal
 \jlinl{@components} macro, it becomes possible to generate models of
 increasing complexity.  This approach enables a clear separation
-between components belonging to different hierarchical levels and
-facilitate compartmentalization during the model design phase.
+between components that belong to different hierarchical levels and
+facilitates compartmentalization during the model design phase.
 
 \vspace{.5em}
 
 {\normalsize\textbf{Callbacks' Role in State Variables
       Discontinuity Handling}} Not all characteristics of electrical
 components can be defined solely by DAEs.  Voltages or currents may
-suddently change, triggered by a circuit event.  In such cases,
+suddenly change, triggered by a circuit event.  In such cases,
 \emph{continuous callback functions} can be employed to appropriately
 alter the value of state variables.  These callbacks consist of two
 functions:
@@ -355,16 +358,16 @@ highest).
 \begin{enumerate}
 \item \textbf{Mathematical and Electrical Components}.  The simplest
   blocks are derived from the standard library of components (aka
-  «\texttt{ModelingToolkitStandardLibrary}»), while integral-dependent
+  «\texttt{ModelingToolkitStandardLibrary.jl}»), while integral-dependent
   ones rely on a modified mathematical block to manage both current
   integration and its timing correctly.  Their behavior varies based
   on the neonatal pulmonary fluid interface.
   \begin{description}
   \item \emph{Current Integrator}: it computes the current integral
-    and manages integration timing by means of a Callback function
-    (see aforementioned Callbacks Section).
+    and manages integration timing through a Callback function
+    (see the former Callbacks Section).
   \item \emph{Current Integral-Dependent Inductor}: It takes the
-    current integral value from Current Integrator and computes the
+    current integral value from the Current Integrator and computes the
     inductance value according to this formula
     $L(t) = L_{\text{a}} + L_{\text{b}}\cdot \left(1 - \dfrac{\int
         {i(t) dt}}{V_{\text{FRC}}}\right)$, where $L_{\text{a}}$ is
@@ -372,7 +375,7 @@ highest).
     between liquid and air inductances, $V_{\text{FRC}}$ is the volume
     at FRC (i.e., Functional Residual Capacity).
   \item \emph{Current Integral-Dependent Resistor}: It takes the
-    current integral value from Current Integrator and computes the
+    current integral value from the Current Integrator and computes the
     resistance value according to this formula
     $R(t) = R_{\text{a}} + R_{\text{b}}\cdot \left(1 - \dfrac{\int
         {i(t) dt}}{V_{\text{FRC}}}\right)$, where $R_{\text{a}}$ is
@@ -399,10 +402,10 @@ highest).
   \begin{description}
   \item
     \emph{Acinus} % Copiare didascalia (da trovare prima).
-  \item \emph{Airway}.  It has a similar behavior with respect to a
+  \item \emph{Airway}.  It has a similar behavior in comparison to a
     transmission line.
   \end{description}
-\item \textbf{Lungs}.  Highest order model as it is a combination of
+\item \textbf{Lungs}.  They represent the highest-order model because they are a combination of
   acini and airways.
 \end{enumerate}
 
@@ -414,18 +417,22 @@ highest).
 \subsubsection{Model Testing}
 \label{subsubsec:model_testing}
 
-Simulations are executed starting from a subnet, as the full circuit
-(comprising over 50k modules) requires more memory space than
-typically available on a common laptop.
+Simulations are executed starting from a subtree (see
+\cite{fig:subtree_development}), as the full circuit (comprising over
+50k modules) requires more memory space than typically available on a
+common laptop.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=.7]{subtree.pdf}
-  \caption{The simulated subtree.  Airways are represented in light blue, acini in light green.}
-  \label{fig:subtree_development}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=.7]{subtree.pdf}
+%   \caption{The simulated subtree.  Airways are represented in light blue and acini in light green.}
+%   \label{fig:subtree_development}
+% \end{figure}
 
-% In this project, Chaste has been relied upon generating an anatomical
+\input{Images/subtree_thesis}
+
+
+% In this project, Chaste has been relied upon to generate an anatomical
 % surrogate for lungs in premature newborns.
 
 %%% Local Variables:

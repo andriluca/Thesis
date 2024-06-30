@@ -3,7 +3,8 @@
 % 1. SOSTITUIRE XX CON DATI
 % 2. LEGGI HORSFIELD1987 PER INSERIRE DEFINIZIONI RB, RD, RL.
 
-\section{Conclusion and Future Development}
+\section{Conclusion and Future Developments}
+\label{sec:conclusion_and_future_developments}
 
 % As future development it is possible to edit properly airway
 % generation parameters in order to better approximate the target
@@ -25,26 +26,27 @@ of newborn lungs.
 
 We developed an anatomical morphometric model of the newborn
 lung. Using a CT scan of a newborn infant, we extracted the centreline
-of XX generations and the lobe surfaces. We then reconstructed the
-anatomy of the missing airways using a statistical algorithm
-originally proposed for adult lungs, which we adapted for the newborn
-lung. This algorithm assigned airway diameters based on proportions
-measured in the newborn lung, providing several advantages over
-previous approaches. Previous work, such as \textcite{mani2020},
-rescaled adult models to match the diameters and lengths of the
-trachea and terminal bronchioles in newborns. However, this method may
-not accurately preserve the morphometric characteristics (Rb, Rd, and
-Rl – see Chapter 1.XXX) of the entire airway tree. Our approach allows
-for the direct setting of the desired Rd parameter in the model, which
-differs between adults and newborns. Further analysis of the generated
-tree can determine if all known morphometric characteristics of
-newborn lungs (e.g., Rb and Rl) are respected or if optimization of
+and the lobe surfaces. We then reconstructed the anatomy of the
+missing airways using a statistical algorithm originally proposed for
+adult lungs, which we adapted for the newborn lung. This algorithm
+assigned airway diameters based on proportions measured in the newborn
+lung, providing several advantages over previous approaches. Previous
+work, such as \textcite{mani2020}, scaled adult models to match the
+diameters and lengths of the trachea and terminal bronchioles in
+newborns. However, this method may not accurately preserve the
+morphometric characteristics ($R_{\text{b}}$, $R_{\text{d}}$, and
+$R_{\text{l}}$ – see \Cref{subsec:anatomical_models}) of the entire
+airway tree. Our approach allows for the direct setting of the desired
+$R_{\text{d}}$ parameter in the model, which differs between adults
+and newborns. Further analysis of the generated tree can determine if
+all known morphometric characteristics of newborn lungs (e.g.,
+$R_{\text{b}}$ and $R_{\text{l}}$) are respected or if optimization of
 the arbitrary parameters initially set for adults (e.g., branching
 length) is necessary.
 
 We implemented a mechanical analog of the airway and acini in
 Julia. This model accounts for changes related to aeration at birth,
-allowing the simulation of the flow of fetal fluid towards the
+allowing the simulation of the flow of fetal fluid toward the
 periphery as air enters the airways. The model incorporates changes in
 resistance (R) and compliance (I), as well as capillary pressure
 developed in the airways at the fluid-air interface. Testing on a

@@ -10,13 +10,13 @@
 % La struttura circuitale è descritta in lutchen1997 in marrone.
 
 The adult airway can be likened to a transmission line (see
-\cref{fig:airway_impedance}), with resistors, capacitors and inductors
-having constant values.  These components form a circuit as
+\cref{fig:airway_impedance}), with resistors, capacitors, and
+inductors having constant values.  These components form a circuit as
 illustrated.  Moreover, tissues properties ($Z_{\text{w}}$) are
-incorporated.  \Cref{fig:airway_impedance,fig:acinus_impedance} are
-modules connected according to the structure of newborn airway, which
-is comparable to that depicted in
-\Cref{fig:albero_dicotomico_anatomical}.  $Z(n)$ represents the parent
+incorporated.  \Cref{fig:airway_impedance,fig:acinus_impedance} show
+modules connected according to the structure of the newborn airway,
+which is comparable to that depicted in
+\cref{fig:albero_dicotomico_anatomical}.  $Z(n)$ represents the parent
 branch as a function of the Horsfield order, while $Z(n-1)$ and
 $Z(n-1-\Delta)$ denote the two daughters branches.  $Z(2)$ represents
 the terminal airway.  Each airway has a parent branch (excluding the
@@ -26,8 +26,8 @@ trachea) and two daughter branches (excluding the acini).
 % per poter testare l'impatto delle modifiche fisiologiche durante il
 % processo di aereazione.
 
-The electrical equivalent of tissues properties is modified to test
-the physiological change impact on aeration process.
+The electrical equivalent of tissue properties is modified to test
+the physiological change impact on the aeration process.
 
 % Inoltre, il liquido fetale è incomprimibile, l'aria invece non lo è,
 % comportando la presenza di un elemento aggiuntivo nell'equivalente
@@ -39,8 +39,8 @@ the physiological change impact on aeration process.
 % spostamento del fluido nell'albero bronchiale.  Una volta superata, i
 % diametri si possono ingrandire facendo aumentare il volume polmonare.
 
-Air-fluid interface modulates the values of resistances and
-inductances in both the modules types.
+The air-fluid interface modulates the values of resistances and
+inductances in both the module types.
 
 Moreover, this fluid is incompressible, whereas air is not. This
 introduces an additional element in the electrical equivalent of air,
@@ -51,7 +51,7 @@ capacitance.
 % the airways.
 
 During the aeration process, an air-liquid interface is created, which
-in turn generates surface tension that must be overcome to allow fluid
+in turn, generates surface tension that must be overcome to allow fluid
 movement within the bronchial tree. Once this surface tension is
 overcome, the diameters can expand, leading to an increase in lung
 volume.
@@ -79,19 +79,19 @@ section and properly adapted.
 
 % liquido .. diodo
 
-Capillary pressure is due to air-fluid interface in the airway tree.
-It was taken into account and modeled as a diode component: opening
-threshold voltage is correspondent to aforementioned capillary
+Capillary pressure is due to the air-fluid interface in the airway tree.
+It was considered and modeled as a diode component: opening
+threshold voltage corresponds to the aforementioned capillary
 pressure for a generic airway.
 
 % Da spostare in implementation? 
-A first implementation has been performed on «CADENCE» platform.  This
+A first implementation has been performed on the «CADENCE» platform.  This
 has the advantage of parallelism and speed.  There are also some
 drawbacks to this approach: this framework is designed to simulate
 standard electrical components and it is not well-suited to develop
-time- and current integral-dependent components.  Furthermore license
-is proprietary and machine specific.  This limits the accessibility of
-of model design process.
+time- and current integral-dependent components.  Furthermore, the license
+is proprietary and machine-specific.  This limits the accessibility
+of the model design process.
 
 % Posso dire che l'alveolo è stato modificato (vedi Veneroni2024) a
 % partire dall'alveolo mostrato da lutchen1997 perché non risolvibile

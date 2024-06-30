@@ -1,0 +1,32 @@
+\begin{figure}[H]\centering
+  \begin{tikzpicture}[node distance=1.5cm]
+    \node (GEN) [rectangle, rounded corners, minimum width=1.5cm, minimum height=.75cm, draw=black, fill=green!25] {Step (8V)};
+    \node (IAD) [airway_vertical, below of=GEN]                                                                    {1$^\circ$};
+    \node (IAF) [airway_vertical, below of=IAD]                                                                    {2$^\circ$};
+    \node (IAH) [airway_vertical, below of=IAF]                                                                    {3$^\circ$};
+    \node (IBL) [airway_vertical, below of=IAH]                                                                    {4$^\circ$};
+    \node (IAE) [acinus_vertical, left of=IAD, xshift=-.25cm, yshift=-1.5cm]                                       {---};
+    \node (IAG) [acinus_vertical, right of=IAF, xshift=.25cm, yshift=-1.5cm]                                       {---};
+    \node (IAI) [acinus_vertical, left of=IAH, xshift=-.25cm, yshift=-1.5cm]                                       {---};
+    \node (IBA) [acinus_vertical, right of=IBL, xshift=.25cm, yshift=-1.5cm]                                       {5$^\circ$};
+    \node (IBB) [acinus_vertical, left of=IBL, xshift=-.25cm, yshift=-1.5cm]                                       {6$^\circ$};
+
+    \draw [arrow1] (GEN) -- (IAD);
+    \draw [arrow1] (IAD) -- (IAF);
+    \draw [arrow1] (IAF) -- (IAH);
+    \draw [arrow1] (IAH) -- (IBL);
+    \draw [arrow1] (IAD) -- (IAE);
+    \draw [arrow1] (IAF) -- (IAG);
+    \draw [arrow1] (IAH) -- (IAI);
+    \draw [arrow1] (IBL) -- (IBA);
+    \draw [arrow1] (IBL) -- (IBB);
+  \end{tikzpicture}
+  % \caption{The simulated subtree. Airways are represented in red,
+    % acini in yellow.}
+  \label{fig:subtree_8_development}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Thesis"
+%%% End:

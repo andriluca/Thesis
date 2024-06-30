@@ -1,0 +1,81 @@
+\begin{figure*}[]\centering
+  \begin{circuitikz}[scale=.9]
+    % Circuit
+    %% Main branch
+
+    %%% Input Node
+    \draw (1.5,0)
+    node[ocirc] (circuit_IN) {}
+    to[short, i=$i_{\text{in}}$, -*] ++(1.5,0) coordinate(D_SW_IN)
+    ;
+    
+    %%% Diode // Switch branch
+    \draw (D_SW_IN)
+    to[short] ++(0,.5)
+    to[diode, v^<=$V_{\text{in,th}}$, color=bluePoli] ++(2,0) coordinate(D_SW_OUT)
+    to[short, -*] (D_SW_IN-|D_SW_OUT)
+    ;
+    \draw (D_SW_IN)
+    to[short] ++(0,-.5)
+    to[switch, color=bluePoli, a_=$\left(V_{\text{in}}\geq V_{\text{in,th}}\right) \lor \left(V_{\text{in}} \text{ = } 0\right)$] ++(2,0)
+    to[short] (D_SW_IN-|D_SW_OUT)
+    ;
+
+    %% Main branch
+    \draw (D_SW_IN-|D_SW_OUT)
+    to[short] ++(.5,0)
+    to[variable resistor, color=bluePoli, l=$R_{\text{tube}} / 2$] ++(2,0)
+    to[variable inductor, color=bluePoli, l=$I_{\text{tube}} / 2$] ++(2,0) coordinate (C_g_IN)
+    to[short] ++(1.5,0) coordinate (SW_IN)
+    to[variable resistor, color=bluePoli, l=$R_{\text{tube}} / 2$] ++(2,0)
+    to[variable inductor, color=bluePoli, l=$I_{\text{tube}} / 2$] ++(2,0)
+    to[short, i=$i_{\text{out}}$] ++(1,0)
+    node[ocirc] (circuit_OUT) {}
+    ;
+
+    %%% C_g branch
+    \draw (C_g_IN)
+    to[C=$C_{\text{g}}$, *-] ++(0,-3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+    %%% Sw branch
+    \draw (SW_IN)
+    to[L=$I_{\text{sw}}$, *-] ++(0,-1.5)
+    to[R=$R_{\text{sw}}$] ++(0,-1)
+    to[C=$C_{\text{sw}}$] ++(0,-1)
+    node[ground]{} ++(0,0)
+    ;
+    
+    %% Open circuit (input)
+    \draw (circuit_IN)
+    to[open, -o, v<=$V_{\text{in}}$] ++(0, -3.5)
+    node[ground] {}
+    ;
+    %% Open circuit (output)
+    \draw (circuit_OUT)
+    to[open, -o, v^<=$V_{\text{out}}$] ++(0, -3.5)
+    node[ground] {}
+    ;
+
+    % Nodes
+    %% IN
+    \draw  (circuit_IN.west)
+    node[draw, anchor=east, color=white, fill=bluePoli!50] (node_IN) {IN}
+    ;
+    % \draw (node_IN.east) node[ocirc, right]{}
+    % ;
+    %% OUT
+    \draw  (circuit_OUT.east)
+    node[draw, anchor=west, color=white, fill=bluePoli!50] (node_OUT) {OUT}
+    ;
+  \end{circuitikz}
+  \caption{Airway equivalent circuit.  In blue: all current integral-dependent components.}
+  \label{fig:airway}
+
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Executive"
+%%% End:

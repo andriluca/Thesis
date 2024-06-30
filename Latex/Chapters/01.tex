@@ -3,17 +3,17 @@
 \label{sec:introduction}
 
 During pregnancy, the fetal airways are filled with a fluid known as
-fetal lung fluid, which is essential for the development of airway
-width. Consequently, at birth, the respiratory system must expel this
-fluid to allow air to enter and exit, a process necessary for
+fetal lung fluid, which is essential for developing
+airways. Consequently, at birth, the respiratory system must expel
+this fluid to allow air to enter and exit, a process necessary for
 breathing (aeration). Fluid reabsorption begins a few days before
-birth through chemical processes involving sodium channels, and during
-natural childbirth, fluid is expelled from the mouth and nose due to
-the compression of the neonate's chest. In full-term infants, the
-likelihood of complications during aeration is very low. However, the
-scenario is vastly different for preterm infants, who are born before
-37 weeks of gestation compared to the typical 40 weeks of a normal
-pregnancy.
+birth through chemical processes involving Na$^\text{+}$ channels, and
+during natural childbirth, fluid is expelled from the mouth and nose
+due to the compression of the neonate's chest. In full-term infants,
+the likelihood of complications during aeration is very low. However,
+the scenario is vastly different for preterm infants, who are born
+before 37 weeks of gestation compared to the typical 40 weeks of a
+normal pregnancy.
 
 Applying pressure at the entrance of the airways helps preterm infants
 remove the fluid and open the closed acini. Once the acini are
@@ -39,13 +39,10 @@ initial aeration at birth. However, in silico models of neonatal lungs
 are limited to describing up to the first generation of the bronchial
 tree resulting inadequate for simulating the physiological changes
 that occur at birth.  Anatomical models of the adult lung were scaled
-to match the newborns one. However, there are differences between
+to match the newborn one. However, there are differences between
 airway length and diameter proportion between infants and
 adults\cite{horsfield1987}. Moreover, the immature lung structure
 results in different mechanical properties\cite{merkus1996}.
-
-% AGGIUNTA MODIFICA, COMPLETARE
-Alternatively, anatomical properties .. scaled r.
 
 Consequently, both the anatomical and mechanical characteristics of
 the tissues must be appropriately modified to achieve a consistent
@@ -57,7 +54,7 @@ A previous thesis work developed an in silico model able to simulate
 the mechanical changes occurring in the airways during aeration at
 birth in the time domain. However, the anatomical structure was scaled
 for the adult one, and the mechanical model was implemented in
-"CADENCE.", a platform optimised for the analysis of integrated
+«CADENCE», a platform optimized for the analysis of integrated
 circuits. The use of «CADENCE» platform results in limitations related
 to the need for proprietary software licenses and difficulties in
 implementing time-varying phenomena not easily described by standard
@@ -68,15 +65,13 @@ proprietary software licenses, making the development process more
 accessible\cite{mani2020}.
 
 
-Aims of this projects are:
+The aims of this project are:
 \begin{description}
 \item Generate a model from neonatal CT scans to optimize the
   generation of airways, ensuring they adhere to the morphometric
   characteristics at various ages.
 \item Develop an open-source mechanical model that allows for the
-  simulation of mechanical properties along with fluid dynamics
-  \cite[][Ch. 1.9 - 1.11]{mani2020} (capillary pressure associated
-  with the air-fluid interface).
+  simulation of mechanical properties along with fluid dynamics.
 \end{description}
 
 %%% Local Variables:

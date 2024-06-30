@@ -1,0 +1,84 @@
+\begin{figure*}[]\centering
+  \begin{circuitikz}[scale=.9]
+    % Circuit
+    %% Main branch
+
+    %%% Input Node
+    \draw (1.5,0)
+    node[ocirc] (circuit_IN) {}
+    to[short, i=$i_{\text{in}}$, -*] ++(1.5,0) coordinate(D_SW_IN)
+    ;
+    
+    %%% Diode // Switch branch
+    \draw (D_SW_IN)
+    to[short] ++(0,.5)
+    to[diode, v^<=$V_{\text{in,th}}$, color=bluePoli] ++(2,0) coordinate(D_SW_OUT)
+    to[short, -*] (D_SW_IN-|D_SW_OUT)
+    ;
+    \draw (D_SW_IN)
+    to[short] ++(0,-.5)
+    to[switch, color=bluePoli, a_=$\left(V_{\text{in}}\geq V_{\text{in,th}}\right) \lor \left(V_{\text{in}} \text{ = } 0\right)$] ++(2,0)
+    to[short] (D_SW_IN-|D_SW_OUT)
+    ;
+
+    %% Main branch
+    \draw (D_SW_IN-|D_SW_OUT)
+    % to[short] ++(.5,0)
+    to[variable resistor, color=bluePoli, l=$R_{\text{tube}}$] ++(2.25,0)
+    to[variable inductor, color=bluePoli, l=$I_{\text{tube}}$] ++(2.25,0) coordinate (circuit_OUT)
+    % to[short] ++(.5,0)
+    to[L=$I_{\text{t}}$] ++(2.25,0)
+    to[R=$R_{\text{t}}$] ++(1.5,0)
+    to[C=$C_{\text{t}}$] ++(1.5,0) coordinate (S_IN)
+    % node[ocirc] (circuit_OUT) {}
+    ;
+
+    \draw (S_IN)
+    to[short] ++(0,-.5)
+    to[R, l_=$R_{\text{s}}$] ++(2,0)
+    to[short] ++(0,.5)
+    ;
+    \draw (S_IN)
+    to[short, *-] ++(0,.5)
+    to[C=$C_{\text{s}}$] ++(2,0)
+    to[short] ++(0,-.5)
+    to[short, *-] ++(.5,0)
+    node[ground]{} ++(0,0)
+    ;
+
+    %%% C_g branch
+    \draw (circuit_OUT) node[draw, anchor=south, color=white, fill=bluePoli!50] {OUT}
+    to[C=$C_{\text{g}}$, i=$i_{\text{out}}$, v<=$V_{\text{out}}$, *-] ++(0,-3.5)
+    node[ground]{} ++(0,0)
+    ;
+
+    %% Open circuit (input)
+    \draw (circuit_IN)
+    to[open, -o, v<=$V_{\text{in}}$] ++(0, -3.5)
+    node[ground] {}
+    ;
+    % %% Open circuit (output)
+    % \draw (circuit_OUT)
+    % {[red!60] to[open, -o, v^<=$V_{\text{out}}$] ++(0, -3.5)}
+    % node[ground] {}
+    % ;
+
+    % Nodes
+    %% IN
+    \draw  (circuit_IN.west)
+    node[draw, anchor=east, color=white, fill=bluePoli!50] (node_IN) {IN}
+    ;
+    % \draw (node_IN.east) node[ocirc, right]{}
+    % ;
+    %% OUT
+
+  \end{circuitikz}
+  \caption{Acinus equivalent circuit.  In blue: all current integral-dependent components.}
+  \label{fig:acinus}
+
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "../Executive"
+%%% End:
