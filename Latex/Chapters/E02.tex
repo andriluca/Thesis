@@ -4,6 +4,9 @@
 % model development: copio la prima parte o la summarizzo, prendo
 % quello che serve per spiegare le figure e poco più.
 
+%% ex Figure 3
+\input{Images/pipeline_executive_v1}
+
 An anatomically coherent 3D lung model is combined with a mechanical
 model of the airways and acini, able to simulate changes in the
 mechanical properties of the airways when the lung fluid is replaced
@@ -11,10 +14,17 @@ by air entering the lungs.
 
 The sequence for model development is reported in
 \cref{fig:data_pipeline}. We extracted a 3D surface mesh of lung lobes
-and airway centrelines from a lung CT of a newborn. We implemented a
-statistical method, previously described for adult lung models, able
-to generate distal airways that were not visible on the CT. We adapted
-the method for the newborn lung.
+and airway centrelines from a lung CT of a newborn.  Morphology
+generation process is required as it is not possible to obtain high
+generations (aka small airways) using standard high-resolution CT.
+
+We implemented a statistical method, previously described for adult
+lung models, able to generate distal airways that were not visible on
+the CT\cite{bordas2015,tawhai2000}. We adapted the method for the
+newborn lung.  This is performed by «Chaste», an open-source C++
+library for computational physiology.  The «Chaste» User Project
+required for airways and lobar segmentations to generate the distal
+airways.
 
 We implemented a mechanical model of the airways and acini whose
 parameters are dependent on the airway's lengths and diameters and the
@@ -22,17 +32,10 @@ presence of fetal fluid, fetal fluid-air interface, or air in the
 airway. We exploited an open-source solver for differential equations
 to simulate the network.
 
-Morphology generation process is required as it is not possible to
-obtain high generations (aka small airways) using standard
-high-resolution CT\cite{bordas2015}.  This is performed by «Chaste» an
-open-source C++ library for computational physiology.  The «Chaste»
-User Project required for airways and lobar segmentations to calculate
-the distal airways.
-
 To perform simulation it is required to use an efficient differential
 equation solver.  Julia Programming Language\cite{juliadocs2024} has
-«\texttt{DifferentialEquations.jl}», which is very efficient and
-includes all available solvers (even C and FORTRAN
+«\texttt{DifferentialEquations.jl}»\cite{rackauckas2017}, which is
+very efficient and includes all available solvers (even C and FORTRAN
 ones)\cite{diffeqdocs2024,rackauckas2017}.
 «\texttt{ModelingToolkit.jl}»\cite{ma2021} is also required: it is a
 package for model design and instantiation.  It allows for prototyping
@@ -48,8 +51,6 @@ Simulations are executed starting from a subtree (see
 common laptop.
 
 
-%% ex Figure 3
-\input{Images/pipeline_executive_v1}
 
 %% ex Figure 4
 \input{Images/equivalent_airway_executive}

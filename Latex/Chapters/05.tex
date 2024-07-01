@@ -41,7 +41,7 @@ presence of fetal fluid, fetal fluid-air interface, or air in the
 airway. We exploited an open-source solver for differential equations
 to simulate the network.
 
-\begin{figure}[H]\centering
+\begin{figure}[]\centering
   \include{Images/pipeline.tex}
   % \include{Images/pipeline_v1.tex}
   \caption{Data pipeline.  The process begins with a
@@ -121,11 +121,11 @@ Two extensions are installed:
 \subsubsection{Algorithmic Generation of the Distal Airway Centreline}
 \label{subsubsec:statistical_generation}
 
-The Chaste User Project reads the input files
-(see \cref{subsec:airway_development}), and begins growing the
-anatomical surrogate from the points labeled as «generative».  The
-algorithm operating under the hood is a modified version of the one
-described in \cite{tawhai2000,bordas2015}.  The generated output is
+The Chaste User Project reads the input files (see
+\cref{subsec:airway_development}), and begins growing the anatomical
+surrogate from the points labeled as «generative».  The algorithm
+operating under the hood is a modified version\cite{bordas2015} of the
+one described by \textcite{tawhai2000}.  The generated output is
 available in various formats:
 
 \begin{itemize}
@@ -144,7 +144,6 @@ This process is required as it is not possible to obtain high
 generations (aka small airways) using standard high-resolution
 CT\cite{bordas2015}.
 
-The algorithm is based on a modified version of \textcite{tawhai2000}.
 % {1} va spiegato qui, poi descriviamo l'algoritmo
 A uniform grid of seed points is created within each segmented lobar
 surface. Seed points approximately correspond to terminal bronchioles.
@@ -155,8 +154,8 @@ $187\text{mm}^3$, for 5-weeks old newborns $5.3\text{mm}^3$).
 % -> AGGIUNTO VALORE PER NEONATO 5W (da dove è stato recuperato?)
 
 The starting points of the algorithm are the distal ends of the
-segmented airway centrelines.  These points are referred to as growth
-apices.
+segmented airway centrelines.  These points are also referred to as
+growth apices.
 
 An \emph{adaptive threshold} on the distance between the seed points
 and growth apices is required to prevent spurious long airways from being
@@ -171,7 +170,7 @@ describes such threshold:
 Where:
 \begin{description}
 \item $V_{\text{b}}$ is the diagonal size of the bounding box of the lobe being
-  generated into
+  generated into.
 \item $D_{\text{l}} (= {V_{\text{b}}/{N}})$ is the distance limit.
 \item $N$ is the maximum number of generations.
 \item $n$ is the current generation number.
@@ -232,9 +231,11 @@ Where:
 \label{subsec:simulator_development}
 
 In order to perform simulation it is required to use an efficient
-differential equation solver.  «\texttt{DifferentialEquations.jl}»
-wraps all available solvers (even C and FORTRAN ones) and it is very
-efficient \cite{diffeqdocs2024,rackauckas2017}.
+differential equation solver.
+
+«\texttt{DifferentialEquations.jl}» wraps all available solvers (even
+C and FORTRAN ones) and it is very efficient
+\cite{diffeqdocs2024,rackauckas2017}.
 
 Julia is a free, open-source (MIT licensed), fast, scientific and
 numerical computing-oriented programming language.  Its computational
@@ -410,7 +411,12 @@ highest).
 \end{enumerate}
 
 % Equivalent circuits for airways and acinus.
+\vspace{2.25em}
+
 \input{Images/equivalent_airway.tex}
+
+\vspace{2.25em}
+
 \input{Images/equivalent_acinus.tex}
 
 
@@ -418,7 +424,7 @@ highest).
 \label{subsubsec:model_testing}
 
 Simulations are executed starting from a subtree (see
-\cite{fig:subtree_development}), as the full circuit (comprising over
+\cref{fig:subtree_development}), as the full circuit (comprising over
 50k modules) requires more memory space than typically available on a
 common laptop.
 
@@ -428,6 +434,8 @@ common laptop.
 %   \caption{The simulated subtree.  Airways are represented in light blue and acini in light green.}
 %   \label{fig:subtree_development}
 % \end{figure}
+
+\vspace{2.25em}
 
 \input{Images/subtree_thesis}
 
