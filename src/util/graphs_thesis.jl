@@ -1,0 +1,88 @@
+al_volt_pl = plot(sol,
+                  idxs = [system.L.IAE.out.v,
+                          system.L.IAI.out.v,
+                          system.L.IBB.out.v,
+                          system.L.IAG.out.v,
+                          system.L.IBA.out.v,],
+                  # title = "Voltages (Acini)",
+                  xlabel = "t [s]", ylabel = "Pressure [cmH2O]",
+                  label = ["Pout (IAE)" "Pout (IAI)" "Pout (IBB)" "Pout (IAG)" "Pout (IBA)"],
+                  legend = :bottomright,
+                  xlims = xlims_al,
+                  ylims = (0, resp_ampl + 2),
+                  size = (600, 300),
+                  margin=.3cm,
+                  legendfontsize=12,
+                  tickfontsize=12,
+                  guidefontsize=14,
+                  dpi = 300,)
+
+al_curr_pl = plot(sol,
+                  idxs = [system.L.IAE.r_tube.i,
+                          system.L.IAI.r_tube.i,
+                          system.L.IBB.r_tube.i,
+                          system.L.IAG.r_tube.i,
+                          system.L.IBA.r_tube.i,],
+                  # title = "Currents (Acini)",
+                  xlabel = "t [s]", ylabel = "Flow Rate [m^3 / s]",
+                  label = ["Iin (IAE)" "Iin (IAI)" "Iin (IBB)" "Iin (IAG)" "Iin (IBA)"],
+                  legend = :bottomright,
+                  xlims = xlims_al,
+                  ylims = ylims_al,
+                  size = (600, 300),
+                  margin=.3cm,
+                  legendfontsize=12,
+                  tickfontsize=12,
+                  guidefontsize=14,
+                  dpi = 300,)
+
+aw_volt_pl = plot(sol,
+                  idxs = [system.L.IAD.out.v,
+                          system.L.IAF.out.v,
+                          system.L.IAH.out.v,
+                          system.L.IBL.out.v],
+                  # title = "Voltages (Airways)",
+                  xlabel = "t [s]", ylabel = "Pressure [cmH2O]",
+                  label = ["Pout (IAD)" "Pout (IAF)" "Pout (IAH)" "Pout (IBL)"],
+                  legend = :bottomright,
+                  xlims = xlims_aw,
+                  ylims = (0, resp_ampl + 2),
+                  # ylims = (-8, 8),
+                  size = (600, 300),
+                  margin=.3cm,
+                  legendfontsize=12,
+                  tickfontsize=12,
+                  guidefontsize=14,
+                  dpi = 300,)
+
+aw_curr_pl = plot(sol,
+                  idxs = [system.L.IAD.i_tube_1.i,
+                          system.L.IAF.i_tube_1.i,
+                          system.L.IAH.i_tube_1.i,
+                          system.L.IBL.i_tube_1.i],
+                  # title = "Currents (Airways)",
+                  xlabel = "t [s]", ylabel = "Flow Rate [m^3 / s]",
+                  label = ["Iout (IAD)" "Iout (IAF)" "Iout (IAH)" "Iout (IBL)"],
+                  legend = :bottomright,
+                  xlims = xlims_aw,
+                  ylims = ylims_aw,
+                  size = (600, 300),
+                  margin=.3cm,
+                  legendfontsize=12,
+                  tickfontsize=12,
+                  # thickness_scaling=1.5,
+                  guidefontsize=14,
+                  dpi = 300,)
+
+savefig(al_volt_pl,
+        "$repodir/Latex/Images/acini_voltages_$(resp_ampl).pdf")
+
+savefig(aw_volt_pl,
+        "$repodir/Latex/Images/airways_voltages_$(resp_ampl).pdf")
+
+savefig(al_curr_pl,
+        "$repodir/Latex/Images/acini_currents_$(resp_ampl).pdf")
+
+savefig(aw_curr_pl,
+        "$repodir/Latex/Images/airways_currents_$(resp_ampl).pdf")
+

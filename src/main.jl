@@ -5,24 +5,26 @@
 # |_| |_| |_|\__,_|_|_| |_(_)/ |_|
 #                          |__/   
 
-## Gestione delle dipendenze.
+## Managing packages.
 using Pkg
 
-## Definizione paths di interesse.
-### Percorso della repository scaricata da GitHub.
+## Path definitions.
+### Local Repository.
 repodir = "/home/luca/Thesis" # <- CHANGE IT!
-### Percorso dei codici sorgente per Julia.
+### Julia source path.
 srcdir  = "$repodir/src"      # <- LEAVE IT AS IS!
 Pkg.activate(repodir)
 
-## Inclusione libreria del modello morfometrico.
-### L'input (i.e. la struttura del polmone) viene generato eseguendo
-### lo script bash in `$srcdir/cir2jl/cir2jl`, si consulti il README.
+## Including mechanical model library.
+### Input (mechanical parameters) is updated using bash script
+### `$srcdir/cir2jl/cir2jl`. Visit `$repodir/README.org` for more
+### information.
 include("$srcdir/lib/AWTree.jl")
 
-## Esecuzione della simulazione.
+## Start simulation.
 include("$srcdir/util/simulation.jl")
 
-## Generazione dei grafici.
+## Plotting.
 include("$srcdir/util/graphs.jl")
-include("$srcdir/util/graphs_trigger.jl")
+# include("$srcdir/util/graphs_trigger.jl")
+include("$srcdir/util/graphs_thesis.jl")

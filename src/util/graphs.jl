@@ -6,22 +6,30 @@
 #  |___/          |_|              |__/   
 
 #===============================================================
- GENERAZIONE GRAFICI
+ PLOTS GENERATION
  ===============================================================#
 
-# Librerie per grafici della soluzione
+# Plotting libraries.
 using Plots, PlotThemes, Plots.PlotMeasures
 gr()
+# plotly()
 
-# Parametri per grafici
+# Plots' parameters
 ## Tema
-theme(:solarized)
+# theme(:solarized)
+theme(:default)
 
-## Limiti su x
+## x limits
+### Common
+xlims_al = xlims_aw = (.995, 1.09)
+
 ### Alveoli
-xlims_al = tspan
+# xlims_al = tspan
+ylims_al = (0, .018)  # For small currents
+
 ### Airways
-xlims_aw = tspan
+# xlims_aw = tspan
+ylims_aw = (0, .03)  # For small currents
 
 al_volt_pl = plot(sol,
                   idxs = [system.L.IAE.out.v,
@@ -29,12 +37,12 @@ al_volt_pl = plot(sol,
                           system.L.IBB.out.v,
                           system.L.IAG.out.v,
                           system.L.IBA.out.v,],
-                  title = "Tensioni (Alveoli)",
-                  xlabel = "t [s]", ylabel = "Tensione [V]",
-                  label = ["Vout di IAE" "Vout di IAI" "Vout di IBB" "Vout di IAG" "Vout di IBA"],
+                  title = "Voltages (Alveoli)",
+                  xlabel = "t [s]", ylabel = "Voltage [V]",
+                  label = ["Vout (IAE)" "Vout (IAI)" "Vout (IBB)" "Vout (IAG)" "Vout (IBA)"],
                   legend = :bottomright,
                   xlims = xlims_al,
-                  ylims = (-resp_ampl - .5, resp_ampl + .5),
+                  ylims = (0, resp_ampl + 1),
                   dpi = 300,
                   margin = 1cm,
                   size = (600, 600))
@@ -45,11 +53,12 @@ al_curr_pl = plot(sol,
                           system.L.IBB.c_ga.i,
                           system.L.IAG.c_ga.i,
                           system.L.IBA.c_ga.i,],
-                  title = "Correnti (Alveoli)",
+                  title = "Currents (Alveoli)",
                   xlabel = "t [s]", ylabel = "Corrente [A]",
-                  label = ["Iout di IAE" "Iout di IAI" "Iout di IBB" "Iout di IAG" "Iout di IBA"],
+                  label = ["Iout (IAE)" "Iout (IAI)" "Iout (IBB)" "Iout (IAG)" "Iout (IBA)"],
                   legend = :bottomright,
                   xlims = xlims_al,
+                  ylims = ylims_al,
                   dpi = 300,
                   margin = 1cm,
                   size = (800, 600))
@@ -59,12 +68,12 @@ aw_volt_pl = plot(sol,
                           system.L.IAF.out.v,
                           system.L.IAH.out.v,
                           system.L.IBL.out.v],
-                  title = "Tensioni (Vie Respiratorie)",
-                  xlabel = "t [s]", ylabel = "Tensione [V]",
-                  label = ["Vout di IAD" "Vout di IAF" "Vout di IAH" "Vout di IBL"],
+                  title = "Voltages (Airways)",
+                  xlabel = "t [s]", ylabel = "Voltage [V]",
+                  label = ["Vout (IAD)" "Vout (IAF)" "Vout (IAH)" "Vout (IBL)"],
                   legend = :bottomright,
                   xlims = xlims_aw,
-                  ylims = (-resp_ampl - .5, resp_ampl + .5),
+                  ylims = (0, resp_ampl + 1),
                   # ylims = (-8, 8),
                   dpi = 300,
                   margin = 1cm,
@@ -75,17 +84,18 @@ aw_curr_pl = plot(sol,
                           system.L.IAF.i_tube_1.i,
                           system.L.IAH.i_tube_1.i,
                           system.L.IBL.i_tube_1.i],
-                  title = "Correnti (Vie Respiratorie)",
+                  title = "Currents (Airways)",
                   xlabel = "t [s]", ylabel = "Corrente [A]",
-                  label = ["Iout di IAD" "Iout di IAF" "Iout di IAH" "Iout di IBL"],
+                  label = ["Iout (IAD)" "Iout (IAF)" "Iout (IAH)" "Iout (IBL)"],
                   legend = :bottomright,
                   xlims = xlims_aw,
+                  ylims = ylims_aw,
                   dpi = 300,
                   margin = 1cm,
                   size = (800, 600))
 
 tot_pl = plot(al_volt_pl, al_curr_pl, aw_volt_pl, aw_curr_pl, 
-              plot_title = "Simulazione (A = $(resp_ampl)V)",
+              plot_title = "Mechanical Simulation (A = $(resp_ampl)V)",
               dpi = 300,
               layout = (2, 2),
               size = (1920, 1080))
@@ -106,10 +116,10 @@ tot_pl = plot(al_volt_pl, al_curr_pl, aw_volt_pl, aw_curr_pl,
 #      ylims = (-1.5, 1.5))
 
 #===============================================================
- SALVATAGGIO FIGURE
+ SAVING FIGURES
  ===============================================================#
 
-savefig(tot_pl,
-        "$srcdir/output/ampl_$(resp_ampl)_tspan_$(tspan).png")
+# savefig(tot_pl,
+#         "$srcdir/output/ampl_$(resp_ampl)_tspan_$(tspan).png")
 
 display(tot_pl)

@@ -17,32 +17,30 @@
        /                 \
       /                   \
      /                     \
-    /=======================\           _                       - Induttori
-   /           lvl           \     _.-'` |________________////  - Resistori
-  /             3             \     `'-._|                \\\\  - Condensatori
- /=============================\                                - Diodi
-                                                                - Interruttori
+    /=======================\           _                       - Inductors
+   /           lvl           \     _.-'` |________________////  - Resistors
+  /             3             \     `'-._|                \\\\  - Capacitors
+ /=============================\                                - Diodes
+                                                                - Switches
 
-Su questo livello esistono componenti elementari (e.g. resistenze,
-condensatori, ...) con lo scopo di costituire dei moduli.       =#
+Simple electrical components used to build modules.             =#
 
-# TODO: Modificare il diodo
-
-# Componenti variabili
+# Variable components
 @mtkmodel CIDInductor begin
     @extend v, i = oneport = OnePort()
     @parameters begin
-        La, [description = "Inductance when air-filled"]
-        Lb, [description = "Inductance delta (liquid - air)"]
+        La, [description = "Module Inductance when air-filled."]
+        Lb, [description = "Module Inductance delta (liquid - air)."]
     end
     @variables begin
-        # Il valore di default altro non è che il valore
-        # d'inizializzazione del sistema
+        # Variables and their default values.
         n∫i(t) = 0, [description = "Normalized Current Integral."]
-        L(t)  = La + Lb, [description = "Variable inductance"]
+        L(t)   = La + Lb, [description = "Variable inductance."]
     end
     @equations begin
-        L ~ La + Lb * (1 - n∫i)
+        # Inductance in function of the normalized integral.
+        L    ~ La + Lb * (1 - n∫i)
+        # Device equation.
         D(i) ~ (1 / L) * v
     end
 end
@@ -50,16 +48,18 @@ end
 @mtkmodel CIDResistor begin
     @extend v, i = oneport = OnePort()
     @parameters begin
-        Ra, [description = "Resistance when air-filled"]
-        Rb, [description = "Resistance delta (liquid - air)"]
+        Ra, [description = "Module Resistance when air-filled."]
+        Rb, [description = "Module Resistance delta (liquid - air)."]
     end
     @variables begin
+        # Variables and their default values.
         n∫i(t) = 0, [description = "Normalized Current Integral."]
-        # Dichiaro come variabile d'interesse anche la resistenza
-        R(t) = Ra + Rb, [description = "Variable resistance"]
+        R(t)   = Ra + Rb, [description = "Variable resistance."]
     end
     @equations begin
+        # Resistance in function of the normalized integral.
         R ~ Ra + Rb * (1 - n∫i)
+        # Device equation.
         v ~ R * i
     end
 end
@@ -69,11 +69,11 @@ exlin(x, max_x) = ifelse(x > max_x, exp(max_x)*(1 + x - max_x), exp(x))
 @mtkmodel old_Diode begin
     @extend v, i = oneport = OnePort()
     @parameters begin
-        Ids     = 1e-6, [description = "Reverse-bias current"]
-        max_exp = 15, [description = "Value after which linearization is applied"]
-        R       = 1e8, [description = "Diode Resistance"]
-        vin_th  = 1e-3, [description = "Threshold voltage"]
-        k       = 1e3, [description = "Speed of exponential"]
+        Ids     = 1e-6, [description = "Reverse-bias current."]
+        max_exp = 15,   [description = "Value after which linearization is applied."]
+        R       = 1e8,  [description = "Diode Resistance."]
+        vin_th  = 1e-3, [description = "Threshold voltage."]
+        k       = 1e3,  [description = "Speed of exponential."]
     end
     @equations begin
         i ~ Ids * (exlin(k * (v - vin_th) / (vin_th), max_exp) - 1) + (v / R)
@@ -86,10 +86,12 @@ end
         vin_th = .7
     end
     @variables begin
-        trigger_in(t) = false
+        # Variables and their default values.
+        trigger_in(t)  = false
         trigger_out(t) = false
     end
     @equations begin
+        # Device equation.
         # v ~ -(trigger_in) * (1 - trigger_out) * vin_th
         v ~ (trigger_in) * (1 - trigger_out) * vin_th
     end
@@ -98,28 +100,29 @@ end
 @mtkmodel CurrentIntegrator begin
     @parameters begin
         V_FRC = 1, [description = "Volume at FRC."]
-        level = 1, [description = "Normalized Fill-up level (0 -> empty, 1 ->  full)."]
+        level = 1, [description = "Normalized Fill-up level (0 → empty, 1 → full)."]
     end
     @variables begin
-        # Integrazione
-        current(t) = 0.0, [description = "Input current."]
-        n∫i(t) = 0.0, [description = "Output Normalized (by V_FRC) Current Integral.", output = true]
+        # Variables and their default values.
+        # Integration
+        current(t)     = 0.0, [description = "Input current."]
+        n∫i(t)         = 0.0, [description = "Output Normalized (by V_FRC) Current Integral.",
+                               output = true]
         # Timing
-        trigger_in(t) = 0.0, [description = "Filling-up status of previous module."]
+        trigger_in(t)  = 0.0, [description = "Filling-up status of previous module."]
         trigger_out(t) = 0.0, [description = "Filling-up status of current module.", output = true]
     end
     @equations begin
-        D(n∫i) ~ ifelse((((n∫i < 0) & (current < 0))  # Se n∫i sta per essere negativo,
-                         | (n∫i >= level)             # Se n∫i sta per superare la soglia di riempimento,
-                         | (trigger_in == false)),    # Se il precedente modulo non è stato riempito,
-                        0,                            # -> Non integrare.
-                        current / V_FRC)              # -> Integrare.
+        D(n∫i) ~ ifelse((((n∫i < 0) & (current < 0))  # If n∫i is close to being negative,
+                         | (n∫i >= level)             # If n∫i is overcoming filling-up threshold,
+                         | (trigger_in == false)),    # If previous module isn't filled up yet,
+                        0,                         # -> Don't integrate.
+                        current / V_FRC)              # -> Integrate.
 
-        # Normalizzo l'integrale per V_FRC.
-        D(trigger_out) ~ 0                            # Condizione necessaria per avere callback.
+        D(trigger_out) ~ 0                            # Necessary condition in order to use a callback.
     end
     @continuous_events begin
-        [n∫i ~ level] => [trigger_out ~ true]         # Al raggiungimento della soglia, alzare trigger_out.
+        [n∫i ~ level] => [trigger_out ~ true]         # When the threshold is reached, raise trigger_out.
     end
 end
 
@@ -127,16 +130,15 @@ end
     @extend v, i = oneport = OnePort()
     @parameters begin
         Rclosed = 1e-12, [description = "Switch Resistance when Closed"]
-        Ropen = 1e12, [description = "Switch Resistance when Open"]
+        Ropen   = 1e12,  [description = "Switch Resistance when Open"]
     end
     @variables begin
-        R(t) = Rclosed, [description = "Switch Resistance"]
-        trigger_in(t) = false, [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
-        trigger_out(t) = false, [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
+        # Variables and their default values.
+        R(t)           = Rclosed, [description = "Switch Resistance"]
+        trigger_in(t)  = false,   [description = "Flag: 1 when air fills previous airway completely, 0 otherwise"]
+        trigger_out(t) = false,   [description = "Flag: 1 when air fills current airway completely, 0 otherwise"]
     end
     @equations begin
-        # Bassa all'inizio, alta quando gli arriva il segnale dalla cella precedente, bassa poi quando diventa 1
-        # Trasformare in tan(x)
         # Never used
         # R ~ Rclosed + (Ropen - Rclosed) * (1 / 2) * (tanh(k * (1 + (∫i / V_FRC)) + 1))
         # Equazione di Chiara

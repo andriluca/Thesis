@@ -30,7 +30,9 @@ di sistema è consigliato l'utilizzo di questo livello.  =#
 # Parametri di simulazione
 
 # resp_freq      = 1.0     # Hz
-resp_ampl      = 10.0   # V
+resp_ampl      = 10      # V
+## Sotto soglia di alcuni alveoli.
+# resp_ampl      = 8   # V
 resp_start     = 1.0     # s
 resp_duration  = Inf     # s
 tspan          = (0, 5)  # s
@@ -42,15 +44,16 @@ tspan          = (0, 5)  # s
         src = Step(height = resp_ampl,
                    start_time = resp_start,
                    duration = resp_duration,
-                   smooth = 1e-4)
+                   # smooth = 1e-4,
+                   )
         gen = Voltage()
         gnd = Ground()
         out = Pin()
     end
     @equations begin
         connect(src.output, gen.V)
-        connect(gen.p, out)
-        connect(gen.n, gnd.g)
+        connect(     gen.p,   out)
+        connect(     gen.n, gnd.g)
     end
 end
 
@@ -64,7 +67,7 @@ end
     end
     @equations begin
         D(trigger_in) ~ 0
-        L.trigger_in ~ trigger_in
+        L.trigger_in  ~ trigger_in
         connect(G.out, L.in)
     end
     @continuous_events begin
